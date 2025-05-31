@@ -1,8 +1,7 @@
 <div align="center">
     <img src="./static/img/icon.png" width=150>
-    <h1>Postosaurus</h1>
-    <h2>Your complete portfolio solution</h1>
-    <p>Portosaurus is a complete portfolio cum personal website sulution with various features like notes, blog, tasks etc.</p>
+    <h1>Portosaurus</h1>
+    <p>Complete solution for your digital identity, mind map, blogging.</p>
 </div>
 
 <br/>
@@ -23,57 +22,44 @@
 - **🚀 Easy Deployment** — Ready for GitHub Pages or any static hosting
 
 
-## 📁 Project Structure
-
-As this project is built upon docusaurus, it follows it's guidelines.
-
-```
-./
-├── blog/
-│   ├── ...
-│   └── My mindset 
-├── notes/
-│   ├── ...
-│   ├── sidebars.js
-│   └── Self written notes, accessiable in /notes
-├── src/
-│   ├── components/
-│   ├── css/
-│   ├── pages/
-│   │   ├─ ...
-│   │   ├── index.js - entry point
-│   │   └── holds standalone pages
-│   └── ...
-├── static/
-│   ├── img/
-│   ├── ...
-│   └── static files
-├── config.js
-├── docusaurus.config.js
-└── package.json
-```
-
 ## 📤 Deployment
 
-Portosaurus is designed to be deployed on any static site hosting service.
+There are several ways get portosaurus up and running.
 
->[!NOTE]
-> For GitHub pages, the [workflow](./.github/workflows/deploy.yml) will automatically build & deploy.  
-> Only manually enabling pages from settings is needed.  
 
-1. Build the production version:
+### 1. GitHub Pages
 
-    ```bash
-    npm run build
-    ```
+GitHub provides free hosting service for static sites (like portosaurus).  
 
-2. Deploy using:
+To host, we need to create a repository named `username.github.io`. The site will be live at `https://username.github.io/`.
 
-    ```bash
-    npm run deploy
-    ```
+Here are the steps:
+
+1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
+2. In the following page, name the new repository `yourUsername.github.io`, like for me it's `soymadip.github.io`.
+3. Now edit the [`config.js`](./config.js) with appropriate details.
+4. Go to repo settings > `pages`> `Build and deployment`>`Branch` & select `gh-page` from the dropdown, hit save.
+
+The site should be up and running after a few minutes.
+
+
+### 2. Manual building
+
+Also you can compile the source code & manually upload/host with your preferred hosting service.
+
+In your terminal, paste these commands:-
+
+```bash
+git clone https://github.com/soymadip/portosaurus
+cd portosaurus && git switch main
+npm run build
+```
+This will compile the site and put them in `build` dir.
+
 
 ## 💻 Development
+
+Source code can be found at `code` branch.
 
 - Run the local development server:
 
