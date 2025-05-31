@@ -1,0 +1,79 @@
+{
+    "Note Frontmatter": {
+        "scope": "markdown,mdx",
+        "prefix": "---",
+        "description": "Add frontmatter for a note page",
+        "body": [
+            "---",
+            "title: \"${1:Title}\"",
+            "description: \"${3:Description of the topic}\"",
+            "sidebar_position: ${2:1}",
+            "---"
+        ],
+    },
+                 
+    "Note Index Page": {
+        "scope": "markdown,mdx",
+        "prefix": "index",
+        "description": "\"Add a standard index page structure for note directories\"",
+        "body": [
+            "---",
+            "title: \"${1:Title}\"",
+            "page_type: ${index}",
+            "description: \"${3:Description of the topic}\"",
+            "sidebar_position: ${2:1}",
+            "---",
+            "",        
+            "<div class=\"hide-lines\">",
+            "import { TopicList } from \"@site/src/components/NoteIndex\";",
+            "",
+            "<TopicList/>",
+            "</div>",
+            "",
+            "<div class=\"hide-this\" align=\"center\">",
+            "    <h1>DO NOT EDIT</h1>",
+            "    <h3>This File is Used for Entrypoint of this note.<br/>Do not edit/delete. </h3>",
+            "</div>"
+           
+        ]
+    },
+
+    "DataView JS": {
+        "scope": "markdown,mdx",
+        "prefix": "dataview",
+        "description": "Add a dataview JS code block",
+        "body": [
+            "<h1 align=\"center\" class=\"hide-this\"> Topics</h1>",
+            " ", 
+            "",
+            "```dataviewjs",
+            "const currentFolder = dv.current().file.folder;",
+            "",
+            "const pages = dv.pages(`\"\\${currentFolder}\"`).filter(p =>",
+            "  !p.file.name.toLowerCase().includes(\"index\")",
+            ");",
+            "",
+            "const sortedPages = pages.sort((a, b) => {",
+            "    const aPos = a.sidebar_position !== null ? Number(a.sidebar_position) : null;",
+            "    const bPos = b.sidebar_position !== null ? Number(b.sidebar_position) : null;",
+            "",
+            "    if (aPos !== null && bPos !== null) return aPos - bPos;",
+            "    if (aPos !== null) return -1;",
+            "    if (bPos !== null) return 1;",
+            "",
+            "    return a.file.name.localeCompare(b.file.name);",
+            "});",
+            "",
+            "const tableData = [",
+            "  [\"\\u200B\", \"\\u200B\"],",
+            "  ...sortedPages.map(p => [",
+            "    `-  ${p.title || p.file.name}`,",
+            "    dv.fileLink(p.file.path)",
+            "  ])",
+            "];",
+            "",
+            "dv.table([\"📌 Title\", \"🔗 Link\"], tableData);",
+            "```"
+        ]
+    }
+}
