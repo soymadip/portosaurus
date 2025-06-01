@@ -1,0 +1,75 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - content
+  schedule:
+    - cron: "0 3,15 * * *"
+  workflow_dispatch:
+
+jobs:
+  check-upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Restore Last Commit from Cache
+        id: cache-restore
+        uses: actions/cache@v4
+        with:
+          path: .upstream-cache
+          key: upstream-last-commit
+
+      - name: Fetch Latest Commit SHA from Upstream
+        id: get-upstream
+        run: |
+          mkdir -p .upstream-cache
+
+          curl -s https://api.github.com/repos/soymadip/portosaurus/commits/main \
+            | jq -r .sha > .upstream-cache/upstream_commit.txt
+
+          echo "latest_commit=$(cat .upstream-cache/upstream_commit.txt)" >> $GITHUB_OUTPUT
+
+      - name: Compare With Last Stored Commit
+        id: compare
+        run: |
+          LATEST_COMMIT=$(cat .upstream-cache/upstream_commit.txt)
+
+          echo "Latest upstream: $LATEST_COMMIT"
+
+          if [ -f .upstream-cache/last-commit.txt ]; then
+            STORED_COMMIT=$(cat .upstream-cache/last-commit.txt)
+            echo "Stored commit: $STORED_COMMIT"
+
+            if [ "$LATEST_COMMIT" = "$STORED_COMMIT" ]; then
+              echo "No upstream changes."
+              echo "changed=false" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+          else
+            echo "No previous commit stored."
+          fi
+
+          echo "Upstream changed!"
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Compile the docs
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          echo ">>> Compiling because upstream has new commits"
+
+          bash ./.github/compile.sh
+
+      - name: Update Commit Hash
+        if: steps.compare.outputs.changed == 'true'
+        run: |
+          cp .upstream-cache/upstream_commit.txt .upstream-cache/last-commit.txt
+
+      - name: Save Updated Cache
+        if: steps.compare.outputs.changed == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .upstream-cache
+          key: upstream-last-commit

@@ -1,10 +1,9 @@
 <div align="center">
-    <img src="./static/img/icon.png" width=150>
+    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/main/static/img/icon.png" width=150>
     <h1>Portosaurus</h1>
-    <p>Complete solution for your digital identity, mind map, blogging.</p>
+    <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
 
-<br/>
 
 
 ## 🧩 Features
@@ -21,6 +20,8 @@
 - **📱 Mobile-Friendly** — Fully responsive design works on all devices
 - **🚀 Easy Deployment** — Ready for GitHub Pages or any static hosting
 
+
+<br/>
 
 ## 📤 Deployment
 
