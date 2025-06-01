@@ -55,20 +55,12 @@ jobs:
         if: steps.check.outputs.changed == 'true'
         run: bash ./.github/compile.sh
 
-      - name: Update Version Cache
+      - name: Copy New Version Info
         if: steps.check.outputs.changed == 'true'
-        run: |
-          cp .upstream-cache/upstream_version.txt .upstream-cache/last-version.txt
+        run: cp .upstream-cache/upstream_version.txt .upstream-cache/last-version.txt
 
-          echo "Saving updated version cache..."
-
-        shell: bash
-        env:
-          ACTIONS_CACHE_URL: ${{ runner.cacheUrl }}
-          ACTIONS_RUNTIME_TOKEN: ${{ runner.token }}
-        run: |
-          echo "Saving cache..."
-          echo "::save-state name=cache-hit::false"
+      - name: Save Version Cache
+        if: steps.check.outputs.changed == 'true'
         uses: actions/cache/save@v4
         with:
           path: .upstream-cache
