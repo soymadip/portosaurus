@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .upstream-cache
-          key: portosaurus-version-${{ github.run_id }}
+          key: portosaurus-version-${{ hashFiles('LICENSE') }}
           restore-keys: |
             portosaurus-version-
 
@@ -87,7 +87,7 @@ jobs:
         uses: actions/cache/save@v4
         with:
           path: .upstream-cache
-          key: portosaurus-version-${{ github.run_id }}
+          key: portosaurus-version-${{ hashFiles('LICENSE') }}
 
   deploy:
     needs: update-check
