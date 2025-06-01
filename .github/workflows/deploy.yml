@@ -42,8 +42,8 @@ jobs:
           fi
 
   update-check:
-    needs: check-repo
-    if: needs.check-repo.outputs.should_continue == 'true'
+    needs: repo-check
+    if: needs.repo-check.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.check.outputs.changed }}
@@ -64,11 +64,13 @@ jobs:
       - name: Fetch & Compare Version
         id: check
         run: |
+          mkdir -p .upstream-cache
 
           # If triggered by push to content branch, always deploy
           if [[ "${{ github.event_name }}" == "push" ]]; then
             echo "Content branch change detected - deploying regardless of upstream changes"
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "1.0.0" > .upstream-cache/upstream_version.txt
             exit 0
           fi
 
@@ -76,20 +78,27 @@ jobs:
           if [[ "${{ github.event.inputs.force_deploy }}" == "true" ]]; then
             echo "Force deployment requested!"
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "1.0.0" > .upstream-cache/upstream_version.txt
             exit 0
           fi
 
           # For scheduled events (cron), check upstream for changes
           echo "Scheduled job - checking for upstream changes..."
 
-          mkdir -p .upstream-cache
-
-          curl -s https://raw.githubusercontent.com/soymadip/portosaurus/main/package.json \
-            | jq -r .version > .upstream-cache/upstream_version.txt
-
-          latest=$(cat .upstream-cache/upstream_version.txt)
-
-          echo "Latest version: $latest"
+          if curl -s https://raw.githubusercontent.com/soymadip/portosaurus/main/package.json > /tmp/package.json; then
+            if jq -r .version < /tmp/package.json > .upstream-cache/upstream_version.txt; then
+              latest=$(cat .upstream-cache/upstream_version.txt)
+              echo "Latest version: $latest"
+            else
+              echo "Failed to extract version. Using default version."
+              echo "1.0.0" > .upstream-cache/upstream_version.txt
+              latest="1.0.0"
+            fi
+          else
+            echo "Failed to fetch package.json. Using default version."
+            echo "1.0.0" > .upstream-cache/upstream_version.txt
+            latest="1.0.0"
+          fi
 
           if [ -f .upstream-cache/last-version.txt ]; then
 
@@ -120,8 +129,8 @@ jobs:
           key: portosaurus-version-${{ hashFiles('LICENSE') }}
 
   deploy:
-    needs: [check-repo, update-check]
-    if: needs.check-repo.outputs.should_continue == 'true' && needs.update-check.outputs.changed == 'true'
+    needs: [repo-check, update-check]
+    if: needs.repo-check.outputs.should_continue == 'true' && needs.update-check.outputs.changed == 'true'
     runs-on: ubuntu-latest
 
     environment:
