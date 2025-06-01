@@ -12,64 +12,64 @@ jobs:
   check-upstream:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
+      - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Restore Last Commit from Cache
-        id: cache-restore
+      - name: Restore Cached Version Info
+        id: restore-cache
         uses: actions/cache@v4
         with:
           path: .upstream-cache
-          key: upstream-last-commit
+          key: portosaurus-last-version
 
-      - name: Fetch Latest Commit SHA from Upstream
-        id: get-upstream
+      - name: Fetch & Compare Version
+        id: check
         run: |
           mkdir -p .upstream-cache
 
-          curl -s https://api.github.com/repos/soymadip/portosaurus/commits/main \
-            | jq -r .sha > .upstream-cache/upstream_commit.txt
+          curl -s https://raw.githubusercontent.com/soymadip/portosaurus/main/package.json \
+            | jq -r .version > .upstream-cache/upstream_version.txt
 
-          echo "latest_commit=$(cat .upstream-cache/upstream_commit.txt)" >> $GITHUB_OUTPUT
+          latest=$(cat .upstream-cache/upstream_version.txt)
 
-      - name: Compare With Last Stored Commit
-        id: compare
-        run: |
-          LATEST_COMMIT=$(cat .upstream-cache/upstream_commit.txt)
+          echo "Latest version: $latest"
 
-          echo "Latest upstream: $LATEST_COMMIT"
+          if [ -f .upstream-cache/last-version.txt ]; then
 
-          if [ -f .upstream-cache/last-commit.txt ]; then
-            STORED_COMMIT=$(cat .upstream-cache/last-commit.txt)
-            echo "Stored commit: $STORED_COMMIT"
+            stored=$(cat .upstream-cache/last-version.txt)
+            echo "Stored version: $stored"
 
-            if [ "$LATEST_COMMIT" = "$STORED_COMMIT" ]; then
-              echo "No upstream changes."
+            if [ "$latest" = "$stored" ]; then
+              echo "No version change detected."
               echo "changed=false" >> $GITHUB_OUTPUT
               exit 0
             fi
           else
-            echo "No previous commit stored."
+            echo "No previous version stored."
           fi
 
-          echo "Upstream changed!"
+          echo "Version changed!"
           echo "changed=true" >> $GITHUB_OUTPUT
 
-      - name: Compile the docs
-        if: steps.compare.outputs.changed == 'true'
+      - name: Compile Docs
+        if: steps.check.outputs.changed == 'true'
+        run: bash ./.github/compile.sh
+
+      - name: Update Version Cache
+        if: steps.check.outputs.changed == 'true'
         run: |
-          echo ">>> Compiling because upstream has new commits"
+          cp .upstream-cache/upstream_version.txt .upstream-cache/last-version.txt
 
-          bash ./.github/compile.sh
+          echo "Saving updated version cache..."
 
-      - name: Update Commit Hash
-        if: steps.compare.outputs.changed == 'true'
+        shell: bash
+        env:
+          ACTIONS_CACHE_URL: ${{ runner.cacheUrl }}
+          ACTIONS_RUNTIME_TOKEN: ${{ runner.token }}
         run: |
-          cp .upstream-cache/upstream_commit.txt .upstream-cache/last-commit.txt
-
-      - name: Save Updated Cache
-        if: steps.compare.outputs.changed == 'true'
+          echo "Saving cache..."
+          echo "::save-state name=cache-hit::false"
         uses: actions/cache/save@v4
         with:
           path: .upstream-cache
-          key: upstream-last-commit
+          key: portosaurus-last-version
