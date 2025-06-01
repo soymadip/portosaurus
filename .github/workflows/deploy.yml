@@ -24,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check-repo:
+  repo-check:
     runs-on: ubuntu-latest
     outputs:
       should_continue: ${{ steps.repocheck.outputs.should_continue }}
