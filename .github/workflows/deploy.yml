@@ -5,12 +5,24 @@ on:
     branches:
       - content
   schedule:
-    - cron: "0 3,15 * * *"
+    - cron: "0 4,12,20 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  check-upstream:
+  update-check:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.check.outputs.changed }}
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -51,10 +63,6 @@ jobs:
           echo "Version changed!"
           echo "changed=true" >> $GITHUB_OUTPUT
 
-      - name: Compile Docs
-        if: steps.check.outputs.changed == 'true'
-        run: bash ./.github/compile.sh
-
       - name: Copy New Version Info
         if: steps.check.outputs.changed == 'true'
         run: cp .upstream-cache/upstream_version.txt .upstream-cache/last-version.txt
@@ -65,3 +73,28 @@ jobs:
         with:
           path: .upstream-cache
           key: portosaurus-last-version
+
+  deploy:
+    needs: update-check
+    if: needs.update-check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Compile Docs
+        run: bash ./.github/compile.sh
+
+      - name: Upload Build Artifacts
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./upstream/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
