@@ -161,7 +161,7 @@ jobs:
               echo "Please go to Settings > Pages and enable GitHub Pages (source: GitHub Actions)."
               
               # If this is the last attempt, stop waiting
-              if [ $i -eq 15 ]; then
+              if [ $i -eq 36 ]; then
                 echo "Maximum attempts reached. GitHub Pages is not enabled."
                 echo "pages_enabled=false" >> $GITHUB_OUTPUT
                 exit 1
