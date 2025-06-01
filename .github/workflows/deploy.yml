@@ -24,7 +24,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  check-repo:
+    runs-on: ubuntu-latest
+    outputs:
+      should_continue: ${{ steps.repocheck.outputs.should_continue }}
+    
+    steps:
+      - name: Check Repository Name
+        id: repocheck
+        run: |
+          if [[ "${{ github.repository }}" == "soymadip/portosaurus" ]]; then
+            echo "This is the main Portosaurus repository. Skipping workflow."
+            echo "should_continue=false" >> $GITHUB_OUTPUT
+          else
+            echo "This is a fork or content repository. Continuing with workflow."
+            echo "should_continue=true" >> $GITHUB_OUTPUT
+          fi
+
   update-check:
+    needs: check-repo
+    if: needs.check-repo.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.check.outputs.changed }}
@@ -101,8 +120,8 @@ jobs:
           key: portosaurus-version-${{ hashFiles('LICENSE') }}
 
   deploy:
-    needs: update-check
-    if: needs.update-check.outputs.changed == 'true'
+    needs: [check-repo, update-check]
+    if: needs.check-repo.outputs.should_continue == 'true' && needs.update-check.outputs.changed == 'true'
     runs-on: ubuntu-latest
 
     environment:
