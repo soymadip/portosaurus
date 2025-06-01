@@ -37,6 +37,12 @@ replace_dir() {
         # Find and copy all files from source to destination
         find "$src_dir" -type f | while read src_file; do
 
+            # Skip .placeholder files
+            if [[ "$(basename "$src_file")" == ".placeholder" ]]; then
+                echo "   ⏭️ Skipping: .placeholder file"
+                continue
+            fi
+
             # Get the relative path from the source directory
             rel_path="${src_file#$src_dir/}"
             dest_file="$dest_dir/$rel_path"
