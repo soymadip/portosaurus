@@ -7,6 +7,12 @@ on:
   schedule:
     - cron: "0 4,12,20 * * *"
   workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: 'Force deployment even without version changes'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -37,6 +43,13 @@ jobs:
       - name: Fetch & Compare Version
         id: check
         run: |
+          # Check if force_deploy is enabled
+          if [[ "${{ github.event.inputs.force_deploy }}" == "true" ]]; then
+            echo "Force deployment requested!"
+            echo "changed=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           mkdir -p .upstream-cache
 
           curl -s https://raw.githubusercontent.com/soymadip/portosaurus/main/package.json \
