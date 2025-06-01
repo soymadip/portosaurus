@@ -19,7 +19,8 @@ const config = {
   organizationName: usrConf.about_me.title,
   deploymentBranch: "site",
 
-  onBrokenLinks: "ignore",
+  onBrokenAnchors: "ignore",
+  onBrokenLinks: "warn",
   onBrokenMarkdownLinks: "warn",
 
   i18n: {
