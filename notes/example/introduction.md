@@ -5,15 +5,6 @@ sidebar_position: 1
 ---
 
 
-<div align="center">
-    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/main/static/img/icon.png" width=150>
-    <h1>Portosaurus</h1>
-    <p>Complete solution for your digital identity, mind map, blogging.</p>
-</div>
-
-<br/>
-
-
 ## 🧩 Features
 
 - **📝 Full-featured Portfolio Site** — Showcase your work, skills, and experience with a modern, responsive design
