@@ -8,17 +8,16 @@
 
 ## 🧩 Features
 
-- **📝 Full-featured Portfolio Site** — Showcase your work, skills, and experience with a modern, responsive design
-- **🎨 Beautiful UI** — Responsive design with Catppuccin color scheme inspiration
+- **📝 Full-featured Portfolio Site** — Showcase your work, skills, experience, social identity.
+- **🎨 Beautiful UI** — Responsive design with Catppuccin color scheme.
 - **🖼️ Project Showcase** — Interactive project cards with support for featured projects, project status badges, and tags
 - **📚 Knowledge Base** — Integrated notes system with custom icons and categorization
-- **✏️ Blog Platform** — Built-in blogging capabilities powered by Docusaurus
-- **📋 Task Tracking** — Development roadmap with priority levels and completion status
+- **✏️ Blog Platform** — Built-in blogging capabilities.
+- **📋 Task Tracking** — Track your plans with priority levels and completion status
 - **🛠️ Highly Configurable** — Extensive customization options in a central config file
-- **🧩 Modular Structure** — Includes Hero, About, Projects, Experience, and Contact sections
 - **🔍 Powerful Search** — Integrated search functionality for notes and blog content
 - **📱 Mobile-Friendly** — Fully responsive design works on all devices
-- **🚀 Easy Deployment** — Ready for GitHub Pages or any static hosting
+- **🚀 Auto Deployment** — Ready for GitHub Pages or any static hosting
 
 
 <br/>
@@ -82,7 +81,7 @@ Source code can be found at `code` branch.
 
 ## 📄 Credits
 
-- [Docusaurus](https://docusaurus.io/) - The builder framework this portfolio is built upon.
+- [Docusaurus](https://docusaurus.io/) - The static site builder framework this is built upon.
 - [React](https://react.dev) - UI library for building the interactive components.
 - [React Icons](https://react-icons.github.io/) - Icon library used throughout the site.
 - Libraries listed in [package.json](./package.json) - Essential dependencies for the project.
