@@ -1,6 +1,6 @@
 ---
-title: "Introduction to Portosaurus"
-description: "This is an example Note"
+title: "Features of Portosaurus"
+description: "This is an example note discussing features"
 sidebar_position: 1
 ---
 

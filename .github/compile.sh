@@ -3,9 +3,17 @@ echo -e ">>> Upstream has new update\n"
 
 # Clone the Upstream Repo & switch to the code branch
 echo -e ">>> Cloning upstream repository..."
-git clone https://github.com/soymadip/portosaurus upstream
-cd upstream
-git switch code 
+
+if [ ! -d "SITE" ]; then
+    git clone https://github.com/soymadip/portosaurus SITE
+    cd SITE
+    git switch code
+else
+    cd SITE
+    git switch code
+    git pull
+fi
+
 cd ..
 
 
@@ -15,7 +23,7 @@ cd ..
 echo -e "\n>>> Replacing content to upstream...\n"
 
 ROOT_DIR="$(pwd)"
-UPSTREAM_DIR="${ROOT_DIR}/upstream"
+UPSTREAM_DIR="${ROOT_DIR}/SITE"
 
 # Replace directory content
 replace_dir() {
@@ -89,12 +97,19 @@ cd $UPSTREAM_DIR
 npm ci 
 rm -rf build
 
-
-
 if npm run build; then
     cd ..
     echo -e "\n>>> Compilation successful!\n"
 else
-    echo "❌ Compilation failed. Please check the errors above."
+    echo -e "\n❌ Compilation failed. Please check the errors above."
     exit 1
 fi
+
+
+echo -e "\n>>> Copying compiled files to root directory...\n"
+cp "${UPSTREAM_DIR}/build" -r "${ROOT_DIR}/build"
+echo -e "\n>>> Compiled files copied successfully!\n"
+
+echo -e "\n>>> Cleaning up...\n"
+rm -rf "${UPSTREAM_DIR}"
+echo -e "\n>>> Cleanup completed!\n"

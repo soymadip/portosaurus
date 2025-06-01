@@ -1,5 +1,9 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png" width=150>
+    <img src="htt1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
+2. In the following page, name the new repository `yourUsername.github.io`, like for me it's `soymadip.github.io`.
+3. Now edit the [`config.js`](./config.js) with appropriate details.
+4. Go to repo settings > `Pages` > `Build and deployment` > `Source` and select `GitHub Actions` from the dropdown.
+5. Commit your changes to the `content` branch (or whatever branch you've configured in the workflow)./raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png" width=150>
     <h1>Portosaurus</h1>
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
@@ -39,7 +43,7 @@ Here are the steps:
 1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
 2. In the following page, name the new repository `yourUsername.github.io`, like for me it's `soymadip.github.io`.
 3. Now edit the [`config.js`](./config.js) with appropriate details.
-4. Go to repo settings > `pages`> `Build and deployment`>`Branch` & select `gh-page` from the dropdown, hit save.
+4. Go to repo settings > `Pages` > `Build and deployment` > `Source` and select `GitHub Actions` from the dropdown.
 
 The site should be up and running after a few minutes.
 
@@ -52,8 +56,8 @@ In your terminal, paste these commands:-
 
 ```bash
 git clone https://github.com/soymadip/portosaurus
-cd portosaurus && git switch main
-npm run build
+cd portosaurus 
+bash .github/compile.sh
 ```
 This will compile the site and put them in `build` dir.
 
