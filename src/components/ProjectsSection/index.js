@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback, useMemo } from 'react';
+import { useRef, useState, useEffect, useCallback, useMemo } from 'react';
 import Slider from "react-slick";
 import { FaGithub, FaGlobe, FaPlay, FaChevronLeft, FaChevronRight, FaStar } from 'react-icons/fa';
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -45,12 +45,12 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
         state: "n/a",
         title: `Project ${existingProjects.length + i + 1}`,
         description: projectDefaults.desc,
-        image: null,
+        image: projectDefaults.image,
         id: `placeholder-${i}`,
         tags: null 
       }))
     ];
-  }, []);
+  }, [projectDefaults]);
 
   // Get current slidesToShow based on screen width
   const getVisibleSlidesPerView = useCallback(() => {
