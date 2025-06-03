@@ -1,23 +1,28 @@
 import { catppuccinMocha, catppuccinLatte } from "./src/config/prism.js";
 import { appVersion } from "./src/utils/appVersion.js";
 import { metaTags } from "./src/config/metaTags.js";
-import { usrConf } from "./src/utils/userConfig.js";
+import { usrConf } from "./src/utils/compileConfig.js";
+
+const projectName = "Portosaurus";
+const faviconPath = '/favicon/favicon.ico';
+const iconPicPath = 'static/img/icon.png';
 
 const config = {
 
-  projectName: "Portosaurus",
-  title: usrConf.about_me.title,
+  projectName: `${projectName} `,
 
-  tagline: usrConf.hero_section.tagline,
+  title: usrConf.hero_section.title || `${projectName} `,
 
-  favicon: usrConf.favicon,
+  tagline: usrConf.hero_section.tagline || "Your complete portfolio solution",
+
+  favicon: usrConf.favicon || `${faviconPath}`,
 
   url: usrConf.site_url,
-  baseUrl: "/",
+  baseUrl: usrConf.site_path || "/",
 
   // GH Pages config
-  organizationName: usrConf.about_me.title,
-  deploymentBranch: "site",
+  organizationName: usrConf.about_me.title || `${projectName} `,
+  deploymentBranch: "gh-pages",
 
   onBrokenAnchors: "ignore",
   onBrokenLinks: "warn",
@@ -33,18 +38,36 @@ const config = {
   customFields: {
     version: appVersion(),
 
-    profilePic: usrConf.hero_section.profile_pic,
+    heroSection: {
+      profilePic: usrConf.hero_section.profile_pic || `${iconPicPath}`,
+      intro: usrConf.hero_section.intro || "Hello there, I'm",
+      title: usrConf.hero_section.title || "Your Name",
+      subtitle: usrConf.hero_section.subtitle || 'I am a',
+      profession: usrConf.hero_section.profession || 'Your Profession',
+      description: usrConf.hero_section.description || "Short description about your profession, passion, goals.",
+    },
 
     aboutMe: usrConf.about_me,
 
     projects: usrConf.project_shelf,
-    
+
     experience: usrConf.experience,
 
-    socialLinks: usrConf.social_links,
+    socialLinks:{
+      enable: usrConf.social_links.enable || true,
+
+      links: usrConf.social_links.links || [
+        {
+          name: "Your Instagram",
+          icon: "instagram",
+          desc: "Your Instagram profile link",
+          url: "https://instagram.com/yourprofile",
+        }
+      ],
+    },
 
     robotsTxt: {
-      enable: usrConf.robots_txt,
+      enable: usrConf.robots_txt || true,
       rules: [
         {
           disallow: ["/notes/", "/tasks/"],
@@ -71,7 +94,7 @@ const config = {
 
         blog: {
 
-          feedOptions: usrConf.opt_features.rss
+          feedOptions: usrConf.rss
             ? {
                 type: ["rss", "atom"],
                 xslt: true,
@@ -100,11 +123,11 @@ const config = {
 
   themeConfig: {
     // Social card
-    image: usrConf.opt_features.social_card || "/img/social-card.jpeg",
+    image: usrConf.social_card || "/img/social-card.jpeg",
 
     docs: {
       sidebar: {
-        hideable: usrConf.opt_features.collapsable_sidebar,
+        hideable: usrConf.collapsable_sidebar || true,
       },
     },
 
@@ -118,16 +141,16 @@ const config = {
     // Default: Dark mode
     colorMode: {
       defaultMode: usrConf.dark_mode ? "dark" : "light",
-      disableSwitch: usrConf.opt_features.disable_theme_switch || false,
+      disableSwitch: usrConf.disable_theme_switch || false,
     },
 
     navbar: {
-      title: usrConf.about_me.title || "Portosaurus",
-      hideOnScroll: usrConf.opt_features.hide_navbar_on_scroll || false,
+      title: usrConf.about_me.title || `${projectName} `,
+      hideOnScroll: usrConf.hide_navbar_on_scroll || true,
 
       logo: {
         alt: "Site Logo",
-        src: usrConf.favicon,
+        src: usrConf.favicon || `${faviconPath}`,
       },
 
       items: [
@@ -204,7 +227,7 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} ` + ownerName,
       */
     },
-    
+
   },
 
   plugins: [
