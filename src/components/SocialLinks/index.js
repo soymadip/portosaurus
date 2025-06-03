@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import styles from './styles.module.css';
 import { FaQuestionCircle } from 'react-icons/fa';
 

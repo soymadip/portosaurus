@@ -27,7 +27,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
   const projectDefaults = {
     title: "Future Project",
     desc:  "Coming soon...",
-    image: "/img/project-blank.png",
+    image: "img/project-blank.png",
     state: "active",
     tags:  ["planned"]
   };

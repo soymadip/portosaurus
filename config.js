@@ -1,8 +1,10 @@
 exports.usrConf = {
   dark_mode: true,
 
-  site_url: "https://soymadip.me",
-  srt_url: "${site_url}/l",
+  site_url: "https://soymadip.github.io",
+  site_path: "/portosaurus",
+
+  srt_url: "${site_url}${site_path}/l",
 
   rebots_txt: true,
   social_card: "/img/social-card.jpeg",
@@ -12,17 +14,17 @@ exports.usrConf = {
   rss: true,
 
   hero_section: {
-    title: "Soumadip Das",
-    profession: "FOSS Developer",
+    title: "Your Name",
+    profession: "Your Profession",
     description:
-      "I tend to make solutions of real-life problems, that helps to make life less painful.",
-    profile_pic: "https://avatars.githubusercontent.com/u/84225810?v=4",
+      "Short description about you, your passion, your goals etc.",
+    profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
   },
 
   about_me: {
     enable: true,
 
-    title: "Soymadip",
+    title: "Your Name",
     subtitle: null,
     image: "${hero_section.profile_pic}",
 
@@ -87,43 +89,6 @@ exports.usrConf = {
         url: "${srt_url}/telegram",
         pin: true,
       },
-      {
-        name: "Discord",
-        icon: "discord",
-        desc: "Become my friend",
-        url: "${srt_url}/discord",
-      },
-      {
-        name: "Twitter",
-        icon: "x",
-        desc: "Find me on Twitter",
-        url: "${srt_url}/twitter",
-      },
-      {
-        name: "GitHub",
-        icon: "githubalt",
-        desc: "Check out my git repos",
-        url: "${srt_url}/github",
-        pin: true,
-      },
-      {
-        name: "GitLab",
-        icon: "gitlab",
-        desc: "View my GitLab profile",
-        url: "${srt_url}/gitlab",
-      },
-      {
-        name: "Anilist",
-        icon: "anilist",
-        desc: "If you are otaku, check out!",
-        url: "${srt_url}/anilist",
-      },
-      {
-        name: "Simkl",
-        icon: "simkl",
-        desc: "I watch Movies & Series too!",
-        url: "${srt_url}/simkl",
-      },
     ],
   },
 
@@ -139,19 +104,6 @@ exports.usrConf = {
       gitlab: "https://gitlab.com/soymadip",
       linkedin: "https://linkedin.com/in/soymadip",
       telegram: "https://telegram.me/soymadip",
-      reddit: "https://www.reddit.com/user/soymadip",
-      anilist: "https://anilist.co/user/soymadip/",
-      mal: "https://myanimelist.net/profile/soymadip",
-      twitter: "https://x.com/soymadip",
-      mastodon: "https://mastodon.online/@soymadip",
-      discord: "https://discord.com/users/778278661811863592",
-      roadmap: "https://roadmap.sh/u/soymadip",
-      replit: "https://replit.com/@soymadip",
-      signal:
-        "https://signal.me/#eu/JxnJ32zIRQxm_lG4PWfkcasdR1zwGd2ln9lY8EXkzm-gy-gwj91PgZz4Qo1CiWpQ",
-      yt: "https://youtube.com/@soymadip",
-      instagram: "https://www.instagram.com/soymadip_",
-      simkl: "https://simkl.com/5929351/",
     },
   },
 
@@ -248,8 +200,27 @@ exports.tasks = {
       title: "Rearrange the config.js",
       description:
         "Rearrange config, make more abstract. Add hero section configs.",
-      status: "acribe",
+      status: "active",
       priority: "high",
+    },
+    {
+      title: "Fix favicon logic",
+      description:
+        "Fix favicon gen failed even if given diff value in usrConf.favicon, also when usrConf.hero_section.profile_pic to /img/some-pic.png",
+      status: "active",
+      priority: "high",
+    },
+    {
+      title: "Fix project shelf image placing",
+      description: "The image should align in the middle of card. Then fill the space if needed.",
+      status: "active",
+      priority: "low",
+    },
+    {
+      title: "Add shortlink generation",
+      description: "setup StaticShort while compiling portosaurus.",
+      status: "active",
+      priority: "normal",
     },
   ],
 };
