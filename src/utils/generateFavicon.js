@@ -48,7 +48,7 @@ async function generateFavicons(context, options = {}) {
   console.log('\n[INFO] Generating favicons...');
   
   const {siteConfig} = context;
-  const profilePicUrl = options.imagePath || siteConfig.customFields.profilePic;
+  const profilePicUrl = options.imagePath || siteConfig.customFields.heroSection.profilePic;
   const appVersion = siteConfig.customFields.version || '1.0';
   const circular = options.circular !== false;
   const shape = options.shape || 'circle';
@@ -145,6 +145,7 @@ async function generateFavicons(context, options = {}) {
     };
     
     const downloadedImage = await downloadImage(profilePicUrl, context.siteDir, 'temp_profile_pic.png');
+
     tempFiles.push(downloadedImage);
     
     let finalImagePath = downloadedImage;
