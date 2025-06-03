@@ -1,4 +1,3 @@
-import React from 'react';
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import SocialLinks from "@site/src/components/SocialLinks";
 import styles from './styles.module.css';
@@ -6,7 +5,13 @@ import styles from './styles.module.css';
 export default function HeroSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
-  const profilePic = customFields.profilePic;
+
+  const intro = customFields.heroSection.intro;
+  const title = customFields.heroSection.title;
+  const subtitle = customFields.heroSection.subtitle;
+  const profession = customFields.heroSection.profession;
+  const description = customFields.heroSection.description;
+  const profilePic = customFields.heroSection.profilePic;
 
   return (
     <div
@@ -17,18 +22,18 @@ export default function HeroSection({ id, className }) {
     >
       <div className={styles.container}>
         <div className={styles.leftSection}>
-          <p className={styles.intro}>Hello there, I'm</p>
+          <p className={styles.intro}>{intro}</p>
           <h1 className={styles.title}>
-            Soumadip Das
+            {title}
             <span className={styles.titleComma}>,</span>
           </h1>
           <div className={styles.subtitleWrapper}>
-            <span className={styles.subtitlePrefix}>I am a</span>
-            <h2 className={styles.subtitle}>FOSS Developer</h2>
-            <span className={styles.subtitlePrefix}>.</span>
+            <span className={styles.subtitle}>{subtitle}</span>
+            <h2 className={styles.profession}>{profession}</h2>
+            <span className={styles.subtitle}>.</span>
           </div>
           <p className={styles.description}>
-            I tend to make solutions of real-life problems, that helps to make life less painful.
+            {description}
           </p>
           <div className={styles.actionRow}>
             <div className={styles.cta}>
