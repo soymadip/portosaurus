@@ -11,7 +11,7 @@
             "---"
         ],
     },
-
+                 
     "Note Index Page": {
         "scope": "markdown,mdx",
         "prefix": "index",
@@ -34,7 +34,7 @@
             "    <h1>DO NOT EDIT</h1>",
             "    <h3>This File is Used for Entrypoint of this note.<br/>Do not edit/delete. </h3>",
             "</div>"
-
+           
         ]
     },
 
@@ -74,25 +74,6 @@
             "",
             "dv.table([\"📌 Title\", \"🔗 Link\"], tableData);",
             "```"
-        ]
-    },
-
-    "Portfolio Project": {
-        "scope": "javascript,js",
-        "prefix": "project",
-        "description": "Add a new project to the project shelf",
-        "body": [
-            "{",
-            "  title:   \"${1:Your Awesome project}\",",
-            "  state:   '${2:active}',",
-            "  featured: ${3:true},",
-            "  desc:    \"${4:Description about your awesome project.}\",",
-            "  image:   \"${5:https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png}\",",
-            "  github:  \"${6:https://github.com/username/repository.git}\",",
-            "  website: ${7:null},",
-            "  Demo:    ${8:null},",
-            "  tags: [\"${9:portfolio}\", \"${10:website}\"],",
-            "},${0}"
         ]
     }
 }
