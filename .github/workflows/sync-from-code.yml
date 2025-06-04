@@ -5,9 +5,10 @@ on:
     branches:
       - code
     paths:
-      - config.js
-      - .vscode/**
-      - .github/sync-files.list
+      - 'config.js'
+      - '.vscode/**'
+      - '.github/sync-files.list'
+  workflow_dispatch:
 
 jobs:
   sync-config:
@@ -72,4 +73,9 @@ jobs:
           done
 
           # Commit and push if there are changes
-          git diff --staged --quiet || git commit -m "Sync files from code branch" && git push
+          if ! git diff --staged --quiet; then
+            git commit -m "Sync files from code branch"
+            git push
+          else
+            echo "No changes to commit"
+          fi
