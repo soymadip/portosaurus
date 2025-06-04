@@ -91,9 +91,9 @@ exports.usrConf = {
     deploy_path: "/l",
 
     short_links: {
-      mail: "mailto://you@yourDomain.com",
-      github: "https://github.com/yourUserName",
-      gitlab: "https://gitlab.com/yourUserName",
+      mail:     "mailto://you@yourDomain.com",
+      github:   "https://github.com/yourUserName",
+      gitlab:   "https://gitlab.com/yourUserName",
       linkedin: "https://linkedin.com/in/yourUserName",
       telegram: "https://telegram.me/yourUserName",
     },
