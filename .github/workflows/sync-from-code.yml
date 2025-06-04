@@ -10,6 +10,11 @@ on:
       - '.github/sync-files.list'
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   sync-config:
     runs-on: ubuntu-latest
@@ -75,7 +80,7 @@ jobs:
           # Commit and push if there are changes
           if ! git diff --staged --quiet; then
             git commit -m "Sync files from code branch"
-            git push
+            git push origin content
           else
             echo "No changes to commit"
           fi
