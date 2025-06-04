@@ -25,21 +25,24 @@
 
 ## 📤 Deployment
 
-There are several ways get portosaurus up and running.
+> [!WARNING]
+> **Beta Notice:**  
+> Portosaurus is currently in its beta phase.  
+> Expect frequent updates and breaking changes.   
+
+There are several ways get Portosaurus up and running.
 
 
 ### 1. GitHub Pages
 
-GitHub provides free hosting service for static sites (like portosaurus).  
-
-To host, we need to create a repository named `username.github.io`. The site will be live at `https://username.github.io/`.
+GitHub provides free hosting service for static sites like these in [GitHub Pages](https://pages.github.com).  
 
 Here are the steps:
 
 1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
-2. In the following page, name the new repository `yourUsername.github.io`, like for me it's `soymadip.github.io`.
-3. Now edit the [`config.js`](./config.js) with appropriate details.
-4. Go to repo settings > `Pages` > `Build and deployment` > `Source` and select `GitHub Actions` from the dropdown.
+2. In the following page, name the new repository `<your_username>.github.io` (like for me it's `soymadip.github.io`).
+3. In the newly created repository, Go to `settings` > `Pages` > `Build and deployment` > `Source` & select `GitHub Actions` from the dropdown.
+4. Now edit the [`config.js`](./config.js) with appropriate details.
 
 The site should be up and running after a few minutes.
 
@@ -57,35 +60,29 @@ bash .github/compile.sh
 ```
 This will compile the site and put them in `build` dir.
 
+<br>
+
+
+## ⚙️ Configuration
+
+> [!NOTE]  
+> Configuration instructions will be added slowly.
+
+<br>
+
 
 ## 💻 Development
 
-Source code can be found at `code` branch.
+- This branch is used as template to create new repos to hold content.
+- Go to [`code`](https://github.com/soymadip/portosaurus/tree/code) branch for actual source code and development info.
 
-- Run the local development server:
-
-    ```bash
-    npm run start
-    ```
-
-- Build the website:
-
-    ```bash
-    npm run build
-    ```
-
-- Serve the built website locally:
-
-    ```bash
-    npm run serve
-    ```
 
 ## 📄 Credits
 
 - [Docusaurus](https://docusaurus.io/) - The static site builder framework this is built upon.
 - [React](https://react.dev) - UI library for building the interactive components.
 - [React Icons](https://react-icons.github.io/) - Icon library used throughout the site.
-- Libraries listed in [package.json](./package.json) - Essential dependencies for the project.
+- Libraries listed in [package.json](https://github.com/soymadip/portosaurus/blob/code/package.json#L16) - Essential dependencies.
 - [Hugo Profile](https://hugo-profile.netlify.app/) - Design inspiration.
 - [Catppuccin](https://github.com/catppuccin/catppuccin) - Color scheme that inspired the site's palette.
 - [Deepseek R1](https://www.deepseek.com/) hosted using [Ollama](https://ollama.com/library/deepseek-r1) - prism.js theme & project card component.

@@ -1,0 +1,75 @@
+name: Sync Files from code branch
+
+on:
+  push:
+    branches:
+      - code
+    paths:
+      - config.js
+      - .vscode/**
+      - .github/sync-files.list
+
+jobs:
+  sync-config:
+    runs-on: ubuntu-latest
+    if: github.repository == 'soymadip/portosaurus'
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: content
+          fetch-depth: 0
+
+      - name: Set up file list
+        id: setup
+        run: |
+          FILES_LIST=".github/sync-files.list"
+          
+          # Create a temporary file with filtered contents
+          TEMP_FILE=$(mktemp)
+          
+          # Filter out comments and empty lines
+          while IFS= read -r file || [[ -n "$file" ]]; do
+
+            # Skip empty lines or lines starting with # or //
+            [[ -z "$file" || "$file" == \#* || "$file" == //* ]] && continue
+
+            # Add file to the temporary filtered list
+            echo "$file" >> $TEMP_FILE
+          done < "$FILES_LIST"
+          
+          # Save the filtered file list to an environment variable
+          SYNC_FILES=$(cat $TEMP_FILE | tr '\n' ' ')
+
+          echo "SYNC_FILES=$SYNC_FILES" >> $GITHUB_ENV
+          
+          # Clean up
+          rm $TEMP_FILE
+
+      - name: Fetch and copy files from code branch
+        run: |
+          # Fetch the code branch
+          git fetch origin code:code
+          
+          # Copy each file from code branch
+          for file in $SYNC_FILES; do
+            if git ls-tree -r code --name-only | grep -q "^$file$"; then
+              echo "Copying $file from code branch"
+              git checkout code -- "$file"
+            else
+              echo "File $file not found in code branch"
+            fi
+          done
+
+      - name: Commit and push updated files
+        run: |
+          git config user.name "soymadip"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          
+          # Stage only the specific files we copied
+          for file in $SYNC_FILES; do
+            git add "$file" 2>/dev/null || true
+          done
+
+          # Commit and push if there are changes
+          git diff --staged --quiet || git commit -m "Sync files from code branch" && git push

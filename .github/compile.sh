@@ -1,29 +1,3 @@
-echo -e ">>> Upstream has new update\n"
-
-
-# Clone the Upstream Repo & switch to the code branch
-echo -e ">>> Cloning upstream repository..."
-
-if [ ! -d "SITE" ]; then
-    git clone https://github.com/soymadip/portosaurus SITE
-    cd SITE
-    git switch code
-else
-    cd SITE
-    git switch code
-    git pull
-fi
-
-cd ..
-
-
-
-# Add & replace content from current dir to upstream
-
-echo -e "\n>>> Replacing content to upstream...\n"
-
-ROOT_DIR="$(pwd)"
-UPSTREAM_DIR="${ROOT_DIR}/SITE"
 
 # Replace directory content
 replace_dir() {
@@ -88,14 +62,47 @@ replace_file() {
 }
 
 
+# ------------------ Main Logic ------------------
+
+
+ROOT_DIR="$(pwd)"
+UPSTREAM_DIR="${ROOT_DIR}/SITE"
+
+echo -e ">>> Upstream has new update\n"
+
+
+# Clone the Upstream Repo & switch to the code branch
+echo -e ">>> Cloning upstream repository..."
+
+if [ ! -d "SITE" ]; then
+    git clone https://github.com/soymadip/portosaurus SITE
+    cd SITE
+    git switch code
+else
+    cd SITE
+    git switch code
+    git pull
+fi
+
+cd ..
+
+
+
+# Add & replace content from current dir to upstream
+
+echo -e "\n>>> Replacing content to upstream...\n"
+
+
+replace_dir "${ROOT_DIR}/src" "${UPSTREAM_DIR}/static"
 replace_dir "${ROOT_DIR}/blog" "${UPSTREAM_DIR}/blog"
 replace_dir "${ROOT_DIR}/notes" "${UPSTREAM_DIR}/notes"
 replace_file "${ROOT_DIR}/config.js" "${UPSTREAM_DIR}/config.js"
+replace_file "${UPSTREAM_DIR}/.github/workflows/deploy.yml" "${ROOT_DIR}/.github/workflows/deploy.yml" 
 
 echo -e "\n>>> Content replacement completed\n"
 
 
-
+# Compile the source code
 echo -e "\n>>> Compiling Source code..\n"
 
 cd $UPSTREAM_DIR
@@ -116,6 +123,8 @@ echo -e "\n>>> Copying compiled files to root directory...\n"
 cp "${UPSTREAM_DIR}/build" -r "${ROOT_DIR}/build"
 echo -e "\n>>> Compiled files copied successfully!\n"
 
+
+# Cleanup
 echo -e "\n>>> Cleaning up...\n"
 rm -rf "${UPSTREAM_DIR}"
 echo -e "\n>>> Cleanup completed!\n"

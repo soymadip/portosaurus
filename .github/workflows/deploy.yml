@@ -24,27 +24,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  repo-check:
-    runs-on: ubuntu-latest
-    outputs:
-      should_continue: ${{ steps.repocheck.outputs.should_continue }}
-
-    steps:
-      - name: Check Repository Name
-        id: repocheck
-        run: |
-          if [[ "${{ github.repository }}" == "soymadip/portosaurus" ]]; then
-            echo "This is the main Portosaurus repository. Skipping workflow."
-            echo "should_continue=false" >> $GITHUB_OUTPUT
-          else
-            echo "This is a fork or content repository. Continuing with workflow."
-            echo "should_continue=true" >> $GITHUB_OUTPUT
-          fi
-
   update-check:
-    needs: repo-check
-    if: needs.repo-check.outputs.should_continue == 'true'
     runs-on: ubuntu-latest
+    if: github.repository != 'soymadip/portosaurus'
     outputs:
       changed: ${{ steps.check.outputs.changed }}
 
@@ -104,21 +86,15 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "Version changed from $stored_version to $latest_version!"
-            echo "$latest_version" > .github/.version
+            echo "$latest_version" > .github/.version.new
 
-            # Commit the version change back to the repo
-
-            git config --global user.name 'GitHub Actions'
-            git config --global user.email 'actions@github.com'
-            git add .github/.version
-            git commit -m "Bump version" || echo "No changes to commit"
-            git push origin ${GITHUB_REF_NAME} || echo "Could not push changes, continuing workflow"
-
+            # Store the update info in workflow outputs
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
+
   deploy:
-    needs: [repo-check, update-check]
-    if: needs.repo-check.outputs.should_continue == 'true' && needs.update-check.outputs.changed == 'true'
+    needs: update-check
+    if: needs.update-check.outputs.changed == 'true'
     runs-on: ubuntu-latest
 
     environment:
@@ -144,13 +120,13 @@ jobs:
           echo "Checking if GitHub Pages is enabled for this repository..."
           PAGES_ENABLED=false
 
-          for i in {1..15}; do
-            echo "Check attempt $i of 15..."
+          for i in {1..36}; do
+            echo "Check attempt $i of 36..."
 
             PAGES_STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/${{ github.repository }}/pages)
-            
+
             if ! echo "$PAGES_STATUS" | grep -q "message.*Not Found"; then
               echo "GitHub Pages is enabled! Continuing with workflow."
               PAGES_ENABLED=true
@@ -159,9 +135,9 @@ jobs:
             else
               echo "GitHub Pages is not yet enabled. Waiting 5 seconds before checking again."
               echo "Please go to Settings > Pages and enable GitHub Pages (source: GitHub Actions)."
-              
+
               # If this is the last attempt, stop waiting
-              if [ $i -eq 36 ]; then
+              if [ $i -eq 35 ]; then
                 echo "Maximum attempts reached. GitHub Pages is not enabled."
                 echo "pages_enabled=false" >> $GITHUB_OUTPUT
                 exit 1
@@ -172,10 +148,41 @@ jobs:
           done
 
       - name: Deploy to GitHub Pages
-        if: success()
+        if: steps.pages_check.outputs.pages_enabled != 'false'
         id: deployment
         uses: actions/deploy-pages@v4
         continue-on-error: false
         env:
           # Enable debug logging
           DEBUG: "actions-deploy-pages:*"
+
+  bump-version:
+    needs: [update-check, deploy]
+    if:  needs.update-check.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Update Version
+        run: |
+          echo "Updating local version..."
+
+          mv .github/.version.new .github/.version || echo "No new version file found"
+
+          # Push version file to repo
+          git config user.name 'GitHub Actions'
+          git config user.email 'actions@github.com'
+
+          git add .github/.version .github/workflows/deploy.yml
+
+          # push changes
+          git commit -m "Bump version" || echo "No changes to commit"
+
+          if git push origin ${GITHUB_REF_NAME}; then
+            echo "Changes pushed successfully"
+          else
+            echo "Failed to push changes"
+            exit 1
+          fi

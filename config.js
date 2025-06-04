@@ -4,12 +4,14 @@ exports.usrConf = {
 
   dark_mode: true,
 
-  site_url:  'https://soymadip.me',
+  site_url:  'https://.soymadip.github.io',
+  site_path: '/',
+
   srt_url:   "${site_url}/l",
 
   opt_features: {
     rebots_txt: true,
-    social_card: "/img/social-card.jpeg",
+    social_card: "img/social-card.jpeg",
     colapsable_sidebar: true,
     hide_navbar_on_scroll: true,
     disable_theme_switch: false,
@@ -17,13 +19,13 @@ exports.usrConf = {
   },
 
   hero_section: {
-    tagline: 'FOSS Developer',
-    profile_pic: 'https://avatars.githubusercontent.com/u/84225810?v=4',
+    tagline: 'Your profession',
+    profile_pic: 'https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png',
   },
 
   about_me: {
     enable: true,
-    title: "Soymadip",
+    title: "Your Name",
     subtitle: null,
     image: "${hero_section.profile_pic}",
 
@@ -43,65 +45,16 @@ exports.usrConf = {
     enable: true,
     projects: [
     {
-      title:   "KireiSakura Kit",
+      title:   "Your Awsome project",
       state:   'active',
-      desc:    "A framework written in Bash for making powerful shell scripts.",
-      image:   "https://raw.githubusercontent.com/soymadip/KireiSakura-Kit/refs/heads/main/Assets/social-card.png",
-      website: "https://kireisakura.soymadip.me",
-      github:  null,
-      Demo: null,
       featured: true,
-      tags: ["Bash", "Shell", "CLI"],
-    },
-    {
-      title:   "StaticShort",
-      state:   'actived',
-      featured: true,
-      desc:    "A simple static URL shortener - no backend required, just static hosting.",
-      image:   "https://raw.githubusercontent.com/soymadip/StaticShort/refs/heads/main/Assets/social%20card.png",
-      website: "https://github.com/soymadip/StaticShort",
-      github:  null,
-      Demo:    "https://short.soymadip.me/demo",
-      tags: ["shortener", "static"],
-    },
-    {
-      title:   "Regis",
-      state:   'archived',
-      featured: true,
-      desc:    "The Ultimate Group Admin - Smart Moderation, Auto Filters, File Storage & More.",
-      image:   "https://raw.githubusercontent.com/soymadip/Regis/refs/heads/main/Assets/social%20card.png",
-      website: "https://regis.soymadip.me",
-      github:  null,
-      Demo:    null,
-      tags: ["python", "pyrogram", "bot"],
-    },
-    {
-      title:   "SDMP",
-      state:   'paused',
-      featured: false,
-      desc:    "Student record management system built with PHP and MySQL",
-      image:   "https://raw.githubusercontent.com/soymadip/SDMP/refs/heads/main/app/src/images/social%20card.png",
+      desc:    "Description about your awsome project.",
+      image:   "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
+      github:  "https://github.com/soymadip/portosaurus.git",
       website: null,
-      github:  "https://github.com/soymadip/SDMP",
       Demo:    null,
-      tags: ["php", "crud", "sql"],
+      tags: ["portfolio", "website"],
     },
-    {
-      title:  "Portosaurus",
-      state:  'planned',
-      featured: false,
-      desc:   "Portfolio Website generator built upon Docusaurus",
-      Demo:   null,
-      github: null,
-      website: null,
-      // tags: ["node", "static", "docusaurus", "portfolio"],
-    },
-    {
-      title: "autotitle.py",
-      state: 'planned',
-      desc: 'A python app + package for renaming episodes with proper titles ',
-      github:  "https://github.com/soymadip/autotitle.py",
-    }
   ],
   },
 
