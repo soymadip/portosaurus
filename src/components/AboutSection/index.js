@@ -1,7 +1,7 @@
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './styles.module.css';
 
-export default function AboutSection({ id, className, title }) {
+export default function AboutSection({ id, className}) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
   const aboutMe = customFields.aboutMe || {};
@@ -10,14 +10,9 @@ export default function AboutSection({ id, className, title }) {
     <div id={id} className={`${styles.aboutSection} ${className || ''}`} role="region" aria-label="About me section">
       <div className={styles.aboutContainer}>
         <div className={styles.aboutHeader}>
-          <h2 className={styles.aboutTitle}>{title || aboutMe.title || "About Me"}</h2>
-          {aboutMe.subtitle && (
-            <p className={styles.aboutSubtitle}>
-              {aboutMe.subtitle}
-            </p>
-          )}
+          <h2 className={styles.aboutHeading}>{"About Me"}</h2>
         </div>
-        
+
         <div className={styles.aboutContent}>
           <div className={styles.aboutBio}>
             <div className={styles.bioImageContainer}>
@@ -32,7 +27,7 @@ export default function AboutSection({ id, className, title }) {
                 </div>
               )}
             </div>
-            
+
             <div className={styles.bioTextContainer}>
               <div className={styles.bioText}>
                 {Array.isArray(aboutMe.description) ? (

@@ -2,30 +2,27 @@ exports.usrConf = {
   dark_mode: true,
 
   site_url: "https://soymadip.github.io",
-  site_path: "/portosaurus",
+  site_path: "/",
 
   srt_url: "${site_url}${site_path}/l",
 
   rebots_txt: true,
-  social_card: "/img/social-card.jpeg",
+  social_card: "img/social-card.jpeg",
   colapsable_sidebar: true,
   hide_navbar_on_scroll: true,
   disable_theme_switch: false,
   rss: true,
 
   hero_section: {
-    title: "Your Name",
-    profession: "Your Profession",
-    description:
-      "Short description about you, your passion, your goals etc.",
+    title:       "Your Name",
+    profession:  "Your Profession",
+    description: "Short description about you, your passion, your goals etc.",
     profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
   },
 
   about_me: {
     enable: true,
 
-    title: "Your Name",
-    subtitle: null,
     image: "${hero_section.profile_pic}",
 
     description: [
@@ -33,33 +30,28 @@ exports.usrConf = {
       "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
       "I believe in the power of open-source software and the community around it. My goal is to contribute to FOSS and to continuously learn and improve my skills.",
     ],
+
     skills: [
-      "Python",
-      "Bash",
-      "Linux",
-      "Git",
-      "Docker",
-      "C",
-      "lua",
-      "JavaScript",
-      "CI/CD",
+      "skill 1",
+      "Skill 2",
+      "Skill 3",
     ],
-    resumeLink: "${srt_url}/resume",
+    resume_link: "https://exapmple.com/resume",
   },
 
   project_shelf: {
     enable: true,
     projects: [
       {
-        title: "Portusaurus",
+        title: "Your Awesome Project",
         featured: true,
         state: "active",
-        desc: "Your complete portfolio solution.",
+        desc: "Desctiption about your awesome project.",
         image: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
         website: null,
         github: "https://github.com/soymadip/portosaurus",
         Demo: "https://soymadip.github.io",
-        tags: ["portfolio", "javascript"],
+        tags: ["your project's topic", "this is a tag", "another tag"],
       },
     ],
   },
@@ -99,11 +91,11 @@ exports.usrConf = {
     deploy_path: "/l",
 
     short_links: {
-      mail: "mailto://soumadip377@gmail.com",
-      github: "https://github.com/soymadip",
-      gitlab: "https://gitlab.com/soymadip",
-      linkedin: "https://linkedin.com/in/soymadip",
-      telegram: "https://telegram.me/soymadip",
+      mail: "mailto://you@yourDomain.com",
+      github: "https://github.com/yourUserName",
+      gitlab: "https://gitlab.com/yourUserName",
+      linkedin: "https://linkedin.com/in/yourUserName",
+      telegram: "https://telegram.me/yourUserName",
     },
   },
 

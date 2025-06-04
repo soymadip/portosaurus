@@ -64,7 +64,7 @@
   margin-bottom: 4.7rem;
 }
 
-.aboutTitle {
+.aboutHeading {
   font-size: 2.8rem;
   font-weight: 600;
   color: var(--ifm-color-primary);
@@ -74,7 +74,7 @@
   display: inline-block;
 }
 
-.aboutTitle::after {
+.aboutHeading::after {
   content: '';
   position: absolute;
   width: 30%;
@@ -83,14 +83,6 @@
   left: 35%;
   background-color: var(--ifm-color-primary);
   border-radius: 2px;
-}
-
-.aboutSubtitle {
-  font-size: 1rem;
-  color: var(--ifm-font-color-tertiary);
-  max-width: 600px;
-  margin: 1.5rem auto 0;
-  animation: slideUp 0.5s ease-out 0.2s forwards;
 }
 
 .aboutContent {
@@ -343,7 +335,7 @@
     margin-bottom: 2rem;
   }
   
-  .aboutTitle {
+  .aboutHeading {
     font-size: 2.4rem;
   }
   
@@ -408,14 +400,8 @@
     margin-bottom: 1.4rem;
   }
   
-  .aboutTitle {
+  .aboutHeading {
     font-size: 1.8rem;
-  }
-  
-  .aboutSubtitle {
-    font-size: 0.85rem;
-    max-width: 95%;
-    margin-top: 1rem;
   }
   
   .aboutContent {
@@ -475,7 +461,7 @@
 }
 
 @media (max-width: 350px) {
-  .aboutTitle {
+  .aboutHeading {
     font-size: 1.6rem;
   }
   
@@ -495,7 +481,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .aboutTitle, .aboutSubtitle, .aboutContent, .aboutImage, 
+  .aboutHeading, .aboutContent, .aboutImage, 
   .resumeButton, .skillBadge, .imageWrapper, .resumeButton::before,
   .aboutParagraph {
     animation: none !important;

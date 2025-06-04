@@ -47,7 +47,20 @@ const config = {
       description: usrConf.hero_section.description || "Short description about your profession, passion, goals.",
     },
 
-    aboutMe: usrConf.about_me,
+    aboutMe: {
+      enable: usrConf.about_me.enable || true,
+
+      image:       usrConf.about_me.image || `${iconPicPath}`,
+      description: usrConf.about_me.description || [
+        "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
+        "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
+      ],
+      skills: usrConf.about_me.skills || [
+        "skill 1",
+        "Skill 2",
+      ],
+      resumeLink: usrConf.about_me.resume_link || "https://example.com/resume",
+    },
 
     projects: usrConf.project_shelf,
 
