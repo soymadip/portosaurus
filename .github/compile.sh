@@ -98,6 +98,7 @@ replace_dir "${ROOT_DIR}/blog" "${UPSTREAM_DIR}/blog"
 replace_dir "${ROOT_DIR}/notes" "${UPSTREAM_DIR}/notes"
 replace_file "${ROOT_DIR}/config.js" "${UPSTREAM_DIR}/config.js"
 replace_file "${UPSTREAM_DIR}/.github/workflows/deploy.yml" "${ROOT_DIR}/.github/workflows/deploy.yml" 
+replace_file "${UPSTREAM_DIR}/.github/compile.sh" "${ROOT_DIR}/.github/compile.sh" 
 
 echo -e "\n>>> Content replacement completed\n"
 

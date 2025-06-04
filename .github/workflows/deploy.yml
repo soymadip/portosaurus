@@ -175,7 +175,7 @@ jobs:
           git config user.name 'GitHub Actions'
           git config user.email 'actions@github.com'
 
-          git add .github/.version .github/workflows/deploy.yml
+          git add .github/.version .github/workflows/deploy.yml .github/compile.sh
 
           # push changes
           git commit -m "Bump version" || echo "No changes to commit"
