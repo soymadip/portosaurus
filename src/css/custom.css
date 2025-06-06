@@ -39,6 +39,12 @@ html {
   border-left: 1.5px solid var(--ifm-background-surface-color) !important;
 }
 
+._nav-protosaurus-version {
+  opacity: 64%;
+  margin-top: 10px;
+  border-top: 1.2px solid var(--ifm-background-color) !important;
+}
+
 @media (max-width: 768px) {
   ._navbar-more-items {
     border-left: 0 !important;
