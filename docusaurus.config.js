@@ -4,14 +4,14 @@ import { metaTags } from "./src/config/metaTags.js";
 import { usrConf } from "./src/utils/compileConfig.js";
 
 const projectName = "Portosaurus";
-const faviconPath = '/favicon/favicon.ico';
+const faviconPath = 'favicon/favicon.ico';
 const iconPicPath = 'static/img/icon.png';
 
 const config = {
 
-  projectName: `${projectName} `,
+  projectName: `${projectName}`,
 
-  title: usrConf.hero_section.title || `${projectName} `,
+  title: usrConf.hero_section.title || `${projectName}`,
 
   tagline: usrConf.hero_section.tagline || "Your complete portfolio solution",
 
@@ -21,7 +21,7 @@ const config = {
   baseUrl: usrConf.site_path || "/",
 
   // GH Pages config
-  organizationName: usrConf.about_me.title || `${projectName} `,
+  organizationName: usrConf.hero_section.title || `${projectName} `,
   deploymentBranch: "gh-pages",
 
   onBrokenAnchors: "ignore",
@@ -45,6 +45,7 @@ const config = {
       subtitle: usrConf.hero_section.subtitle || 'I am a',
       profession: usrConf.hero_section.profession || 'Your Profession',
       description: usrConf.hero_section.description || "Short description about your profession, passion, goals.",
+      learnMoreButtonTxt: usrConf.hero_section.learn__more_button_txt || "Learn More",
     },
 
     aboutMe: {
@@ -136,7 +137,7 @@ const config = {
 
   themeConfig: {
     // Social card
-    image: usrConf.social_card || "/img/social-card.jpeg",
+    image: usrConf.social_card || "img/social-card.jpeg",
 
     docs: {
       sidebar: {
@@ -158,7 +159,7 @@ const config = {
     },
 
     navbar: {
-      title: usrConf.about_me.title || `${projectName} `,
+      title: usrConf.hero_section.title || `${projectName} `,
       hideOnScroll: usrConf.hide_navbar_on_scroll || true,
 
       logo: {
