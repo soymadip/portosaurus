@@ -12,6 +12,7 @@ export default function HeroSection({ id, className }) {
   const profession = customFields.heroSection.profession;
   const description = customFields.heroSection.description;
   const profilePic = customFields.heroSection.profilePic;
+  const learnMoreButtonText = customFields.heroSection.learnMoreButtonTxt;
 
   return (
     <div
@@ -42,7 +43,7 @@ export default function HeroSection({ id, className }) {
                 className={styles.ctaButton}
                 aria-label="Learn more about me"
               >
-                Learn More
+                {learnMoreButtonText} 
               </a>
             </div>
             <SocialLinks />

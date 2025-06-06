@@ -2,8 +2,10 @@ import { catppuccinMocha, catppuccinLatte } from "./src/config/prism.js";
 import { appVersion } from "./src/utils/appVersion.js";
 import { metaTags } from "./src/config/metaTags.js";
 import { usrConf } from "./src/utils/compileConfig.js";
+import { useEnabled } from "./src/utils/filterEnabledItems.js";
 
 const projectName = "Portosaurus";
+const projectVersion = appVersion();
 const faviconPath = 'favicon/favicon.ico';
 const iconPicPath = 'static/img/icon.png';
 
@@ -36,7 +38,7 @@ const config = {
   headTags: metaTags,
 
   customFields: {
-    version: appVersion(),
+    version: `${projectVersion}`,
 
     heroSection: {
       profilePic: usrConf.hero_section.profile_pic || `${iconPicPath}`,
@@ -167,57 +169,68 @@ const config = {
         src: usrConf.favicon || `${faviconPath}`,
       },
 
-      items: [
+      items: useEnabled([
         {
           type: "search",
           position: "right",
           className: "navbar-search-bar",
         },
         {
+          enable: usrConf.about_me?.enable || true,
+          value: {
           label: "About Me",
           to: "/#about",
           position: "right",
           activeBaseRegex: "^/#about",
+          }
         },
         {
+          enable: usrConf.project_shelf?.enable || true,
+          value: {
           label: "Projects",
           to: "/#projects",
           position: "right",
           activeBaseRegex: "^/#projects",
+          }
         },
         {
+          enable: usrConf.experience?.enable || false,
+          value: {
           label: "Experience",
           to: "/#experience",
           position: "right",
           activeBaseRegex: "^/#experience",
+          }
         },
         {
+          enable: usrConf.social_links?.enable || true,
+          value: {
           label: "Contact",
           to: "/#contact",
           position: "right",
           activeBaseRegex: "^/$contact",
+          }
         },
         {
           type: "dropdown",
           label: "More",
           position: "right",
           className: "_navbar-more-items",
-          items: [
-            {
-              label: "Notes",
-              to: "/notes",
-            },
-            {
-              label: "Blog",
-              to: "/blog",
-            },
-            {
-              label: "Tasks",
-              to: "/tasks",
-            },
-          ],
-        },
-      ],
+          items: useEnabled([
+          { label: "Notes", to: "/notes" },
+          { label: "Blog", to: "/blog" },
+          { label: "Tasks", to: "/tasks" },
+          {
+            enable: usrConf.disable_branding ? false : true,
+            value: {
+              label: `Portosaurus v${projectVersion}`,
+              className: "_nav-protosaurus-version",
+              to: "https://github.com/soymadip/portosaurus",
+            }
+          }
+          ]),
+        }
+      ]),
     },
 
     tableOfContents: {
