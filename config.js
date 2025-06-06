@@ -1,4 +1,7 @@
 exports.usrConf = {
+
+  auto_update: true,
+
   dark_mode: true,
 
   site_url: "https://soymadip.github.io",
@@ -28,7 +31,6 @@ exports.usrConf = {
     description: [
       "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
       "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
-      "I believe in the power of open-source software and the community around it. My goal is to contribute to FOSS and to continuously learn and improve my skills.",
     ],
 
     skills: [
@@ -79,6 +81,13 @@ exports.usrConf = {
         icon: "telegram",
         desc: "Reach me on Telegram",
         url: "${srt_url}/telegram",
+        pin: true,
+      },
+      {
+        name: "Instagram",
+        icon: "instagram",
+        desc: "Reach me on Instagram",
+        url: "/instagram",
         pin: true,
       },
     ],
@@ -213,6 +222,12 @@ exports.tasks = {
       description: "setup StaticShort while compiling portosaurus.",
       status: "active",
       priority: "normal",
+    },
+    {
+      title: "Add placeholder notice When no note is there",
+      description: null,
+      status: "active",
+      priority: "low",
     },
   ],
 };
