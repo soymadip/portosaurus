@@ -123,7 +123,7 @@ jobs:
           for i in {1..36}; do
             echo "Check attempt $i of 36..."
 
-            PAGES_STATUS=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            PAGES_STATUS=$(curl -s -H "Authorization: token ${{ github.token }}" \
               -H "Accept: application/vnd.github.v3+json" \
               https://api.github.com/repos/${{ github.repository }}/pages)
 
@@ -137,7 +137,7 @@ jobs:
               echo "Please go to Settings > Pages and enable GitHub Pages (source: GitHub Actions)."
 
               # If this is the last attempt, stop waiting
-              if [ $i -eq 35 ]; then
+              if [ $i -eq 36 ]; then
                 echo "Maximum attempts reached. GitHub Pages is not enabled."
                 echo "pages_enabled=false" >> $GITHUB_OUTPUT
                 exit 1
@@ -164,6 +164,8 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Update Version
         run: |
@@ -172,8 +174,14 @@ jobs:
           mv .github/.version.new .github/.version || echo "No new version file found"
 
           # Push version file to repo
-          git config user.name 'GitHub Actions'
-          git config user.email 'actions@github.com'
+
+          if [ "${{ github.repository }}" == 'soymadip/soymadip.github.io' ]; then
+            git config user.name 'soymadip'
+            git config user.email "${{ github.actor }}@users.noreply.github.com"
+          else
+            git config user.name  'GitHub Actions'
+            git config user.email 'actions@github.com'
+          fi
 
           git add .github/.version .github/workflows/deploy.yml .github/compile.sh
 
