@@ -26,39 +26,33 @@ jobs:
           ref: content
           fetch-depth: 0
 
+      - name: Ensure we are on content branch
+        run: git checkout content
+
       - name: Set up file list
         id: setup
         run: |
           FILES_LIST=".github/sync-files.list"
-          
-          # Create a temporary file with filtered contents
           TEMP_FILE=$(mktemp)
-          
+
           # Filter out comments and empty lines
           while IFS= read -r file || [[ -n "$file" ]]; do
-
-            # Skip empty lines or lines starting with # or //
             [[ -z "$file" || "$file" == \#* || "$file" == //* ]] && continue
-
-            # Add file to the temporary filtered list
-            echo "$file" >> $TEMP_FILE
+            echo "$file" >> "$TEMP_FILE"
           done < "$FILES_LIST"
-          
-          # Save the filtered file list to an environment variable
-          SYNC_FILES=$(cat $TEMP_FILE | tr '\n' ' ')
 
+          SYNC_FILES="$(paste -sd' ' "$TEMP_FILE")"
           echo "SYNC_FILES=$SYNC_FILES" >> $GITHUB_ENV
-          
-          # Clean up
-          rm $TEMP_FILE
+
+          rm "$TEMP_FILE"
 
       - name: Fetch and copy files from code branch
         run: |
-          # Fetch the code branch
           git fetch origin code:code
-          
-          # Copy each file from code branch
-          for file in $SYNC_FILES; do
+
+          IFS=' ' read -r -a file_array <<< "$SYNC_FILES"
+
+          for file in "${file_array[@]}"; do
             if git ls-tree -r code --name-only | grep -q "^$file$"; then
               echo "Copying $file from code branch"
               git checkout code -- "$file"
@@ -70,14 +64,15 @@ jobs:
       - name: Commit and push updated files
         run: |
           git config user.name "soymadip"
-          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          
-          # Stage only the specific files we copied
-          for file in $SYNC_FILES; do
+
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+          IFS=' ' read -r -a file_array <<< "$SYNC_FILES"
+
+          for file in "${file_array[@]}"; do
             git add "$file" 2>/dev/null || true
           done
 
-          # Commit and push if there are changes
           if ! git diff --staged --quiet; then
             git commit -m "Sync files from code branch"
             git push origin content
