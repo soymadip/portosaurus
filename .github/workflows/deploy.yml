@@ -182,7 +182,7 @@ jobs:
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-artifact
+          name: deployment
           path: .github/
           include-hidden-files: true
           if-no-files-found: error
@@ -227,6 +227,8 @@ jobs:
         if: steps.pages_check.outputs.pages_enabled != 'false'
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: build
         continue-on-error: false
 
 
@@ -242,7 +244,7 @@ jobs:
       - name: Download deployment artifact
         uses: actions/download-artifact@v4
         with:
-          name: deployment-artifact
+          name: deployment
           path: .deployment/
 
       - name: Check file changes
