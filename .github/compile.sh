@@ -56,8 +56,14 @@ switch_compiler_branch() {
 
     if [ -d "$COMPILER_DIR" ]; then
         cd "$COMPILER_DIR" || exit 1
-        git switch "$branch_name"
-        git pull
+        git switch "$branch_name" || {
+            echo "❌ Failed to switch to branch '$branch_name'."
+            exit 1
+        }
+        git pull || {
+            echo "❌ Failed to pull changes from branch '$branch_name'."
+            exit 1
+        }
         cd "$current_dir" || exit 1
     else
         echo "❌ COMPILER directory not found. Please clone the repository first."
@@ -89,7 +95,7 @@ fi
 # Add or replace files to the compiler
 echo -e "\n>>> Adding or replacing files in the compiler...\n"
 
-switch_compiler_branch compiler
+switch_compiler_branch "compiler"
 
 replace_dir "${ROOT_DIR}/src" "${COMPILER_DIR}/static"
 replace_dir "${ROOT_DIR}/blog" "${COMPILER_DIR}/blog"
@@ -107,7 +113,7 @@ cd "$COMPILER_DIR" || {
     exit 1
 }
 
-npm ci || {
+npm install || {
     echo "❌ Deps installation failed. Please check the logs above."
     exit 1
 }
