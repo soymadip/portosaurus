@@ -127,15 +127,15 @@ echo -e "\n>>> Compilation successful!\n"
 
 
 # Copy compiled files to the output directory
-echo ">>> Copying compiled files to $OUTPUT_DIR_NAME directory...\n"
+echo -e ">>> Copying compiled files to $OUTPUT_DIR_NAME directory...\n"
 
-cp -r "${COMPILER_DIR}/build" "${ROOT_DIR}/${OUTPUT_DIR}" || {
+cp -r "${COMPILER_DIR}/build" "${OUTPUT_DIR}" || {
     echo "❌ Failed to copy compiled files. Please check the logs above."
     exit 1
 }
 
 
 # Cleanup
-echo -e "\n>>> Cleaning Up....\n"
+echo -e ">>> Cleaning Up....\n"
 rm -rf "${COMPILER_DIR}"
-echo -e "\n>>> Cleanup completed.\n"
+echo -e ">>> Cleanup completed.\n"
