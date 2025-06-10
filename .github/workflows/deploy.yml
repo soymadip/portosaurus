@@ -149,15 +149,18 @@ jobs:
       - name: update Compiler
         run: |
           echo ">>> Updating Compiler..."
+          
+          compiler_dir="COMPILER"
 
-          git clone --depth 1 https://github.com/soymadip/portosaurus COMPILER || {
+          git clone --depth 1 https://github.com/soymadip/portosaurus "$compiler_dir" || {
             echo ">> Failed to clone Compiler repository. Please check your internet connection or repository URL."
             exit 1
           }
 
           {
             rm -rf .github &&
-            cp -r COMPILER/.github .github
+            cp -r $compiler_dir/.github .github
+            rm -rf $compiler_dir
           } || {
             echo ">> Failed to update compiler."
             exit 1
@@ -232,7 +235,7 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Downlaod deployment artifact
+      - name: Download deployment artifact
         uses: actions/download-artifact@v4
         with:
           name: deployment-artifact
