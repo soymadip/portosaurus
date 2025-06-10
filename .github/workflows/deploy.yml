@@ -28,8 +28,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.repository != 'soymadip/portosaurus'
     outputs:
-      upstream_updated: ${{ steps.check.outputs.upstream_updated }}
-      upstream_version: ${{ steps.check.outputs.upstream_version }}
+      upstream_updated: ${{ steps.check-update.outputs.upstream_updated }}
+      upstream_version: ${{ steps.check-update.outputs.upstream_version }}
 
     steps:
       - name: Checkout Repo
@@ -261,10 +261,10 @@ jobs:
 
           dummy_version="$(cat .github/.dummy_version 2>/dev/null)"
 
-          has_update="${ needs.update-check.outputs.upstream_updated }"
+          has_update="${{ needs.update-check.outputs.upstream_updated }}"
           latest_version="${{ needs.update-check.outputs.upstream_version }}"
 
-          if [ "$has_update" == "true"] && [ "$latest_version" != "$dummy_version" ]; then
+          if [ "$has_update" == "true" ] && [ "$latest_version" != "$dummy_version" ]; then
             echo ">>> Updating local version to $latest_version"
 
             echo "$latest_version" > .github/.version
