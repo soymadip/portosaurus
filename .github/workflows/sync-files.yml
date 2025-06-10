@@ -1,9 +1,9 @@
-name: Sync Files from code branch
+name: Sync Files from compiler branch
 
 on:
   push:
     branches:
-      - code
+      - compiler
     paths:
       - 'config.js'
       - '.vscode/**'
@@ -46,18 +46,18 @@ jobs:
 
           rm "$TEMP_FILE"
 
-      - name: Fetch and copy files from code branch
+      - name: Fetch and copy files from compiler branch
         run: |
-          git fetch origin code:code
+          git fetch origin compiler:compiler
 
           IFS=' ' read -r -a file_array <<< "$SYNC_FILES"
 
           for file in "${file_array[@]}"; do
-            if git ls-tree -r code --name-only | grep -q "^$file$"; then
-              echo "Copying $file from code branch"
-              git checkout code -- "$file"
+            if git ls-tree -r compiler --name-only | grep -q "^$file$"; then
+              echo "Copying $file from complier branch"
+              git checkout compiler -- "$file"
             else
-              echo "File $file not found in code branch"
+              echo "File $file not found in compiler branch"
             fi
           done
 
@@ -74,7 +74,7 @@ jobs:
           done
 
           if ! git diff --staged --quiet; then
-            git commit -m "Sync files from code branch"
+            git commit -m "Sync files from compiler branch"
             git push origin content
           else
             echo "No changes to commit"

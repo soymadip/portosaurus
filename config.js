@@ -20,7 +20,7 @@ exports.usrConf = {
     title:       "Your Name",
     profession:  "Your Profession",
     description: "Short description about you, your passion, your goals etc.",
-    profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
+    profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
   },
 
   about_me: {
@@ -49,7 +49,7 @@ exports.usrConf = {
         featured: true,
         state: "active",
         desc: "Desctiption about your awesome project.",
-        image: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png",
+        image: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
         website: null,
         github: "https://github.com/soymadip/portosaurus",
         Demo: "https://soymadip.github.io",

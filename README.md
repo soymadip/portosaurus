@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/code/static/img/icon.png" width=150>
+    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png" width=150>
     <h1>Portosaurus</h1>
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
@@ -40,7 +40,7 @@ GitHub provides free hosting service for static sites like these in [GitHub Page
 Here are the steps:
 
 1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
-2. In the following page, name the new repository `<your_username>.github.io` (like for me it's `soymadip.github.io`).
+2. In the following page, name the new repository `<your_username>.github.io` (like for me `soymadip.github.io`).
 3. In the newly created repository, Go to `settings` > `Pages` > `Build and deployment` > `Source` & select `GitHub Actions` from the dropdown.
 4. Now edit the [`config.js`](./config.js) with appropriate details.
 
@@ -74,7 +74,7 @@ This will compile the site and put them in `build` dir.
 ## 💻 Development
 
 - This branch is used as template to create new repos to hold content.
-- Go to [`code`](https://github.com/soymadip/portosaurus/tree/code) branch for actual source code and development info.
+- Go to [`compiler`](https://github.com/soymadip/portosaurus/tree/compiler) branch for compiler code and development info.
 
 
 ## 📄 Credits
@@ -82,7 +82,7 @@ This will compile the site and put them in `build` dir.
 - [Docusaurus](https://docusaurus.io/) - The static site builder framework this is built upon.
 - [React](https://react.dev) - UI library for building the interactive components.
 - [React Icons](https://react-icons.github.io/) - Icon library used throughout the site.
-- Libraries listed in [package.json](https://github.com/soymadip/portosaurus/blob/code/package.json#L16) - Essential dependencies.
+- Libraries listed in [package.json](https://github.com/soymadip/portosaurus/blob/compiler/package.json#L16) - Essential dependencies.
 - [Hugo Profile](https://hugo-profile.netlify.app/) - Design inspiration.
 - [Catppuccin](https://github.com/catppuccin/catppuccin) - Color scheme that inspired the site's palette.
 - [Deepseek R1](https://www.deepseek.com/) hosted using [Ollama](https://ollama.com/library/deepseek-r1) - prism.js theme & project card component.
