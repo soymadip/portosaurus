@@ -176,12 +176,16 @@ jobs:
         with:
           name: build
           path: build/
+          include-hidden-files: true
+          if-no-files-found: error
 
       - name: Upload deployment artifact
         uses: actions/upload-artifact@v4
         with:
           name: deployment-artifact
           path: .github/
+          include-hidden-files: true
+          if-no-files-found: error
 
       - name: Check GitHub Pages status
         id: pages_check
