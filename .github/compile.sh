@@ -1,3 +1,5 @@
+#!/bin/env bash
+
 # Replace a single file
 replace_file() {
     local src_file="$1"
@@ -6,17 +8,14 @@ replace_file() {
     if [ -f "$src_file" ]; then
         mkdir -p "$(dirname "$dest_file")"
 
-        if [ -f "$dest_file" ]; then
-            cp "$src_file" "$dest_file"
-            echo "   ✅ Replaced:  $(basename "$dest_file")"
-        else
-            cp "$src_file" "$dest_file"
-            echo "   ✅ Added new: $(basename "$dest_file")"
-        fi
+        rsync -a --checksum "$src_file" "$dest_file" && \
+            echo "   ✅ Replaced:     $(basename "$dest_file")" || \
+            echo "   ❌ Failed:       $(basename "$dest_file")"
     else
         echo "❌ Not Found: $src_file"
     fi
 }
+
 
 
 # Replace directory content
@@ -25,7 +24,7 @@ replace_dir() {
     local dest_dir="$2"
 
     if [ -d "$src_dir" ]; then
-        echo "Checking files in: $dest_dir"
+        echo -e "\n⏭️ Checking files in: $dest_dir"
         mkdir -p "$dest_dir"
 
         # Find and copy all files from source to destination
@@ -74,8 +73,10 @@ switch_compiler_branch() {
 
 # ------------------- Configuration ------------------
 
-COMPILER_DIR_NAME="COMPILER"    # compiler dir name
-OUTPUT_DIR_NAME="build"         # output directory name
+
+OUTPUT_DIR_NAME="build"                                       # output directory name
+COMPILER_DIR_NAME="COMPILER"                                  # compiler dir name
+COMPILER_REPO_URL="https://github.com/soymadip/portosaurus"   # Upstream repository URL
 
 
 # -------------------- Main Logic ------------------
@@ -87,8 +88,12 @@ OUTPUT_DIR="${ROOT_DIR}/${OUTPUT_DIR_NAME}"
 
 
 if [ ! -d "$COMPILER_DIR" ]; then
-    echo -e ">>> Cloning upstream repository..."
-    git clone https://github.com/soymadip/portosaurus "$COMPILER_DIR"
+    echo -e ">>> Cloning upstream repository...\n"
+
+    git clone "$COMPILER_REPO_URL" "$COMPILER_DIR" || {
+        echo -e "\n> Failed to clone portusaurus repo."
+        exit 1
+    }
 fi
 
 
@@ -129,13 +134,13 @@ echo -e "\n>>> Compilation successful!\n"
 # Copy compiled files to the output directory
 echo -e ">>> Copying compiled files to $OUTPUT_DIR_NAME directory...\n"
 
-cp -r "${COMPILER_DIR}/build" "${OUTPUT_DIR}" || {
+if ! replace_dir "${COMPILER_DIR}/build" "${OUTPUT_DIR}"; then
     echo "❌ Failed to copy compiled files. Please check the logs above."
     exit 1
-}
+fi
 
 
 # Cleanup
-echo -e ">>> Cleaning Up....\n"
-rm -rf "${COMPILER_DIR}"
+echo -e "\n>>> Cleaning Up...."
+# rm -rf "${COMPILER_DIR}"
 echo -e ">>> Cleanup completed.\n"
