@@ -95,7 +95,7 @@ jobs:
           while [ $attempt -le $max_attempts ] && [ "$success" = false ]; do
               echo "Attempt $attempt of $max_attempts"
 
-              if curl -s https://raw.githubusercontent.com/soymadip/portosaurus/compiler/package.json > /tmp/package.json; then
+              if curl -s -f https://raw.githubusercontent.com/soymadip/portosaurus/compiler/package.json > /tmp/package.json; then
 
                   if latest_version=$(jq -r .version < /tmp/package.json); then
                       echo "Latest upstream version: $latest_version"
