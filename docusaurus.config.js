@@ -94,6 +94,8 @@ const config = {
 
     tasksPage: {
       enable: usrConf.tasks_page.enable || true,
+      title: usrConf.tasks_page.title || "Tasks",
+      description: usrConf.tasks_page.description || "Track your tasks and projects here.",
       taskList: usrConf.tasks_page.tasks || []
     }
   },

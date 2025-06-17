@@ -35,7 +35,7 @@ function TaskList({ filterStatus }) {
   const filteredTasks = taskList.filter(task => 
     filterStatus ? task.status === filterStatus : true
   );
-  
+
   if (filteredTasks.length === 0) {
     return (
       <div className="task-empty-state">
@@ -44,7 +44,7 @@ function TaskList({ filterStatus }) {
       </div>
     );
   }
-  
+
   // Sort tasks by status first (with completed tasks at bottom), then by priority
   const sortedTasks = [...filteredTasks].sort((a, b) => {
     const statusOrder = { active: 1, pending: 2, completed: 3 };
@@ -181,7 +181,9 @@ function TaskTabs() {
 }
 
 
-export default function TodoPage() {
+export default function TasksPage() {
+  const title = customFields.tasksPage.title;
+  const description = customFields.tasksPage.description;
 
   // If tasks are disabled, show a notice box instead
   if (!customFields.tasksPage || !customFields.tasksPage.enable) {
@@ -204,9 +206,6 @@ export default function TodoPage() {
     );
   }
 
-  const title = "Development Roadmap";
-  const description = "Track ongoing and future development tasks for portusaurus.";
-  
   return (
     <Layout title={title} description={description}>
       <Head>
@@ -215,12 +214,12 @@ export default function TodoPage() {
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
       </Head>
-      
+
       <div className="tasks-container">
         <div className="tasks-header">
           <h1 className="tasks-heading">{title}</h1>
         </div>
-        
+
         <div className="tasks-content">
           <TaskStats />
           <TaskTabs />
