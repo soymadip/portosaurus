@@ -1,4 +1,3 @@
-import React from "react";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import UpdateTitle from '@site/src/utils/updateTitle';
