@@ -26,12 +26,16 @@ import {
   FaExclamationTriangle
 } from 'react-icons/fa';
 
-const { siteConfig } = useDocusaurusContext();
-const { customFields } = siteConfig;
-
-const taskList = (customFields.tasksPage && customFields.tasksPage.enable && customFields.tasksPage.taskList)
-
-function TaskList({ filterStatus }) {
+function TaskList({ filterStatus, taskList }) {
+  if (!taskList || !Array.isArray(taskList)) {
+    return (
+      <div className="task-empty-state">
+        <FaTasks className="task-empty-icon" />
+        <p>No tasks available</p>
+      </div>
+    );
+  }
+  
   const filteredTasks = taskList.filter(task => 
     filterStatus ? task.status === filterStatus : true
   );
@@ -65,7 +69,7 @@ function TaskList({ filterStatus }) {
           <div className="task-cell task-cell-title">Task Details</div>
           <div className="task-cell task-cell-priority">Priority</div>
         </div>
-        
+
         <div className="task-rows">
           {sortedTasks.map((task, index) => (
             <div 
@@ -79,14 +83,14 @@ function TaskList({ filterStatus }) {
                   {task.status === 'pending' && <><FaClock className="badge-icon" /> Planned</>}
                 </span>
               </div>
-              
+
               <div className="task-cell task-cell-title">
                 <div className="task-title">{task.title}</div>
                 {task.description && (
                   <div className="task-description">{task.description}</div>
                 )}
               </div>
-              
+
               <div className="task-cell task-cell-priority">
                 <span className={`badge badge-priority-${task.priority}`}>
                   {task.priority === 'high' && <><FaFire className="badge-icon" /> High</>}
@@ -103,7 +107,11 @@ function TaskList({ filterStatus }) {
 }
 
 
-function TaskStats() {
+function TaskStats({ taskList }) {
+  if (!taskList || !Array.isArray(taskList)) {
+    return null;
+  }
+  
   const total = taskList.length;
   const completed = taskList.filter(task => task.status === 'completed').length;
   const active = taskList.filter(task => task.status === 'active').length;
@@ -139,8 +147,12 @@ function TaskStats() {
   );
 }
 
-function TaskTabs() {
+function TaskTabs({ taskList }) {
   const [activeTab, setActiveTab] = useState('all');
+  
+  if (!taskList || !Array.isArray(taskList)) {
+    return null;
+  }
   
   const tabData = [
     { id: 'all', label: 'All Tasks', icon: <FaClipboardList />, count: taskList.length },
@@ -175,10 +187,10 @@ function TaskTabs() {
         id={`tab-content-${activeTab}`}
         aria-labelledby={`tab-${activeTab}`}
       >
-        {activeTab === 'all' && <TaskList />}
-        {activeTab === 'active' && <TaskList filterStatus="active" />}
-        {activeTab === 'pending' && <TaskList filterStatus="pending" />}
-        {activeTab === 'completed' && <TaskList filterStatus="completed" />}
+        {activeTab === 'all' && <TaskList taskList={taskList} />}
+        {activeTab === 'active' && <TaskList taskList={taskList} filterStatus="active" />}
+        {activeTab === 'pending' && <TaskList taskList={taskList} filterStatus="pending" />}
+        {activeTab === 'completed' && <TaskList taskList={taskList} filterStatus="completed" />}
       </div>
     </div>
   );
@@ -186,11 +198,16 @@ function TaskTabs() {
 
 
 export default function TasksPage() {
-  const title = customFields.tasksPage.title;
-  const description = customFields.tasksPage.description;
+  const { siteConfig } = useDocusaurusContext();
+  const { customFields } = siteConfig || {};
+
+  const tasksPage = customFields?.tasksPage;
+  const title = tasksPage.title;
+  const description = tasksPage.description;
+  const taskList = tasksPage.enable && tasksPage.taskList ? tasksPage.taskList : [];
 
   // If tasks are disabled, show a notice box instead
-  if (!customFields.tasksPage || !customFields.tasksPage.enable) {
+  if (!tasksPage || !tasksPage.enable) {
     return (
       <Layout title="Tasks are Disabled" description="Tasks are currently disabled">
         <div className="tasks-container">
@@ -225,8 +242,8 @@ export default function TasksPage() {
         </div>
 
         <div className="tasks-content">
-          <TaskStats />
-          <TaskTabs />
+          <TaskStats taskList={taskList} />
+          <TaskTabs taskList={taskList} />
         </div>
       </div>
     </Layout>
