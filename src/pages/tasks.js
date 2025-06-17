@@ -29,7 +29,7 @@ import {
 const { siteConfig } = useDocusaurusContext();
 const { customFields } = siteConfig;
 
-const taskList = (customFields.tasksPage && customFields.tasksPage.enable && customFields.tasksPage.taskList) || []
+const taskList = (customFields.tasksPage && customFields.tasksPage.enable && customFields.tasksPage.taskList)
 
 function TaskList({ filterStatus }) {
   const filteredTasks = taskList.filter(task => 
@@ -123,6 +123,10 @@ function TaskStats() {
       <div className="stat-box">
         <div className="stat-label">In Progress</div>
         <div className="stat-value stat-value-active">{active}</div>
+      </div>
+      <div className="stat-box">
+        <div className="stat-label">Planned</div>
+        <div className="stat-value stat-value-pending">{pending}</div>
       </div>
       <div className="stat-box">
         <div className="stat-label">Progress</div>

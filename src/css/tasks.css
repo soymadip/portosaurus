@@ -370,6 +370,10 @@
   color: var(--ifm-color-primary);
 }
 
+.stat-value-pending {
+  color: var(--ifm-color-warning);
+}
+
 .progress-bar-container {
   width: 100%;
   background-color: var(--ifm-color-emphasis-200);

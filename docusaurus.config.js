@@ -58,10 +58,7 @@ const config = {
         "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
         "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
       ],
-      skills: usrConf.about_me.skills || [
-        "skill 1",
-        "Skill 2",
-      ],
+      skills: usrConf.about_me.skills || ["skill 1", "Skill 2"],
       resumeLink: usrConf.about_me.resume_link || "https://example.com/resume",
     },
 
@@ -69,7 +66,7 @@ const config = {
 
     experience: usrConf.experience,
 
-    socialLinks:{
+    socialLinks: {
       enable: usrConf.social_links.enable || true,
 
       links: usrConf.social_links.links || [
@@ -78,7 +75,7 @@ const config = {
           icon: "instagram",
           desc: "Your Instagram profile link",
           url: "https://instagram.com/yourprofile",
-        }
+        },
       ],
     },
 
@@ -96,8 +93,15 @@ const config = {
       enable: usrConf.tasks_page.enable || true,
       title: usrConf.tasks_page.title || "Tasks",
       description: usrConf.tasks_page.description || "Track your tasks and projects here.",
-      taskList: usrConf.tasks_page.tasks || []
-    }
+      taskList: usrConf.tasks_page.tasks || [
+        {
+          title: "Example Tasks",
+          description: "Description of the task",
+          status: "active",
+          priority: "high",
+        },
+      ],
+    },
   },
 
   presets: [
@@ -134,7 +138,7 @@ const config = {
         theme: {
           customCss: "./src/css/custom.css",
         },
-        
+
       },
     ],
   ],
@@ -185,38 +189,38 @@ const config = {
         {
           enable: usrConf.about_me?.enable || true,
           value: {
-          label: "About Me",
-          to: "/#about",
-          position: "right",
-          activeBaseRegex: "^/#about",
-          }
+            label: "About Me",
+            to: "/#about",
+            position: "right",
+            activeBaseRegex: "^/#about",
+          },
         },
         {
           enable: usrConf.project_shelf?.enable || true,
           value: {
-          label: "Projects",
-          to: "/#projects",
-          position: "right",
-          activeBaseRegex: "^/#projects",
-          }
+            label: "Projects",
+            to: "/#projects",
+            position: "right",
+            activeBaseRegex: "^/#projects",
+          },
         },
         {
           enable: usrConf.experience?.enable || false,
           value: {
-          label: "Experience",
-          to: "/#experience",
-          position: "right",
-          activeBaseRegex: "^/#experience",
-          }
+            label: "Experience",
+            to: "/#experience",
+            position: "right",
+            activeBaseRegex: "^/#experience",
+          },
         },
         {
           enable: usrConf.social_links?.enable || true,
           value: {
-          label: "Contact",
-          to: "/#contact",
-          position: "right",
-          activeBaseRegex: "^/$contact",
-          }
+            label: "Contact",
+            to: "/#contact",
+            position: "right",
+            activeBaseRegex: "^/$contact",
+          },
         },
         {
           type: "dropdown",
@@ -224,17 +228,17 @@ const config = {
           position: "right",
           className: "_navbar-more-items",
           items: useEnabled([
-          { label: "Notes", to: "/notes" },
-          { label: "Blog", to: "/blog" },
-          { label: "Tasks", to: "/tasks" },
-          {
-            enable: usrConf.disable_branding ? false : true,
-            value: {
-              label: `Portosaurus v${projectVersion}`,
-              className: "_nav-protosaurus-version",
-              to: "https://github.com/soymadip/portosaurus",
-            }
-          }
+            { label: "Notes", to: "/notes" },
+            { label: "Blog", to: "/blog" },
+            { label: "Tasks", to: "/tasks" },
+            {
+              enable: usrConf.disable_branding ? false : true,
+              value: {
+                label: `Portosaurus v${projectVersion}`,
+                className: "_nav-protosaurus-version",
+                to: "https://github.com/soymadip/portosaurus",
+              },
+            },
           ]),
         }
       ]),
@@ -261,7 +265,6 @@ const config = {
         copyright: `Copyright © ${new Date().getFullYear()} ` + ownerName,
       */
     },
-
   },
 
   plugins: [
