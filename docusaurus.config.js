@@ -91,6 +91,11 @@ const config = {
       ],
       customLines: [],
     },
+
+    tasksPage: {
+      enable: usrConf.tasks_page.enable || true,
+      taskList: usrConf.tasks_page.tasks || []
+    }
   },
 
   presets: [

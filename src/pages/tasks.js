@@ -12,7 +12,7 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
-import { tasks } from '@site/config.js';
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import '../css/tasks.css';
 import { 
   FaClipboardList, 
@@ -26,7 +26,10 @@ import {
   FaExclamationTriangle
 } from 'react-icons/fa';
 
-const taskList = tasks.enable ? tasks.list : [];
+const { siteConfig } = useDocusaurusContext();
+const { customFields } = siteConfig;
+
+const taskList = (customFields.tasksPage && customFields.tasksPage.enable && customFields.tasksPage.taskList) || []
 
 function TaskList({ filterStatus }) {
   const filteredTasks = taskList.filter(task => 
@@ -106,7 +109,7 @@ function TaskStats() {
   const active = taskList.filter(task => task.status === 'active').length;
   const pending = taskList.filter(task => task.status === 'pending').length;
   const percentComplete = total > 0 ? Math.round((completed / total) * 100) : 0;
-  
+
   return (
     <div className="stats-container">
       <div className="stat-box">
@@ -181,7 +184,7 @@ function TaskTabs() {
 export default function TodoPage() {
 
   // If tasks are disabled, show a notice box instead
-  if (!tasks.enable) {
+  if (!customFields.tasksPage || !customFields.tasksPage.enable) {
     return (
       <Layout title="Tasks are Disabled" description="Tasks are currently disabled">
         <div className="tasks-container">
@@ -192,7 +195,7 @@ export default function TodoPage() {
               </div>
               <h2 className="disabled-title">Tasks are currently disabled</h2>
               <p className="disabled-help">
-                To enable tasks, set <code>tasks.enable</code> to <code>true</code>
+                To enable tasks, set <code>tasks_page.enable</code> to <code>true</code>
               </p>
             </div>
           </div>
@@ -202,7 +205,7 @@ export default function TodoPage() {
   }
 
   const title = "Development Roadmap";
-  const description = "Track ongoing and future development tasks for this portfolio website";
+  const description = "Track ongoing and future development tasks for portusaurus.";
   
   return (
     <Layout title={title} description={description}>
