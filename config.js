@@ -4,8 +4,8 @@ exports.usrConf = {
 
   dark_mode: true,
 
-  site_url: "https://soymadip.github.io",
-  site_path: "/",
+  site_url: "auto",
+  site_path: "auto",
 
   srt_url: "${site_url}${site_path}/l",
 
