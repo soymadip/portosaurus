@@ -32,7 +32,7 @@ replace_dir() {
 
             # Skip .placeholder files
             if [[ "$(basename "$src_file")" == ".placeholder" ]]; then
-                echo "   ⏭️ Skipping: .placeholder file"
+                echo "   ⏭️ Skipping: .placeholder"
                 continue
             fi
 

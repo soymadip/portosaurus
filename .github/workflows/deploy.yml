@@ -229,7 +229,6 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: build
-        continue-on-error: false
 
 
   update-repo:
