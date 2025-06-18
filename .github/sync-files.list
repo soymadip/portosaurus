@@ -1,6 +1,0 @@
-# Each file path should be on a separate line
-# Lines starting with # or // are treated as comments
-
-config.js
-.vscode/settings.json
-.vscode/snippets.code-snippets

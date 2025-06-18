@@ -1,0 +1,19 @@
+{
+  "debug_mode": false,
+
+  "upstream_repo_url":     "https://github.com/soymadip/portosaurus",
+  "upstream_repo_url_raw": "https://raw.githubusercontent.com/soymadip/portosaurus",
+
+  "local_version": "0.12.1",
+  "dummy_version": "9999.999.919",
+
+  "compiler_dir_name": "COMPILER",
+  "compiler_output_dir_name": "build",
+
+
+  "files_to_sync": [
+    "config.js",
+    ".vscode/settings.json",
+    ".vscode/snippets.code-snippets"
+  ]
+}

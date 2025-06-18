@@ -7,13 +7,15 @@ on:
     paths:
       - 'config.js'
       - '.vscode/**'
-      - '.github/sync-files.list'
+      - '.github/scripts/**'
+      - '.github/config.json'
   workflow_dispatch:
 
 permissions:
   contents: write
   pages: write
   id-token: write
+  actions: write
 
 jobs:
   sync-config:
@@ -32,19 +34,12 @@ jobs:
       - name: Set up file list
         id: setup
         run: |
-          FILES_LIST=".github/sync-files.list"
-          TEMP_FILE=$(mktemp)
+          CONFIG_FILE=".github/config.json"
 
-          # Filter out comments and empty lines
-          while IFS= read -r file || [[ -n "$file" ]]; do
-            [[ -z "$file" || "$file" == \#* || "$file" == //* ]] && continue
-            echo "$file" >> "$TEMP_FILE"
-          done < "$FILES_LIST"
+          # Extract the files_to_sync array
+          SYNC_FILES=$(jq -r '.files_to_sync | join(" ")' "$CONFIG_FILE")
 
-          SYNC_FILES="$(paste -sd' ' "$TEMP_FILE")"
           echo "SYNC_FILES=$SYNC_FILES" >> $GITHUB_ENV
-
-          rm "$TEMP_FILE"
 
       - name: Fetch and copy files from compiler branch
         run: |

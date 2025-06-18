@@ -18,6 +18,7 @@ permissions:
   contents: write
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   group: "pages"
@@ -30,108 +31,20 @@ jobs:
     outputs:
       upstream_updated: ${{ steps.check-update.outputs.upstream_updated }}
       upstream_version: ${{ steps.check-update.outputs.upstream_version }}
+      local_version: ${{ steps.check-update.outputs.local_version }}
+      dummy_version: ${{ steps.check-update.outputs.dummy_version }}
 
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: Fetch & Compare Version
+      - name: Fetch & Check Upstream for Updates
         id: check-update
-        run: |
-
-          #----------------- Get Local Version -----------------
-
-          if [ ! -d .github ]; then
-            mkdir .github
-          fi
-
-          if [ -f .github/.version ]; then
-            local_version=$(cat .github/.version)
-          else
-            local_version="0.0.0"
-          fi
-
-          echo "Local version: $local_version"
-
-
-          #----------------- Get Upstream Version -----------------
-
-          if ! dummy_version="$(cat .github/.dummy_version 2>/dev/null)"; then
-            echo "Dummy Version file not Found"
-            exit 1
-          fi
-
-          force_deploy=false
-
-          # Check for force_deploy workflow_dispatch
-          if [[ "${{ github.event.inputs.force_deploy }}" == "true" ]]; then
-            echo ">>> Force deployment requested!"
-            force_deploy=true
-
-            echo "upstream_updated=true" >> $GITHUB_OUTPUT
-            echo "upstream_version=$dummy_version" >> $GITHUB_OUTPUT
-          fi
-
-          # Check for push to content branch
-          if [[ "${{ github.event_name }}" == "push" && "${{ github.ref }}" == "refs/heads/content" ]]; then
-            echo ">>> Content branch change detected - deploying regardless of upstream changes"
-            force_deploy=true
-
-            echo "upstream_updated=true" >> $GITHUB_OUTPUT
-            echo "upstream_version=$dummy_version" >> $GITHUB_OUTPUT
-          fi
-
-          # For cron job, check upstream for changes
-
-          echo ">>> Scheduled job - checking for upstream changes..."
-
-          # Fetch upstream version
-          echo "> Fetching package.json..."
-
-          max_attempts=5
-          attempt=1
-          success=false
-
-          while [ $attempt -le $max_attempts ] && [ "$success" = false ]; do
-              echo "Attempt $attempt of $max_attempts"
-
-              if curl -s -f https://raw.githubusercontent.com/soymadip/portosaurus/compiler/package.json > /tmp/package.json; then
-
-                  if latest_version=$(jq -r .version < /tmp/package.json); then
-                      echo "Latest upstream version: $latest_version"
-                      success=true
-                  else
-                      echo "Failed to extract version, retrying in 5 seconds..."
-                      sleep 5
-                      ((attempt++))
-                  fi
-              else
-                  echo "Failed to fetch package.json, retrying in 5 seconds..."
-                  sleep 5
-                  ((attempt++))
-              fi
-          done
-
-          if [ "$success" = false ]; then
-              echo ">>> Failed to fetch upstream version after $max_attempts attempts."
-              echo "Plsase check your upstream URL or internet connection."
-              exit 1
-          fi
-
-          # Compare versions
-          if [ "$local_version" != "$latest_version" ]; then
-              echo ">>> Upstream version has changed!"
-
-              echo "upstream_updated=true" >> $GITHUB_OUTPUT
-              echo "upstream_version=$latest_version" >> $GITHUB_OUTPUT
-          else
-              echo ">>> No upstream changes detected."
-
-              if [ "$force_deploy" != true ]; then
-                echo "upstream_updated=false" >> $GITHUB_OUTPUT
-                echo "upstream_version=$latest_version" >> $GITHUB_OUTPUT
-              fi
-          fi
+        run: bash .github/scripts/check-update.sh
+        env:
+          _FORCE_DEPLOY: ${{ github.event.inputs.force_deploy }}
+          _GITHUB_EVENT_NAME: ${{ github.event_name }}
+          _GITHUB_REF_NAME: ${{ github.ref_name }}
 
   deploy:
     needs: update-check
@@ -146,90 +59,37 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: update Compiler
-        run: |
-          echo ">>> Updating Compiler..."
-          
-          compiler_dir="COMPILER"
-
-          git clone --depth 1 https://github.com/soymadip/portosaurus "$compiler_dir" || {
-            echo ">> Failed to clone Compiler repository. Please check your internet connection or repository URL."
-            exit 1
-          }
-
-          {
-            rm -rf .github &&
-            cp -r $compiler_dir/.github .github
-            rm -rf $compiler_dir
-          } || {
-            echo ">> Failed to update compiler."
-            exit 1
-          }
-
-          echo ">> Compiler updated successfully."
+      - name: Update Compiler Scripts
+        if: github.repository != 'soymadip/tests'
+        run: bash .github/scripts/update-compiler.sh
 
       - name: compile Content
-        run: bash ./.github/compile.sh
+        run: bash .github/scripts/compile.sh
+        env:
+          _REPO_NAME: ${{ github.event.repository.name }}
+          _REPO_OWNER: ${{ github.repository_owner }}
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload Github Page Artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: build
           path: build/
-          include-hidden-files: true
-          if-no-files-found: error
 
-      - name: Upload deployment artifact
+      - name: Upload upstream artifact
         uses: actions/upload-artifact@v4
         with:
-          name: deployment
+          name: upstream
           path: .github/
           include-hidden-files: true
           if-no-files-found: error
 
       - name: Check GitHub Pages status
         id: pages_check
-        run: |
-          # Check if GitHub Pages is enabled
-          echo ">>> Checking if GitHub Pages is enabled for this repository..."
-
-          PAGES_ENABLED=false
-
-          for i in {1..36}; do
-            echo "> Check attempt $i of 36..."
-
-            PAGES_STATUS=$(curl -s -H "Authorization: token ${{ github.token }}" \
-              -H "Accept: application/vnd.github.v3+json" \
-              https://api.github.com/repos/${{ github.repository }}/pages)
-
-            if ! echo "$PAGES_STATUS" | grep -q "message.*Not Found"; then
-              echo ">> GitHub Pages is enabled! Continuing with workflow."
-              PAGES_ENABLED=true
-              echo "pages_enabled=true" >> $GITHUB_OUTPUT
-              break
-            else
-              echo "> GitHub Pages is not yet enabled."
-              echo "Please go to Settings > Pages and enable GitHub Pages (source: GitHub Actions)."
-              echo "Waiting 5 seconds before checking again."
-
-              # If this is the last attempt, stop waiting
-              if [ $i -eq 36 ]; then
-                echo ">> Maximum attempts reached. GitHub Pages is not enabled."
-                echo "pages_enabled=false" >> $GITHUB_OUTPUT
-                exit 1
-              else
-                sleep 5
-              fi
-            fi
-          done
+        run: bash .github/scripts/check-gh-pages-status.sh
 
       - name: Deploy to GitHub Pages
         if: steps.pages_check.outputs.pages_enabled != 'false'
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: build
-
 
   update-repo:
     needs: [update-check, deploy]
@@ -243,65 +103,25 @@ jobs:
       - name: Download deployment artifact
         uses: actions/download-artifact@v4
         with:
-          name: deployment
-          path: .deployment/
+          name: upstream 
+          path: .upstream/
 
       - name: Check file changes
         id: files-changed
-        run: |
-          # Replace deployment artifact
-          rm -rf .github
-          cp -r .deployment/ .github/
-          rm -rf .deployment
-
-          # check for file changes
-          if git diff --quiet .github; then
-            echo "> No changes in .github"
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "> Changes detected in .github"
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
+        run: bash .github/scripts/check-file-changes.sh --dir ".upstream"
 
       - name: Check Version change
         id: version-changed
-        run: |
-
-          dummy_version="$(cat .github/.dummy_version 2>/dev/null)"
-
-          has_update="${{ needs.update-check.outputs.upstream_updated }}"
-          latest_version="${{ needs.update-check.outputs.upstream_version }}"
-
-          if [ "$has_update" == "true" ] && [ "$latest_version" != "$dummy_version" ]; then
-            echo ">>> Updating local version to $latest_version"
-
-            echo "$latest_version" > .github/.version
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo ">>> No version change detected. Skipping update."
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
+        run: bash .github/scripts/check-version-changes.sh
+        env:
+          _HAS_UPDATE: ${{ needs.update-check.outputs.upstream_updated }}
+          _LATEST_VERSION: ${{ needs.update-check.outputs.upstream_version }}
+          _LOCAL_VERSION:  ${{ needs.update-check.outputs.local_version }}
+          _DUMMY_VERSION: ${{ needs.update-check.outputs.dummy_version }}
 
       - name: Commit & Push Changes
         if: steps.files-changed.outputs.changed == 'true' || steps.version-changed.outputs.changed == 'true'
-        run: |
-
-          if [ "${{ github.repository }}" == 'soymadip/soymadip.github.io' ]; then
-            git config user.name 'soymadip'
-            git config user.email "${{ github.actor }}@users.noreply.github.com"
-          else
-            git config user.name  'GitHub Actions'
-            git config user.email 'actions@github.com'
-          fi
-
-          git add .github
-
-          # push changes
-          git commit -m "Sync with upstream"
-
-          if git push origin ${GITHUB_REF_NAME}; then
-            echo ">>> Changes pushed successfully"
-          else
-            echo ">> Failed to push changes"
-            exit 1
-          fi
+        run: bash .github/scripts/commit-push-change.sh
+        env:
+          _GITHUB_ACTOR: ${{ github.actor }}
+          _REPO_OWNER: ${{ github.repository_owner }}
