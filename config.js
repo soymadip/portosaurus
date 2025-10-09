@@ -4,8 +4,8 @@ exports.usrConf = {
 
   dark_mode: true,
 
-  site_url: "auto",
-  site_path: "auto",
+  site_url: "https://sls.c",
+  site_path: "https://sls.c",
 
   srt_url: "${site_url}${site_path}/l",
 

@@ -28,7 +28,7 @@ const config = {
 
   onBrokenAnchors: "ignore",
   onBrokenLinks: "warn",
-  onBrokenMarkdownLinks: "warn",
+  // onBrokenMarkdownLinks: "warn",
 
   i18n: {
     defaultLocale: "en",
@@ -143,10 +143,13 @@ const config = {
     ],
   ],
 
-  /*   themes: ['@docusaurus/theme-mermaid'],
+  // themes: ['@docusaurus/theme-mermaid'],
   markdown: {
     mermaid: true,
-  }, */
+    hooks: {
+      onBrokenMarkdownLinks: "warn"
+    }
+  },
 
   themeConfig: {
     // Social card
