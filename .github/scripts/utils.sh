@@ -221,35 +221,114 @@ replace-content() {
     local src="$1"
     local dest="$2"
 
-    # Check if file
-    if [ -f "$src" ]; then
-        mkdir -p "$(dirname "$dest")"
-        rsync -a --checksum "$src" "$dest" && \
-            echo "   ✅ Replaced:     $(basename "$dest")" || \
-            echo "   ❌ Failed:       $(basename "$dest")"
+    if command -v rsync &> /dev/null; then
+        # Check if file
+        if [ -f "$src" ]; then
+            mkdir -p "$(dirname "$dest")"
+            rsync -a --checksum "$src" "$dest" && \
+                echo "   ✅ Replaced:     $(basename "$dest")" || \
+                echo "   ❌ Failed:       $(basename "$dest")"
 
-    # Check if directory
-    elif [ -d "$src" ]; then
-        echo -e "\n⏭️ Checking files in: $dest"
-        mkdir -p "$dest"
+        # Check if directory
+        elif [ -d "$src" ]; then
+            echo -e "\n⏭️ Checking files in: $dest"
+            mkdir -p "$dest"
 
-        find "$src" -type f | while read -r src_file; do
-            # Skip .placeholder files
-            if [[ "$(basename "$src_file")" == ".placeholder" ]]; then
-                echo "   ⏭️ Skipping:      .placeholder file"
-                continue
-            fi
+            find "$src" -type f | while read -r src_file; do
+                # Skip .placeholder files
+                if [[ "$(basename "$src_file")" == ".placeholder" ]]; then
+                    echo "   ⏭️ Skipping:      .placeholder file"
+                    continue
+                fi
 
-            local rel_path="${src_file#$src/}"
-            local dest_file="$dest/$rel_path"
+                local rel_path="${src_file#$src/}"
+                local dest_file="$dest/$rel_path"
 
-            mkdir -p "$(dirname "$dest_file")"
-            rsync -a --checksum "$src_file" "$dest_file" && \
-                echo "   ✅ Replaced:     $(basename "$dest_file")" || \
-                echo "   ❌ Failed:       $(basename "$dest_file")"
-        done
+                mkdir -p "$(dirname "$dest_file")"
+                rsync -a --checksum "$src_file" "$dest_file" && \
+                    echo "   ✅ Replaced:     $(basename "$dest_file")" || \
+                    echo "   ❌ Failed:       $(basename "$dest_file")"
+            done
+        else
+            echo "❌ Not Found: $src"
+        fi
     else
-        echo "❌ Not Found: $src"
+        # Fallback to node if rsync is not installed
+        # Node.js script to handle file sync with checksum
+        # Arguments: src dest type(file/dir)
+        node -e '
+        const fs = require("fs");
+        const crypto = require("crypto");
+        const path = require("path");
+        const child_process = require("child_process");
+
+        const src = process.argv[1];
+        const dest = process.argv[2];
+        
+        if (!fs.existsSync(src)) {
+            console.log("❌ Not Found: " + src);
+            process.exit(0);
+        }
+
+        function getChecksum(filePath) {
+            if (!fs.existsSync(filePath)) return null;
+            const data = fs.readFileSync(filePath);
+            return crypto.createHash("md5").update(data).digest("hex");
+        }
+
+        function copyFile(source, target) {
+            try {
+                const targetDir = path.dirname(target);
+                if (!fs.existsSync(targetDir)) {
+                    fs.mkdirSync(targetDir, { recursive: true });
+                }
+
+                const srcChecksum = getChecksum(source);
+                const destChecksum = getChecksum(target);
+
+                if (srcChecksum !== destChecksum) {
+                    fs.copyFileSync(source, target);
+                    // Preserve permissions
+                    const stat = fs.statSync(source);
+                    fs.chmodSync(target, stat.mode);
+                    console.log(`   ✅ Replaced:     ${path.basename(target)}`);
+                } else {
+                     console.log(`   ✅ Replaced:     ${path.basename(target)}`);
+                }
+            } catch (e) {
+                console.error(`   ❌ Failed:       ${path.basename(target)}`);
+                process.exit(1);
+            }
+        }
+
+        if (fs.statSync(src).isFile()) {
+            copyFile(src, dest);
+        } else {
+            // Directory mode
+            // Destination is the target directory where contents should go
+            if (!fs.existsSync(dest)) fs.mkdirSync(dest, { recursive: true });
+            
+            console.log(`\n⏭️ Checking files in: ${dest}`);
+            
+            function walkDir(dir, callback) {
+                fs.readdirSync(dir).forEach(f => {
+                    let dirPath = path.join(dir, f);
+                    let isDirectory = fs.statSync(dirPath).isDirectory();
+                    isDirectory ? walkDir(dirPath, callback) : callback(path.join(dir, f));
+                });
+            }
+
+            walkDir(src, (srcFile) => {
+                if (path.basename(srcFile) === ".placeholder") {
+                    console.log("   ⏭️ Skipping:      .placeholder file");
+                    return;
+                }
+                let relPath = path.relative(src, srcFile);
+                let destFile = path.join(dest, relPath);
+                copyFile(srcFile, destFile);
+            });
+        }
+        ' "$src" "$dest"
     fi
 }
 
