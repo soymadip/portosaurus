@@ -94,7 +94,15 @@ while [ $attempt -le $max_attempts ] && [ "$success" = false ]; do
             echo "[debug]   Fetched package.json from $UPSTREAM_REPO_URL_RAW/compiler/package.json"
         fi
 
-        if latest_version=$(jq -r .version < /tmp/package.json); then
+        local version_extracted=""
+        if command -v jq &> /dev/null; then
+             version_extracted=$(jq -r .version < /tmp/package.json)
+        else
+             version_extracted=$(node -e "try { console.log(require('/tmp/package.json').version) } catch(e) { process.exit(1) }")
+        fi
+
+        if [ -n "$version_extracted" ]; then
+            latest_version=$version_extracted
             echo "Latest upstream version: $latest_version"
             success=true
         else

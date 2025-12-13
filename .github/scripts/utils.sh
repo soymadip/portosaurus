@@ -8,9 +8,34 @@ get-conf() {
     fi
 
     local value
-    value=$(jq -er "$key" "$conf_file" 2>/dev/null)
+    
+    if command -v jq &> /dev/null; then
+        value=$(jq -er "$key" "$conf_file" 2>/dev/null)
+    else
+        # Fallback to node if jq is not installed
+        value=$(node -e "
+            try {
+                const fs = require('fs');
+                const data = JSON.parse(fs.readFileSync('$conf_file', 'utf8'));
+                const key = '$key'.replace(/^\./, '');
+                const val = key.split('.').reduce((o, k) => (o || {})[k], data);
+                
+                if (val === undefined || val === null) {
+                    process.exit(1);
+                }
+                
+                if (typeof val === 'object') {
+                    console.log(JSON.stringify(val, null, 2));
+                } else {
+                    console.log(val);
+                }
+            } catch (e) {
+                process.exit(1);
+            }
+        ")
+    fi
 
-    if [[ "$value" == "null" || -z "$value" ]]; then
+    if [[ $? -ne 0 || -z "$value" ]]; then
         echo "❌ Key $key is missing or null in $conf_file" >&2
         exit 1
     fi
@@ -34,20 +59,54 @@ set-conf() {
         return 1
     fi
 
-    # Convert key to valid jq format if dot-separated
-    local jq_key
-    jq_key=$(jq -nr --arg k "$key" '$k' | sed 's/\./"."/g; s/^/."/; s/$/"/')
+    if command -v jq &> /dev/null; then
+        # Convert key to valid jq format if dot-separated
+        local jq_key
+        jq_key=$(jq -nr --arg k "$key" '$k' | sed 's/\./"."/g; s/^/."/; s/$/"/')
 
-    # Update JSON file
-    tmp_file=$(mktemp)
+        # Update JSON file
+        tmp_file=$(mktemp)
 
-    if ! jq "$key |= \$newval" --argjson newval "\"$value\"" "$conf_file" > "$tmp_file" 2>/dev/null; then
-        echo "❌ Failed to update key '$key' in $conf_file" >&2
-        rm -f "$tmp_file"
-        return 1
+        if ! jq "$key |= \$newval" --argjson newval "\"$value\"" "$conf_file" > "$tmp_file" 2>/dev/null; then
+            echo "❌ Failed to update key '$key' in $conf_file" >&2
+            rm -f "$tmp_file"
+            return 1
+        fi
+
+        mv "$tmp_file" "$conf_file"
+    else
+        # Fallback to node if jq is not installed
+        node -e "
+            try {
+                const fs = require('fs');
+                const confFile = '$conf_file';
+                const keyPath = '$key'.replace(/^\./, '');
+                const newValue = '$value';
+                
+                const data = JSON.parse(fs.readFileSync(confFile, 'utf8'));
+                
+                const parts = keyPath.split('.');
+                const last = parts.pop();
+                let target = data;
+                
+                for (const part of parts) {
+                    target = target[part] || {};
+                }
+                
+                target[last] = newValue;
+                
+                fs.writeFileSync(confFile, JSON.stringify(data, null, 2));
+                console.log('✅ Updated $key to \"$value\" in $conf_file');
+            } catch (e) {
+                console.error('❌ Failed to update key \'$key\' in $conf_file');
+                process.exit(1);
+            }
+        "
+        if [ $? -ne 0 ]; then
+             return 1
+        fi
+        return 0 
     fi
-
-    mv "$tmp_file" "$conf_file"
 
     echo "✅ Updated $key to \"$value\" in $conf_file"
 }
