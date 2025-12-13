@@ -4,8 +4,8 @@ exports.usrConf = {
 
   dark_mode: true,
 
-  site_url: "https://sls.c",
-  site_path: "https://sls.c",
+  site_url: "https://example.com",
+  site_path: "/",
 
   srt_url: "${site_url}${site_path}/l",
 
@@ -17,8 +17,8 @@ exports.usrConf = {
   rss: true,
 
   hero_section: {
-    title:       "Your Name",
-    profession:  "Your Profession",
+    title: "Your Name",
+    profession: "Your Profession",
     description: "Short description about you, your passion, your goals etc.",
     profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
   },
@@ -100,9 +100,9 @@ exports.usrConf = {
     deploy_path: "/l",
 
     short_links: {
-      mail:     "mailto://you@yourDomain.com",
-      github:   "https://github.com/yourUserName",
-      gitlab:   "https://gitlab.com/yourUserName",
+      mail: "mailto://you@yourDomain.com",
+      github: "https://github.com/yourUserName",
+      gitlab: "https://gitlab.com/yourUserName",
       linkedin: "https://linkedin.com/in/yourUserName",
       telegram: "https://telegram.me/yourUserName",
     },
