@@ -63,14 +63,11 @@ export function createConfig(userConfig, projectRoot = process.cwd()) {
   const faviconPath =
     usrConf.hero_section?.profile_pic || "https://github.com/soymadip.png";
 
-  const title = usrConf.hero_section?.title || projName;
-  const tagline = usrConf.hero_section?.description || projDesc;
-
   // Resolve paths relative to .portosaurus (the build context)
-  const dotPorto = path.resolve(projectRoot, ".portosaurus");
-  const notesPath = path.resolve(dotPorto, "notes");
-  const blogPath = path.resolve(dotPorto, "blog");
-  const staticPath = path.resolve(dotPorto, "static");
+  const runtimeDir = path.resolve(projectRoot, ".portosaurus");
+  const notesPath = path.resolve(runtimeDir, "notes");
+  const blogPath = path.resolve(runtimeDir, "blog");
+  const staticPath = path.resolve(runtimeDir, "static");
 
   // ---------- Docusaurus Config -----------
   const config = {
