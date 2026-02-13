@@ -1,0 +1,14 @@
+[tools]
+uv = "latest"
+"pipx:commitizen" = "latest"
+node = "25"
+bun = "1.3"
+"npm:docusaurus" = "latest"
+
+[env]
+CZ_CONFIG = "--config src/cz/cz.yaml"
+
+[tasks]
+cmt = "cz $CZ_CONFIG commit"
+bmp = "cz $CZ_CONFIG bump"
+chg = "cz $CZ_CONFIG changelog"
