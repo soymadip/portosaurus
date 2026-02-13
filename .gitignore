@@ -1,18 +1,21 @@
+
+# Exclude internal dir
+!src/internal
+!src/template
+
 # Dependencies
 /node_modules
 
 # Production
 /build
 *tmp*
-*temp*
-*favicon/
-svg/
 TestimonialsSection/
-COMPILER/
 
 # Generated files
-.docusaurus
+.docusaurus/
+.portosaurus/
 .cache-loader
+test*/
 
 # Misc
 .DS_Store
@@ -20,6 +23,7 @@ COMPILER/
 .env.development.local
 .env.test.local
 .env.production.local
+mise.local.*
 
 npm-debug.log*
 yarn-debug.log*

@@ -4,7 +4,6 @@
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
 
-
 <br/>
 
 ## 🧩 Features
@@ -20,62 +19,107 @@
 - **📱 Mobile-Friendly** — Fully responsive design works on all devices
 - **🚀 Auto Deployment** — Ready for GitHub Pages or any static hosting
 
-
 <br/>
 
-## 📤 Deployment
+## � Getting Started
 
-> [!WARNING]
-> **Beta Notice:**  
-> Portosaurus is currently in its beta phase.  
-> Expect frequent updates and breaking changes.   
+### 1. Create a New Project
 
-There are several ways get Portosaurus up and running.
-
-
-### 1. GitHub Pages
-
-GitHub provides free hosting service for static sites like these in [GitHub Pages](https://pages.github.com).  
-
-Here are the steps:
-
-1. Use the `use this template` button at top right corner & choose `Create a new repository` option.
-2. In the following page, name the new repository `<your_username>.github.io` (like for me `soymadip.github.io`).
-3. In the newly created repository, Go to `settings` > `Pages` > `Build and deployment` > `Source` & select `GitHub Actions` from the dropdown.
-4. Now edit the [`config.js`](./config.js) with appropriate details.
-
-The site should be up and running after a few minutes.
-
-
-### 2. Manual building
-
-Also you can compile the source code & manually upload/host with your preferred hosting service.
-
-In your terminal, paste these commands:-
+Run the initialization command to set up your portfolio:
 
 ```bash
-git clone https://github.com/soymadip/portosaurus
-cd portosaurus 
-bash .github/compile.sh
+# With Bun
+bunx portosaurus init my-portfolio
+
+# with npm
+npx portosaurus init my-portfolio
 ```
-This will compile the site and put them in `build` dir.
+
+**Options:**
+
+- `-ngh, --no-github-pages`: Skip setting up GitHub Actions workflow for deployment.
+- `-ni, --no-install`: Skip automatic dependency installation.
+
+### 2. Start Development Server
+
+Navigate to your project and start the development server:
+
+```bash
+cd my-portfolio
+
+# With npm
+npm run dev
+
+# With Bun
+bun run dev
+```
+
+Your site will be available at `http://localhost:3000`.
+
+### 3. Build & Deploy
+
+#### GitHub Pages
+
+1. Create a repository on GitHub named `yourUsername.github.io`.
+2. Go to the repo's `Settings` > `Pages` > `Build and deployment` > `Source` > **`GitHub Actions`**.
+3. Push your code:
+   ```bash
+   git remote add origin https://github.com/yourUsername/yourUsername.github.io.git
+   git branch -M main
+   git push -u origin main
+   ```
+
+#### Other Providers
+
+A portosaurus project can be deployed to any static hosting provider like:
+
+- Netlify
+- Vercel
+- Cloudflare Pages
+- Other static providers
+
+To generate the static site for production:
+
+```bash
+# With Bun
+bun run build
+
+# With npm
+npm run build
+```
+
+The output will be in the `build/` directory.
+
+To preview the production build locally:
+
+```bash
+# With Bun
+bun run serve
+
+# With npm
+npm run serve
+```
 
 <br>
-
 
 ## ⚙️ Configuration
 
-> [!NOTE]  
-> Configuration instructions will be added slowly.
+Portosaurus is configured via `config.js` in your project root.
+
+```javascript
+module.exports = {
+  usrConf: {
+    hero_section: {
+      title: "Your Name",
+      description: "Software Engineer",
+      // ...
+    },
+    // ...
+  },
+};
+```
 
 <br>
-
-
-## 💻 Development
-
-- This branch is used as template to create new repos to hold content.
-- Go to [`compiler`](https://github.com/soymadip/portosaurus/tree/compiler) branch for compiler code and development info.
-
 
 ## 📄 Credits
 

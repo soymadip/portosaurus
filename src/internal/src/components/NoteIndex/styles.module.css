@@ -1,0 +1,143 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.notesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.noteCard {
+  width: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  text-align: center;
+  padding: 1.2rem;
+  background-color: var(--ifm-card-background-color);
+  opacity: 0;
+  transition: transform 0.3s ease, scale 0.3s ease;
+  animation: fadeIn 0.5s ease-out forwards;
+  animation-delay: calc(0.2s + (var(--card-index, 0) * 0.1s));
+}
+
+.noteCard:hover {
+  transform: translateY(-5px);
+  scale: 1.05;
+}
+
+.noteIcon {
+  font-size: 69px; 
+  margin-bottom: -1rem;
+  transition: transform 0.2s ease;
+}
+
+.noteCard:hover .noteIcon {
+  transform: scale(1.1);
+}
+
+.noteTitle {
+  margin-bottom: 1.8rem;
+  color: var(--ifm-font-color-base);
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .noteCard {
+    width: 150px;
+    padding: 0.8rem;
+  }
+  
+  .noteIcon {
+    font-size: 45px;
+    margin-bottom: -0.8rem;
+  }
+
+  .noteTitle {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .notesGrid {
+    gap: 0.8rem;
+    margin: 1.2rem 0;
+  }
+  
+  .noteCard {
+    width: 100%;
+    max-width: 300px;
+    padding: 0.5rem 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    border-radius: 10px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .noteCard:hover {
+    transform: none;
+    scale: 1;
+  }
+
+  .noteCard:hover .noteIcon {
+    transform: none;
+  }
+
+  .noteCard:active {
+    transform: scale(0.98);
+    background-color: var(--ifm-hover-overlay);
+  }
+
+  .noteIcon {
+    font-size: 35px;
+    margin-bottom: 0;
+    margin-right: 0.8rem;
+    flex-shrink: 0;
+    position: relative;
+    top: 4px;
+  }
+
+  .noteTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+    flex: 1;
+  }
+
+  .noteCard > a {
+    margin-left: auto;
+    padding: 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    border-radius: 5px;
+  }
+
+  .noteCard:active .noteIcon {
+    transform: scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noteCard {
+    animation: none !important;
+    opacity: 1;
+    transition: none !important;
+  }
+  
+  .noteIcon {
+    transition: none !important;
+  }
+}
+
