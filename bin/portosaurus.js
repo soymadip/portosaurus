@@ -307,12 +307,19 @@ program
     "-f, --file [filePath]",
     "Output to a file (default: porto.docusaurus.config.js)",
   )
+  .option("-c, --config <path>", "Path to config file")
   .action(async (options) => {
     const projectRoot = process.cwd();
-    const configPath = path.join(projectRoot, "config.js");
+    let configPath;
+
+    if (options.config) {
+      configPath = path.resolve(projectRoot, options.config);
+    } else {
+      configPath = path.join(projectRoot, "config.js");
+    }
 
     if (!existsSync(configPath)) {
-      logger.error("No config.js found in current directory.");
+      logger.error(`Config file not found at ${configPath}`);
       process.exit(1);
     }
 
