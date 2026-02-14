@@ -62,37 +62,49 @@ async function prepareDocusaurusRun(projectRoot) {
   // Ensure .portosaurus exists and is clean
   fs.emptyDirSync(runtimeDir);
 
-  // 1. Copy everything from internal to .portosaurus
-  fs.copySync(internalDir, runtimeDir);
+  // Ensure user has essential folders in project root
+  fs.ensureDirSync(path.join(projectRoot, "notes"));
+  fs.ensureDirSync(path.join(projectRoot, "blog"));
+  fs.ensureDirSync(path.join(projectRoot, "static"));
 
-  // 2. Overwrite with user files if they exist in project root
-  const internalFiles = readdirSync(internalDir);
-
-  for (const file of internalFiles) {
-    const userFile = path.join(projectRoot, file);
-
-    if (existsSync(userFile)) {
-      fs.copySync(userFile, path.join(runtimeDir, file), {
-        overwrite: true,
-        filter: (src) => {
-          // Ignore notes/index.md
-          if (src.endsWith(path.join("notes", "index.md"))) {
-            return false;
-          }
-          return true;
-        },
-      });
+  // Ensure notes/index.md exists
+  const userIndexPage = path.join(projectRoot, "notes/index.md");
+  if (!existsSync(userIndexPage)) {
+    const internalIndexPage = path.join(internalDir, "notes/index.md");
+    if (existsSync(internalIndexPage)) {
+      fs.copySync(internalIndexPage, userIndexPage);
     }
   }
 
-  // Ensure user has essential folders
-  const userRootNotes = path.join(projectRoot, "notes");
-  const userRootBlog = path.join(projectRoot, "blog");
-  const userRootStatic = path.join(projectRoot, "static");
+  // 1. Copy everything from internal to .portosaurus (skipping content folders except static)
+  fs.copySync(internalDir, runtimeDir, {
+    filter: (src) => {
+      const relative = path.relative(internalDir, src);
+      return !["notes", "blog"].includes(relative);
+    },
+  });
 
-  fs.ensureDirSync(userRootNotes);
-  fs.ensureDirSync(userRootBlog);
-  fs.ensureDirSync(userRootStatic);
+  // 2. Overwrite with user files if they exist in project root
+  // We only sync "static" and other internal-shadowing files to runtime
+  // Notes and Blog are served directly from projectRoot via createConfig.js
+  const syncItems = [...new Set([...readdirSync(internalDir), "static"])];
+
+  for (const file of syncItems) {
+    const userFile = path.resolve(projectRoot, file);
+    const destFile = path.resolve(runtimeDir, file);
+
+    // Skip notes and blog folders in the sync loop - they are served from root!
+    if (file === "notes" || file === "blog") continue;
+
+    if (existsSync(userFile)) {
+      if (fs.statSync(userFile).isDirectory()) {
+        fs.ensureDirSync(destFile);
+      }
+      fs.copySync(userFile, destFile, {
+        overwrite: true,
+      });
+    }
+  }
 
   // Load user config
   const require = createRequire(import.meta.url);
@@ -303,6 +315,41 @@ program
   });
 
 
+// --- CONFIG COMMAND ---
+
+program
+  .command("config")
+  .description("Show the generated Docusaurus config")
+  .action(async () => {
+    const projectRoot = process.cwd();
+    const configPath = path.join(projectRoot, "config.js");
+
+    if (!existsSync(configPath)) {
+      logger.error("No config.js found in current directory.");
+      process.exit(1);
+    }
+
+    const require = createRequire(import.meta.url);
+    let userConfig;
+    try {
+      userConfig = require(configPath);
+    } catch (e) {
+      logger.error(`Failed to load config.js: ${e.message}`);
+      process.exit(1);
+    }
+
+    if (!userConfig.usrConf) userConfig.usrConf = {};
+    if (!userConfig.usrConf.site_url) userConfig.usrConf.site_url = "auto";
+    if (!userConfig.usrConf.site_path) userConfig.usrConf.site_path = "auto";
+
+    try {
+      const docusaurusConfig = createConfig(userConfig, projectRoot);
+      console.log(JSON.stringify(docusaurusConfig, null, 2));
+    } catch (error) {
+      logger.error(`Failed to generate config: ${error.message}`);
+      process.exit(1);
+    }
+  });
 
 // --- START COMMAND ---
 

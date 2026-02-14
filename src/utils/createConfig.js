@@ -63,11 +63,20 @@ export function createConfig(userConfig, projectRoot = process.cwd()) {
   const faviconPath =
     usrConf.hero_section?.profile_pic || "https://github.com/soymadip.png";
 
-  // Resolve paths relative to .portosaurus (the build context)
+  // Resolve paths for content and assets
   const runtimeDir = path.resolve(projectRoot, ".portosaurus");
-  const notesPath = path.resolve(runtimeDir, "notes");
-  const blogPath = path.resolve(runtimeDir, "blog");
+  const notesPath = path.resolve(projectRoot, "notes");
+  const blogPath = path.resolve(projectRoot, "blog");
   const staticPath = path.resolve(runtimeDir, "static");
+
+  console.log(
+    "----- ",
+    projectRoot,
+    blogPath,
+    notesPath,
+    staticPath,
+    "------------",
+  );
 
   // ---------- Docusaurus Config -----------
   const config = {
