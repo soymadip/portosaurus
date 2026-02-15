@@ -16,6 +16,8 @@ TestimonialsSection/
 .portosaurus/
 .cache-loader
 test*/
+porto.docusaurus.config.js
+ss.*
 
 # Misc
 .DS_Store

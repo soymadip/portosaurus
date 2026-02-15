@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png" width=150>
+    <img src="./src/img/icon.png" width=150>
     <h1>Portosaurus</h1>
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
