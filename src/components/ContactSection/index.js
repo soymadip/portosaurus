@@ -1,6 +1,6 @@
-import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import { iconMap } from "@site/src/config/iconMappings";
 import { FaQuestionCircle } from "react-icons/fa";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import { iconMap as defaultIconMap } from "../../config/iconMappings.js";
 import styles from "./styles.module.css";
 
 const sortEmail = (links) => {
@@ -25,6 +25,7 @@ const sortEmail = (links) => {
 export default function ContactSection({ id, className, title, subtitle }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
+
   let socialLinks = customFields.socialLinks.links || [];
 
   socialLinks = sortEmail(socialLinks);
@@ -53,11 +54,11 @@ export default function ContactSection({ id, className, title, subtitle }) {
             aria-label="Social media and contact links"
           >
             {socialLinks.map((social, index) => {
-              const iconData = iconMap[social.icon] || {};
+              const iconData = defaultIconMap[social.icon] || {};
 
               const name = social.name || "?";
               const Icon = iconData.icon || FaQuestionCircle;
-              const iconColor = iconData.color || "#3578e5";
+              const iconColor = social.color || iconData.color || "#3578e5";
               const description =
                 name === "?" ? "" : social.desc || `Connect with me on ${name}`;
               const url = social.url;

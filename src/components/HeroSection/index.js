@@ -1,18 +1,19 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
-import SocialLinks from "@site/src/components/SocialLinks";
+import SocialLinks from "../SocialLinks/index.js";
 import styles from "./styles.module.css";
 
 export default function HeroSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
 
-  const intro = customFields.heroSection.intro;
-  const title = customFields.heroSection.title;
-  const subtitle = customFields.heroSection.subtitle;
-  const profession = customFields.heroSection.profession;
-  const description = customFields.heroSection.description;
-  const profilePic = customFields.heroSection.profilePic;
-  const learnMoreButtonText = customFields.heroSection.learnMoreButtonTxt;
+  const hero = customFields?.heroSection || {};
+  const intro = hero.intro || "";
+  const title = hero.title || "";
+  const subtitle = hero.subtitle || "";
+  const profession = hero.profession || "";
+  const description = hero.description || "";
+  const profilePic = hero.profilePic || "";
+  const learnMoreButtonText = hero.learnMoreButtonTxt || "Learn More";
 
   return (
     <div

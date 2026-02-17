@@ -1,8 +1,10 @@
 import Link from "@docusaurus/Link";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import { usePluginData } from "@docusaurus/useGlobalData";
-import { iconMap } from "@site/src/config/iconMappings";
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import DocCardList from "@theme/DocCardList";
+
+import { iconMap } from "../../config/iconMappings.js";
 
 import { FaBook } from "react-icons/fa";
 import styles from "./styles.module.css";

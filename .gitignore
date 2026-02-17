@@ -1,4 +1,3 @@
-
 # Exclude internal dir
 !src/internal
 !src/template
@@ -18,6 +17,7 @@ TestimonialsSection/
 test*/
 porto.docusaurus.config.js
 ss.*
+*.log
 
 # Misc
 .DS_Store

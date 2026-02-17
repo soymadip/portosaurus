@@ -1,21 +1,20 @@
 import fs from "fs";
-import { createRequire } from "module";
+
 import path from "path";
 import { fileURLToPath } from "url";
 
-import {
-  catppuccinMocha,
-  catppuccinLatte,
-} from "../internal/src/config/prism.js";
-import { appVersion } from "../internal/src/utils/appVersion.js";
-import { metaTags } from "../internal/src/config/metaTags.js";
-import { useEnabled } from "../internal/src/utils/filterEnabledItems.js";
-import { downloadImage } from "../internal/src/utils/imageDownloader.js";
-
-const require = createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const packagePath = path.resolve(__dirname, "../../");
+const internalUtils = path.resolve(packagePath, "src/utils");
+const packageConfig = path.resolve(packagePath, "src/config");
+const packageCss = path.resolve(packagePath, "src/css");
 
-const internalUtils = path.resolve(__dirname, "../internal/src/utils");
+import { catppuccinMocha, catppuccinLatte } from "#config/prism.js";
+import { appVersion } from "./appVersion.js";
+
+import { metaTags } from "#config/metaTags.js";
+import { useEnabled } from "./filterEnabledItems.js";
+import { downloadImage } from "./imageDownloader.js";
 
 /**
  * Resolves the site URL based on config value and environment.
@@ -66,6 +65,9 @@ export function createDocuConf(userConfig, projectRoot = process.cwd()) {
   const projDesc =
     usrConf.hero_section?.description ||
     "Complete portfolio cum personal website solution for your digital personality.";
+  const projIcon =
+    usrConf.hero_section?.profile_pic ||
+    "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png";
 
   // Ensure defaults if missing
   if (!usrConf.site_url) usrConf.site_url = "auto";
@@ -95,15 +97,89 @@ export function createDocuConf(userConfig, projectRoot = process.cwd()) {
     baseUrl: sitePath,
 
     onBrokenLinks: "warn",
+    onBrokenAnchors: "ignore",
     organizationName: projName,
 
+    i18n: {
+      defaultLocale: "en",
+      locales: ["en"],
+    },
+
+    headTags: metaTags,
+
     customFields: {
-      heroSection: usrConf.hero_section || {},
-      aboutMe: usrConf.about_section || {},
-      projects: usrConf.projects_section || {},
-      socialLinks: usrConf.social_links || {},
-      experience: usrConf.experience_section || {},
-      tasksPage: usrConf.tasks_page || {},
+      version: projectVersion,
+
+      heroSection: {
+        profilePic: usrConf.hero_section?.profile_pic || `${iconPicPath}`,
+        intro: usrConf.hero_section?.intro || "Hello there, I'm",
+        title: usrConf.hero_section?.title || "Your Name",
+        subtitle: usrConf.hero_section?.subtitle || "I am a",
+        profession: usrConf.hero_section?.profession || "Your Profession",
+        description:
+          usrConf.hero_section?.description ||
+          "Short description about your profession, passion, goals.",
+        learnMoreButtonTxt:
+          usrConf.hero_section?.learn__more_button_txt || "Learn More",
+      },
+
+      aboutMe: {
+        enable: usrConf.about_me?.enable ?? true,
+
+        image: usrConf.about_me?.image || `${iconPicPath}`,
+        description: usrConf.about_me?.description || [
+          "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
+          "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
+        ],
+        skills: usrConf.about_me?.skills || ["skill 1", "Skill 2"],
+        resumeLink:
+          usrConf.about_me?.resume_link || "https://example.com/resume",
+      },
+
+      projects: usrConf.project_shelf || { enable: true, projects: [] },
+
+      experience: usrConf.experience || { enable: false, list: [] },
+
+      socialLinks: {
+        enable: usrConf.social_links?.enable ?? true,
+
+        links: usrConf.social_links?.links || [
+          {
+            name: "Your Instagram",
+            icon: "instagram",
+            desc: "Your Instagram profile link",
+            url: "https://instagram.com/yourprofile",
+          },
+        ],
+      },
+
+      robotsTxt: {
+        enable: usrConf.robots_txt ?? true,
+        rules: [
+          {
+            disallow: ["/notes/", "/tasks/"],
+          },
+        ],
+        customLines: [],
+      },
+
+      tasksPage: {
+        enable: usrConf.tasks_page?.enable ?? true,
+        title: usrConf.tasks_page?.title || "Tasks",
+        description:
+          usrConf.tasks_page?.description ||
+          "Track your tasks and projects here.",
+        taskList: usrConf.tasks_page?.tasks || [
+          {
+            title: "Example Tasks",
+            description: "Description of the task",
+            status: "active",
+            priority: "high",
+          },
+        ],
+      },
+
+      metaTags: metaTags,
     },
 
     // Markdown configuration
@@ -121,7 +197,7 @@ export function createDocuConf(userConfig, projectRoot = process.cwd()) {
           docs: {
             path: notesPath,
             routeBasePath: "notes",
-            sidebarPath: "./src/config/sidebars.js", // Inside .portosaurus
+            sidebarPath: path.resolve(packageConfig, "sidebars.js"), // Absolute path to package's sidebars.js
             // editUrl: '...',
           },
           blog: {
@@ -131,7 +207,7 @@ export function createDocuConf(userConfig, projectRoot = process.cwd()) {
             // editUrl: '...',
           },
           theme: {
-            customCss: "./src/css/custom.css", // Inside .portosaurus
+            customCss: path.resolve(packageCss, "custom.css"), // Absolute path to package's custom.css
           },
         }),
       ],
@@ -214,10 +290,11 @@ export function createDocuConf(userConfig, projectRoot = process.cwd()) {
       }),
 
     plugins: [
-      // require.resolve(`${internalUtils}/generateFavicon.js`),
-      require.resolve(`${internalUtils}/generateRobotsTxt.js`),
+      // path.resolve(internalUtils, "generateFavicon.js"),
+      path.resolve(__dirname, "./transpilePlugin.js"),
+      path.resolve(__dirname, "./generateRobotsTxt.js"),
       [
-        require.resolve("@easyops-cn/docusaurus-search-local"),
+        "@easyops-cn/docusaurus-search-local",
         {
           hashed: true,
           indexDocs: true,

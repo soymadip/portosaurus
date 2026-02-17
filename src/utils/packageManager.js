@@ -44,24 +44,26 @@ export function detectPackageManager(projectRoot) {
 export function getRunCommand(packageManager, binaryName, args = []) {
   switch (packageManager) {
     case "bun":
-
       // Bun can run binaries directly with `bun run`
       return {
         command: "bun",
         args: ["run", binaryName, ...args],
       };
+
     case "pnpm":
       // pnpm uses `pnpm exec`
       return {
         command: "pnpm",
         args: ["exec", binaryName, ...args],
       };
+
     case "yarn":
       // Yarn uses `yarn run`
       return {
         command: "yarn",
         args: ["run", binaryName, ...args],
       };
+
     case "npm":
     default:
       // npm uses `npx`

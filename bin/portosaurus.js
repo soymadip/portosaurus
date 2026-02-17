@@ -305,7 +305,7 @@ program
   .description("Show the generated Docusaurus config")
   .option(
     "-f, --file [filePath]",
-    "Output to a file (default: porto.docusaurus.config.js)",
+    "Output to a file (default: docusaurus.config.js)",
   )
   .option("-c, --config <path>", "Path to config file")
   .action(async (options) => {
@@ -335,7 +335,7 @@ program
 
     try {
       if (options.file) {
-        let filename = "porto.docusaurus.config.js";
+        let filename = "docusaurus.config.js";
         if (typeof options.file === "string") {
           filename = options.file;
         }

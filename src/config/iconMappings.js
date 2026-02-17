@@ -1,4 +1,4 @@
-import { TbBrandCSharp, TbBrandCassandra, TbBrandVscode, TbBrandOnedrive, TbBrandAzure, TbBrandBing, TbBrandGithubCopilot } from "react-icons/tb";
+import { TbBrandCSharp, TbBrandVscode, TbBrandOnedrive, TbBrandAzure, TbBrandBing, TbBrandGithubCopilot } from "react-icons/tb";
 import { GrVirtualMachine } from "react-icons/gr";
 import { DiRasberryPi } from "react-icons/di";
 import { PiGithubLogoFill, PiMicrosoftExcelLogoDuotone, PiMicrosoftOutlookLogo, PiMicrosoftPowerpointLogo, PiMicrosoftWordLogo } from "react-icons/pi";

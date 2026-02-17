@@ -3,7 +3,7 @@
  * This file is auto-generated and copied to user projects
  */
 
-module.exports = {
+export default {
   notes: [
     {
       type: "category",

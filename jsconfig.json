@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#config/*": [
+                "./src/config/*"
+            ],
+            "#utils/*": [
+                "./src/utils/*.js"
+            ],
+            "#css/*": [
+                "./src/css/*.css"
+            ],
+            "#pages/*": [
+                "./src/internal/src/pages/*.js"
+            ],
+            "#components/*": [
+                "./src/internal/src/components/*"
+            ],
+            "#internal/*": [
+                "./src/internal/src/*"
+            ]
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "build",
+        ".portosaurus"
+    ]
+}

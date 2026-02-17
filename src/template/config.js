@@ -1,7 +1,6 @@
+// Portosaurus Config File
+
 exports.usrConf = {
-
-  auto_update: true,
-
   dark_mode: true,
 
   site_url: "auto",
@@ -17,10 +16,11 @@ exports.usrConf = {
   rss: true,
 
   hero_section: {
-    title:       "Your Name",
-    profession:  "Your Profession",
+    title: "Your Name",
+    profession: "Your Profession",
     description: "Short description about you, your passion, your goals etc.",
-    profile_pic: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
+    profile_pic:
+      "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
   },
 
   about_me: {
@@ -29,15 +29,11 @@ exports.usrConf = {
     image: "${hero_section.profile_pic}",
 
     description: [
-      "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
-      "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
+      "Example: You are a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
+      "Also this: My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
     ],
 
-    skills: [
-      "skill 1",
-      "Skill 2",
-      "Skill 3",
-    ],
+    skills: ["skill 1", "Skill 2", "Skill 3"],
     resume_link: "https://exapmple.com/resume",
   },
 
@@ -45,11 +41,12 @@ exports.usrConf = {
     enable: true,
     projects: [
       {
-        title: "Your Awesome Project",
+        title: "Your Awesome Project 1",
         featured: true,
         state: "active",
         desc: "Desctiption about your awesome project.",
-        image: "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
+        image:
+          "https://raw.githubusercontent.com/soymadip/portosaurus/refs/heads/compiler/static/img/icon.png",
         website: null,
         github: "https://github.com/soymadip/portosaurus",
         Demo: "https://soymadip.github.io",
@@ -58,9 +55,7 @@ exports.usrConf = {
     ],
   },
 
-
   social_links: {
-
     enable: true,
     links: [
       {
@@ -100,9 +95,9 @@ exports.usrConf = {
     deploy_path: "/l",
 
     short_links: {
-      mail:     "mailto://you@yourDomain.com",
-      github:   "https://github.com/yourUserName",
-      gitlab:   "https://gitlab.com/yourUserName",
+      mail: "mailto://you@yourDomain.com",
+      github: "https://github.com/yourUserName",
+      gitlab: "https://gitlab.com/yourUserName",
       linkedin: "https://linkedin.com/in/yourUserName",
       telegram: "https://telegram.me/yourUserName",
     },
@@ -133,7 +128,6 @@ exports.usrConf = {
       },
     ],
   },
-
 
   tasks_page: {
     enable: true,
@@ -212,7 +206,8 @@ exports.usrConf = {
       },
       {
         title: "Fix project shelf image placing",
-        description: "The image should align in the middle of card. Then fill the space if needed.",
+        description:
+          "The image should align in the middle of card. Then fill the space if needed.",
         status: "active",
         priority: "low",
       },
@@ -229,5 +224,5 @@ exports.usrConf = {
         priority: "low",
       },
     ],
-  }
-}
+  },
+};

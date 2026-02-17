@@ -1,6 +1,6 @@
 {
   "name": "portosaurus",
-  "version": "1.16.0",
+  "version": "1.18.15",
   "author": "soymadip",
   "license": "GPL-3.0-only",
   "description": "Complete portfolio cum personal website solution for your digital personality.",
@@ -21,6 +21,21 @@
     "blog"
   ],
   "type": "module",
+  "imports": {
+    "#config/*": "./src/config/*",
+    "#utils/*": "./src/utils/*.js",
+    "#css/*": "./src/css/*.css",
+    "#pages/*": "./src/pages/*.js",
+    "#components/*": "./src/components/*",
+    "#internal/*": "./src/internal/src/*"
+  },
+  "exports": {
+    "./components/*": "./src/components/*",
+    "./utils/*": "./src/utils/*.js",
+    "./config/*": "./src/config/*.js",
+    "./css/*": "./src/css/*.css",
+    "./pages/*": "./src/pages/*.js"
+  },
   "bin": {
     "portosaurus": "bin/portosaurus.js"
   },
@@ -28,24 +43,29 @@
     "bin/",
     "src/internal/",
     "src/template/",
-    "src/utils/"
+    "src/utils/",
+    "src/config/",
+    "src/css/",
+    "src/img",
+    "src/pages/",
+    "src/components/"
   ],
   "dependencies": {
     "@docusaurus/core": "^3.9.2",
     "@docusaurus/preset-classic": "^3.9.2",
+    "@easyops-cn/docusaurus-search-local": "^0.52.3",
     "chalk": "^5.6.2",
+    "clsx": "^2.1.1",
     "commander": "^12.1.0",
+    "favicons": "^7.2.0",
     "fs-extra": "^11.3.3",
+    "plugin-image-zoom": "github:flexanalytics/plugin-image-zoom",
+    "prism-react-renderer": "^2.4.1",
     "prompts": "^2.4.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-icons": "^5.4.0",
-    "react-slick": "^0.30.2",
-    "slick-carousel": "^1.8.1",
-    "clsx": "^2.1.1",
-    "prism-react-renderer": "^2.4.1",
-    "favicons": "^7.2.0",
-    "plugin-image-zoom": "github:flexanalytics/plugin-image-zoom",
-    "@easyops-cn/docusaurus-search-local": "^0.52.1"
+    "react-icons": "^5.5.0",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1"
   }
 }
