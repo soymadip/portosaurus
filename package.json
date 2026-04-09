@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
-    "start": "clear &&  npm i && docusaurus start && docusaurus clear",
-    "build": "npm i && docusaurus build",
-    "serve": "npm i && docusaurus serve",
+    "start": "clear &&  $npm_execpath i && docusaurus start && docusaurus clear",
+    "build": "$npm_execpath i && docusaurus build",
+    "serve": "$npm_execpath i && docusaurus serve",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "swizzle": "docusaurus swizzle",
