@@ -1,4 +1,4 @@
-import { TbBrandCSharp, TbBrandCassandra, TbBrandVscode, TbBrandOnedrive, TbBrandAzure, TbBrandBing, TbBrandGithubCopilot } from "react-icons/tb";
+import { TbBrandCSharp, TbBrandVscode, TbBrandOnedrive, TbBrandAzure, TbBrandBing, TbBrandGithubCopilot } from "react-icons/tb";
 import { GrVirtualMachine } from "react-icons/gr";
 import { DiRasberryPi } from "react-icons/di";
 import { PiGithubLogoFill, PiMicrosoftExcelLogoDuotone, PiMicrosoftOutlookLogo, PiMicrosoftPowerpointLogo, PiMicrosoftWordLogo } from "react-icons/pi";
@@ -10,14 +10,14 @@ import {
   SiPython, SiJavascript, SiCplusplus, SiRust, SiGo, SiTypescript, SiReact, SiMysql, SiGnubash, 
   SiLinux, SiLinuxfoundation, SiArchlinux, SiAlmalinux, SiAlpinelinux, SiKalilinux, SiLinuxmint, 
   SiRockylinux, SiVoidlinux, SiUbuntu, SiKubuntu, SiUbuntumate, SiDebian, SiRedhat, SiGithub, 
-  SiLinkedin, SiMastodon, SiInstagram, SiFacebook, SiYoutube, SiTwitch, SiDiscord, SiReddit, 
+  SiMastodon, SiInstagram, SiFacebook, SiYoutube, SiTwitch, SiDiscord, SiReddit, 
   SiStackoverflow, SiLeetcode, SiHackerrank, SiCodeforces, SiMatrix, SiGmail, SiProtonmail, SiSignal, SiReplit,
   SiZoom, SiNotion, SiObsidian, SiMarkdown, SiSubstack, SiThreads, SiOpenai, SiDocker, SiPodman, 
   SiLinuxcontainers, SiVmware, SiXing, SiKaggle, SiCodesandbox,
   SiGooglechrome, SiFirefox, SiSafari, SiBrave, SiOpera, SiTorbrowser, SiVivaldi, SiZendesk,
   SiImdb, SiMyanimelist, SiAnilist, SiLetterboxd, SiCrunchyroll, SiKitsu, SiSimkl,
-  SiOracle, SiMongodb, SiSqlite, SiMariadb, SiInfluxdb, SiRedis, SiCouchbase, SiApachecassandra,
-  SiAmazondynamodb, SiFirebase, SiNeo4J, SiElasticsearch, SiGraphql, SiGoogledrive
+  SiMongodb, SiSqlite, SiMariadb, SiInfluxdb, SiRedis, SiCouchbase, SiApachecassandra,
+  SiFirebase, SiNeo4J, SiElasticsearch, SiGraphql, SiGoogledrive
 } from 'react-icons/si';
 
 import { 
@@ -31,7 +31,7 @@ import {
   FaUpload, FaSave, FaTrash, FaExclamationTriangle, FaExclamationCircle, FaCheckCircle, 
   FaQuestionCircle, FaClock, FaComments, FaBell, FaDatabase,
   FaCalendar, FaCheckSquare, FaBookmark, FaStar, FaHeart, FaClipboard, FaEnvelopeOpen,
-  FaMicrosoft, FaGoogleDrive
+  FaMicrosoft, FaGoogleDrive, FaLinkedin
 } from "react-icons/fa";
 
 
@@ -56,8 +56,8 @@ export const iconMap = {
   sql: { icon: SiMysql, color: '#4479A1' },
   postgresql: { icon: BiLogoPostgresql, color: '#336791' },
   postgres: { icon: BiLogoPostgresql, color: '#336791' },
-  oraclesql: { icon: SiOracle, color: '#F80000' },
-  oracle: { icon: SiOracle, color: '#F80000' },
+  oraclesql: { icon: FaDatabase, color: '#F80000' },
+  oracle: { icon: FaDatabase, color: '#F80000' },
   database: { icon: FaDatabase, color: '#47A248' },
   db: { icon: FaDatabase, color: '#47A248' },
   dbms: { icon: FaDatabase, color: '#47A248' },
@@ -70,7 +70,7 @@ export const iconMap = {
   redis: { icon: SiRedis, color: '#DC382D' },
   couchbase: { icon: SiCouchbase, color: '#EA2328' },
   cassandra: { icon: SiApachecassandra, color: '#1287B1' },
-  dynamodb: { icon: SiAmazondynamodb, color: '#4053D6' },
+  dynamodb: { icon: FaDatabase, color: '#4053D6' },
   firebase: { icon: SiFirebase, color: '#FFCA28' },
   firestore: { icon: SiFirebase, color: '#FFCA28' },
   mssql: { icon: FaDatabase, color: '#CC2927' },
@@ -137,7 +137,7 @@ export const iconMap = {
   git: { icon: FaGitAlt, color: '#F05032' },
   gitlab: { icon: FaGitlab, color: '#FC6D26' },
   bitbucket: { icon: FaBitbucket, color: '#0052CC' },
-  linkedin: { icon: SiLinkedin, color: '#0A66C2' },
+  linkedin: { icon: FaLinkedin, color: '#0A66C2' },
   twitter: { icon: FaTwitter, color: '#1DA1F2' },
   x: { icon: FaTwitter, color: '#1DA1F2' },
   mastodon: { icon: SiMastodon, color: '#6364FF' },
