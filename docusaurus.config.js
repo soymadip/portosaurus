@@ -20,7 +20,6 @@ const config = {
 
   url: usrConf.site_url,
   baseUrl: usrConf.site_path || "/",
-  editUrl: usrConf.editUrl || "#",
 
   // GH Pages config
   organizationName: usrConf.hero_section.title || `${projectName} `,
@@ -116,6 +115,7 @@ const config = {
           routeBasePath: "notes",
           path: "notes",
           sidebarPath: "./src/config/sidebar.js",
+          editUrl: usrConf.editUrl || "#",
 
           admonitions: {
             keywords: ["note", "tip", "info", "warning", "danger", "question"],
