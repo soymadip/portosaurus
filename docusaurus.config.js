@@ -6,11 +6,10 @@ import { useEnabled } from "./src/utils/filterEnabledItems.js";
 
 const projectName = "Portosaurus";
 const projectVersion = appVersion();
-const faviconPath = 'favicon/favicon.ico';
-const iconPicPath = 'static/img/icon.png';
+const faviconPath = "favicon/favicon.ico";
+const iconPicPath = "static/img/icon.png";
 
 const config = {
-
   projectName: `${projectName}`,
 
   title: usrConf.hero_section.title || `${projectName}`,
@@ -21,6 +20,7 @@ const config = {
 
   url: usrConf.site_url,
   baseUrl: usrConf.site_path || "/",
+  editUrl: usrConf.editUrl || "#",
 
   // GH Pages config
   organizationName: usrConf.hero_section.title || `${projectName} `,
@@ -44,16 +44,19 @@ const config = {
       profilePic: usrConf.hero_section.profile_pic || `${iconPicPath}`,
       intro: usrConf.hero_section.intro || "Hello there, I'm",
       title: usrConf.hero_section.title || "Your Name",
-      subtitle: usrConf.hero_section.subtitle || 'I am a',
-      profession: usrConf.hero_section.profession || 'Your Profession',
-      description: usrConf.hero_section.description || "Short description about your profession, passion, goals.",
-      learnMoreButtonTxt: usrConf.hero_section.learn__more_button_txt || "Learn More",
+      subtitle: usrConf.hero_section.subtitle || "I am a",
+      profession: usrConf.hero_section.profession || "Your Profession",
+      description:
+        usrConf.hero_section.description ||
+        "Short description about your profession, passion, goals.",
+      learnMoreButtonTxt:
+        usrConf.hero_section.learn__more_button_txt || "Learn More",
     },
 
     aboutMe: {
       enable: usrConf.about_me.enable || true,
 
-      image:       usrConf.about_me.image || `${iconPicPath}`,
+      image: usrConf.about_me.image || `${iconPicPath}`,
       description: usrConf.about_me.description || [
         "I'm a passionate FOSS developer with expertise in designing and building solutions for real-world problems.",
         "My journey in software development started with a simple desire to automate repetitive tasks, specially in my PC.",
@@ -92,7 +95,8 @@ const config = {
     tasksPage: {
       enable: usrConf.tasks_page.enable || true,
       title: usrConf.tasks_page.title || "Tasks",
-      description: usrConf.tasks_page.description || "Track your tasks and projects here.",
+      description:
+        usrConf.tasks_page.description || "Track your tasks and projects here.",
       taskList: usrConf.tasks_page.tasks || [
         {
           title: "Example Tasks",
@@ -120,7 +124,6 @@ const config = {
         },
 
         blog: {
-
           feedOptions: usrConf.rss
             ? {
                 type: ["rss", "atom"],
@@ -138,7 +141,6 @@ const config = {
         theme: {
           customCss: "./src/css/custom.css",
         },
-
       },
     ],
   ],
@@ -147,8 +149,8 @@ const config = {
   markdown: {
     mermaid: true,
     hooks: {
-      onBrokenMarkdownLinks: "warn"
-    }
+      onBrokenMarkdownLinks: "warn",
+    },
   },
 
   themeConfig: {
@@ -243,7 +245,7 @@ const config = {
               },
             },
           ]),
-        }
+        },
       ]),
     },
 
