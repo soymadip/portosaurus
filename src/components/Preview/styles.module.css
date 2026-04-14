@@ -1,0 +1,507 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.previewContainer {
+  display: inline;
+}
+
+/* Link Mode Styles */
+.previewTrigger {
+  color: var(--ifm-link-color);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.previewTrigger:hover {
+  color: var(--ifm-link-hover-color);
+  text-decoration-style: solid;
+}
+
+/* Source Footer Mode (Minimalist) */
+.sourceFooter {
+  margin: 1.5rem 0 0.5rem 0;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(var(--ifm-font-color-base-rgb), 0.15);
+  font-size: 0.82rem;
+  color: rgba(var(--ifm-font-color-base-rgb), 0.6);
+}
+
+.sourceFooterLabel {
+  font-style: italic;
+  font-weight: 600;
+  margin-right: 6px;
+  color: rgba(var(--ifm-font-color-base-rgb), 0.7);
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(var(--ifm-color-black-rgb), 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(3px);
+  padding: 20px;
+}
+
+.modalContent {
+  background-color: var(--ifm-background-surface-color);
+  border-radius: 12px;
+  width: 92vw;
+  max-width: 1000px;
+  height: 80vh;
+  min-height: 500px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(var(--ifm-color-black-rgb), 0.15);
+  overflow: hidden;
+  border: 1px solid var(--ifm-color-emphasis-200);
+  animation: fadeIn 0.3s ease-out;
+  margin: auto;
+}
+
+/* --- THE RESEARCH MODE (FIXED NAV) --- */
+/* Target main-wrapper only — navbar is ABOVE this, so it stays untouched */
+:global(body.preview-is-docked) :global(.main-wrapper) {
+  margin-right: var(--preview-dock-width, 32vw);
+  transition: margin-right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+:global(body.preview-resizing) {
+  /* Disable transitions for absolute responsiveness during drag */
+  transition: none !important;
+  cursor: ew-resize !important;
+}
+
+:global(body.preview-resizing) :global(.navbar),
+:global(body.preview-resizing) :global(.theme-doc-sidebar-container) {
+  transition: none !important;
+}
+
+.dockedContainer {
+  position: fixed;
+  top: var(--dock-top-offset, var(--ifm-navbar-height));
+  right: 0;
+  height: calc(100vh - var(--dock-top-offset, var(--ifm-navbar-height)));
+  background-color: var(--ifm-background-surface-color);
+  border-left: 1px solid var(--ifm-color-emphasis-200);
+  box-shadow: var(--ifm-global-shadow-lw);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.resizer {
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 5px;
+  height: 100%;
+  cursor: ew-resize;
+  z-index: 1000;
+  transition: background-color 0.2s;
+}
+
+.resizer:hover,
+:global(body.preview-resizing) .resizer {
+  background-color: var(--ifm-color-primary);
+  box-shadow: 0 0 10px rgba(var(--ifm-color-primary-rgb), 0.3);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+:global(body.preview-is-docked) .dockedContainer {
+  right: 0 !important;
+}
+
+/* Hide the Docusaurus TOC to gain space */
+:global(body.preview-is-docked) :global(.theme-doc-toc-desktop),
+:global(body.preview-is-docked) :global(.table-of-contents),
+:global(body.preview-is-docked) :global(aside.col--3),
+:global(body.preview-is-docked) :global(.theme-doc-toc-container) {
+  display: none !important;
+  visibility: hidden;
+}
+
+/* Remove excess right padding from the Docusaurus content column when docked */
+:global(body.preview-is-docked) :global([class*="docMainContainer"]) {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Force the article column to fill full width (override col--7 = 58.33%) */
+:global(body.preview-is-docked) :global([class*="docItemCol"]) {
+  max-width: 100% !important;
+  flex: 0 0 100% !important;
+}
+
+/* Shrink the container's internal padding so the article uses more space */
+:global(body.preview-is-docked)
+  :global([class*="docMainContainer"])
+  :global(.container) {
+  max-width: 110% !important;
+  padding-right: var(--ifm-spacing-horizontal) !important;
+}
+
+@media (max-width: 1200px) {
+  :global(body.preview-is-docked) :global(.main-wrapper) {
+    margin-right: 40vw;
+  }
+  :global(body.preview-is-docked) .dockedContainer {
+    width: 40vw;
+  }
+}
+
+@media (max-width: 996px) {
+  :global(body.preview-is-docked) :global(.main-wrapper) {
+    margin-right: 0;
+  }
+}
+
+[data-theme="dark"] .modalContent {
+  box-shadow: 0 8px 32px rgba(var(--ifm-color-black-rgb), 0.3);
+  border-color: rgba(var(--ifm-color-white-rgb), 0.08);
+}
+
+.modalHeader {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--ifm-background-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--ifm-footer-background-color);
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.primaryText {
+  color: var(--ifm-color-primary);
+}
+
+.baseText {
+  color: var(--ifm-font-color-base);
+  font-family: serif;
+  padding-top: 5px;
+  padding-left: 3px;
+  font-size: x-small;
+  font-weight: normal !important;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.headerAction {
+  background-color: var(--ifm-color-primary);
+  color: var(--ifm-button-color) !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0 8px 0 8px;
+  height: 26px;
+  border-radius: 6px;
+  text-decoration: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  border: none;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.headerAction:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  text-decoration: none !important;
+}
+
+.headerAction:active {
+  transform: translateY(0);
+}
+
+.headerActionClose {
+  padding: 0 10px;
+}
+
+.headerActionClose:hover {
+  background-color: var(--ifm-color-danger) !important;
+}
+
+.headerIcon {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  stroke-width: 2.5px;
+}
+
+.headerIconSmall {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2.5px;
+}
+
+.dockedContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(var(--ifm-color-black-rgb), 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(1.5px);
+  padding: 20px;
+}
+
+.modalBody {
+  padding: 12px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  background-color: var(--ifm-background-color);
+  display: flex;
+  flex-direction: column;
+}
+
+.spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--ifm-color-emphasis-200);
+  border-top-color: var(--ifm-color-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 12px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  background-color: var(--ifm-background-surface-color);
+  border-bottom: 1px solid var(--ifm-background-color);
+  padding: 0 10px;
+  gap: 5px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  flex-shrink: 0;
+  z-index: 10;
+  position: relative;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  padding: 10px 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--ifm-font-color-base);
+  opacity: 0.6;
+  border-bottom: 2px solid transparent;
+  transition:
+    background-color 0.3s,
+    color 0.2s,
+    border-bottom-color 0.3s;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  opacity: 1;
+  background-color: rgba(var(--ifm-color-primary-rgb), 0.1);
+  color: var(--ifm-color-primary);
+}
+
+.activeTab {
+  opacity: 1;
+  color: var(--ifm-color-primary);
+  border-bottom-color: var(--ifm-color-primary);
+  background-color: transparent;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 200px;
+  color: var(--ifm-color-emphasis-500);
+  background-color: var(--ifm-background-color);
+}
+
+.errorState {
+  padding: 24px 28px;
+  color: var(--ifm-color-danger);
+}
+
+.errorMsg {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+/* PDF Viewer Styles */
+.pdfViewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding-top: 15px;
+}
+
+.pdfPage {
+  box-shadow: 0 4px 12px rgba(var(--ifm-color-black-rgb), 0.15);
+  margin-bottom: 8px;
+  max-width: 100%;
+}
+
+/* Image View Styles */
+.imageView {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-height: 50vh;
+  background-color: var(--ifm-background-color);
+}
+
+.image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(var(--ifm-color-black-rgb), 0.1);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 768px) {
+  .dockedContainer {
+    width: 100vw;
+    height: calc(100vh - var(--ifm-navbar-height));
+    left: 0;
+    border-left: none;
+    box-shadow: none;
+  }
+
+  .modalOverlay {
+    padding: 0;
+    align-items: flex-end; /* Modern bottom-sheet feel on mobile */
+  }
+
+  .modalContent {
+    width: 100vw;
+    height: 92vh;
+    max-height: 92vh;
+    border-radius: 16px 16px 0 0; /* Rounded top for bottom sheet feel */
+    margin: 0;
+  }
+
+  .modalHeader {
+    padding: 12px 15px;
+  }
+
+  .modalBody {
+    padding: 8px;
+  }
+
+  .tab {
+    padding: 12px 16px;
+    font-size: 0.8rem;
+  }
+
+  .btnText,
+  .dockToggle {
+    display: none;
+  }
+
+  .headerAction {
+    padding: 6px;
+    min-width: 32px;
+    gap: 0;
+  }
+}
+
+.webFrame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: var(--ifm-background-color);
+  flex: 1;
+}
+
+.webHint {
+  background-color: rgba(var(--ifm-color-warning-rgb, 234, 179, 8), 0.1);
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  color: var(--ifm-font-color-base);
+  border-bottom: 1px solid rgba(var(--ifm-color-warning-rgb, 234, 179, 8), 0.25);
+  animation: slideDown 0.4s ease-out forwards;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

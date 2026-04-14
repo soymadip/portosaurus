@@ -104,9 +104,10 @@ export default function SocialIcons({ showAll = false }) {
           return (
             <Tooltip
               key={index}
-              content={social.desc || social.icon || 'Link'}
+              msg={social.desc || social.icon || 'Link'}
               position="top"
               color={displayColor}
+              underline={false}
             >
               <a
                 href={href}

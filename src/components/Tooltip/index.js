@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import styles from './styles.module.css';
+import React, { useState } from "react";
+import styles from "./styles.module.css";
 
-export default function Tooltip({ children, content, position = 'top', color }) {
+export default function Tooltip({
+  children,
+  msg,
+  position = "top",
+  color,
+  underline = true,
+}) {
   const [isVisible, setIsVisible] = useState(false);
-  
-  const tooltipStyle = color ? { '--tooltip-color': color } : {};
-  
+
+  const tooltipStyle = color ? { "--tooltip-color": color } : {};
+
   return (
-    <div 
-      className={styles.tooltipContainer}
+    <span
+      className={`${styles.tooltipContainer} ${underline ? styles.hasUnderline : ""}`}
       onMouseEnter={() => setIsVisible(true)}
       onMouseLeave={() => setIsVisible(false)}
       onFocus={() => setIsVisible(true)}
@@ -16,15 +22,15 @@ export default function Tooltip({ children, content, position = 'top', color }) 
     >
       {children}
       {isVisible && (
-        <div 
+        <span
           className={`${styles.tooltip} ${styles[position]}`}
           style={tooltipStyle}
           role="tooltip"
         >
-          {content}
-          <div className={styles.arrow} />
-        </div>
+          {msg}
+          <span className={styles.arrow} />
+        </span>
       )}
-    </div>
+    </span>
   );
 }

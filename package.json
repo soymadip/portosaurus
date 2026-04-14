@@ -1,6 +1,6 @@
 {
   "name": "portosaurus",
-  "version": "0.13.0",
+  "version": "0.14.0",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -25,6 +25,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^5.5.0",
+    "react-pdf": "^10.4.1",
     "react-slick": "^0.31.0",
     "sharp": "^0.34.4",
     "slick-carousel": "^1.8.1"

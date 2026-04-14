@@ -1,7 +1,19 @@
 .tooltipContainer {
   position: relative;
-  display: inline-flex;
+  display: inline;
   cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.hasUnderline {
+  cursor: help;
+  border-bottom: 1.5px dotted var(--ifm-color-primary);
+  transition: border-bottom-color 0.2s ease;
+}
+
+.hasUnderline:hover {
+  border-bottom-style: dashed;
+  border-bottom-color: var(--ifm-color-primary-darker);
 }
 
 .tooltip {
@@ -13,10 +25,10 @@
   font-size: 0.8rem;
   font-weight: 400;
   white-space: nowrap;
-  z-index: 10;
+  z-index: 9999;
   opacity: 0;
   animation: tooltipFadeIn 0.15s ease-out forwards;
-  box-shadow: none;
+  box-shadow: var(--ifm-global-shadow-md);
   pointer-events: none;
 }
 
