@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import styles from "./styles.module.css";
 
@@ -14,7 +14,7 @@ export default function Tooltip({
   const containerRef = useRef(null);
 
   const tooltipStyle = color
-    ? { "--tooltip-color": color, "--tooltip-text-color": "#fff" }
+    ? { "--tooltip-color": color, "--tooltip-text-color": "var(--ifm-font-color-base-inverse)" }
     : {};
 
   const show = useCallback(() => {
@@ -73,7 +73,9 @@ export default function Tooltip({
       onFocus={show}
       onBlur={hide}
     >
-      {children}
+      {React.Children.map(children, (child) =>
+        typeof child === "string" ? child.trim() : child,
+      )}
       {tooltip}
     </span>
   );

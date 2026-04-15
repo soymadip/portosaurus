@@ -212,19 +212,19 @@
   text-decoration: none;
   color: var(--ifm-background-color);
   background-color: var(--ifm-color-primary);
-  border-radius: 4px;
+  border-radius: var(--ifm-global-radius);
   transition: all 0.3s ease, transform 0.2s ease;
   border: 2px solid var(--ifm-color-primary);
   cursor: pointer;
   outline: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--ifm-global-shadow-lw);
 }
 
 .ctaButton:hover {
   background-color: transparent;
   color: var(--ifm-color-primary);
   transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--ifm-global-shadow-md);
   text-decoration: none;
 }
 

@@ -1,4 +1,3 @@
-// Barrel — re-exports so MDXComponents.js import path stays unchanged
-export { default } from "./triggers";
-export { SourcePreview } from "./triggers";
-export { PreviewProvider } from "./context";
+export { PreviewProvider, usePreview } from './state';
+export { default as ViewerWindow } from './components/ViewerWindow';
+export { Pv, SrcPv } from './components/Triggers';

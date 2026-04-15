@@ -94,14 +94,14 @@
 .socialCard {
   width: 150px;
   min-height: 160px;
-  border-radius: 8px;
+  border-radius: var(--ifm-card-border-radius);
   padding: 1.3rem 1.2rem;
   background-color: var(--ifm-card-background-color);
   opacity: 0;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
   animation: fadeIn 0.5s ease-out forwards;
   animation-delay: calc(0.1s + (var(--card-index, 0) * 0.1s));
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--ifm-global-shadow-lw);
   text-decoration: none;
   display: flex;
   flex-direction: column;
@@ -116,7 +116,7 @@
 
 .socialCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--ifm-global-shadow-md);
   background-color: var(--ifm-shadow-color);
   text-decoration: none;
 }
@@ -288,7 +288,7 @@
     height: 60px;
     min-height: unset;
     padding: 0;
-    border-radius: 12px;
+    border-radius: var(--ifm-card-border-radius);
     justify-content: center;
     align-items: center;
   }

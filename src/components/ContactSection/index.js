@@ -47,7 +47,7 @@ export default function ContactSection({ id, className, title, subtitle }) {
               
               const name = social.name || "?";
               const Icon = iconData.icon || FaQuestionCircle;
-              const iconColor = iconData.color || "#3578e5";
+              const iconColor = iconData.color || "var(--ifm-color-primary)";
               const description = name === "?" ? "" : (social.desc || `Connect with me on ${name}`);
               const url = social.url;
 

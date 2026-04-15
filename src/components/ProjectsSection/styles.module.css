@@ -89,9 +89,9 @@
   display: flex;
   flex-direction: column;
   background-color: var(--ifm-card-background-color);
-  border-radius: 8px;
+  border-radius: var(--ifm-card-border-radius);
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(var(--ifm-color-black-rgb), 0.1);
+  box-shadow: var(--ifm-global-shadow-md);
   opacity: 0;
   animation: fadeIn 0.5s ease-out forwards;
   height: 100%;
@@ -102,7 +102,7 @@
 
 .featuredCard {
   border: 1.5px solid rgba(var(--ifm-color-primary-rgb), 0.7);
-  box-shadow: 0 5px 15px rgba(var(--ifm-color-black-rgb), 0.1);;
+  box-shadow: var(--ifm-global-shadow-md);
 }
 
 .featuredBadge {
@@ -119,7 +119,7 @@
   justify-content: center;
   font-size: 0.65rem;
   z-index: 5;
-  box-shadow: 0 2px 4px rgba(var(--ifm-color-black-rgb), 0.2);
+  box-shadow: var(--ifm-global-shadow-lw);
   top: auto;
 }
 
@@ -142,8 +142,8 @@
   padding-top: 62%;
   overflow: hidden;
   background-color: var(--ifm-shadow-color);
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: var(--ifm-card-border-radius);
+  border-bottom-right-radius: var(--ifm-card-border-radius);
 }
 
 .projectImage {
@@ -184,7 +184,7 @@
   font-size: 0.65rem; 
   font-weight: 500;
   padding: 1px 4px;
-  border-radius: 3px;
+  border-radius: var(--ifm-global-radius);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--ifm-color-white);
@@ -280,26 +280,26 @@
   font-size: 0.8rem;
   transition: all 0.2s ease;
   padding: 0.35rem 0.7rem;
-  border-radius: 6px;
+  border-radius: var(--ifm-global-radius);
   border: 1px solid var(--ifm-color-gray-500);
   background-color: var(--ifm-shadow-color);
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 1px 3px rgba(var(--ifm-color-black), 0.05);
+  box-shadow: var(--ifm-global-shadow-lw);
 }
 
 .projectLink:hover {
   color: var(--ifm-color-primary);
   background-color: var(--ifm-card-background-color);
   transform: translateY(-2px);
-  box-shadow: 0 3px 7px rgba(var(--ifm-color-black), 0.08);
+  box-shadow: var(--ifm-global-shadow-md);
   border-color: var(--ifm-color-primary);
   text-decoration: none;
 }
 
 .projectLink:active {
   transform: translateY(-1px);
-  box-shadow: 0 2px 5px rgba(var(--ifm-color-black), 0.06);
+  box-shadow: var(--ifm-global-shadow-lw);
 }
 
 .projectLink svg {
@@ -331,7 +331,7 @@
   z-index: 5;
   transition: opacity 0.2s ease, background-color 0.2s ease;
   padding: 0;
-  box-shadow: 0 2px 8px rgba(var(--ifm-color-black), 0.15);
+  box-shadow: var(--ifm-global-shadow-md);
 }
 
 .carouselControl svg {
@@ -368,7 +368,7 @@
   padding: 2rem;
   color: var(--ifm-font-color-tertiary);
   background-color: var(--ifm-shadow-color);
-  border-radius: 8px;
+  border-radius: var(--ifm-card-border-radius);
   margin: 1rem 0;
 }
 

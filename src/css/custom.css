@@ -21,6 +21,7 @@ html {
   background-color: var(--ifm-navbar-background-color) !important;
 }
 
+
 /* Reduce gap between navbar items */
 .navbar__items .navbar__item {
   padding-left: 0.5rem;

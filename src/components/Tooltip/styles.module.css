@@ -1,6 +1,7 @@
 .tooltipContainer {
   position: relative;
-  display: inline;
+  display: inline-flex;
+  vertical-align: baseline;
   cursor: pointer;
   transition: opacity 0.2s ease;
 }

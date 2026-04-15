@@ -1,6 +1,5 @@
 import OriginalRoot from "@theme-original/Root";
-import { PreviewProvider } from "@site/src/components/Preview/context";
-import PreviewViewer from "@site/src/components/Preview/viewer";
+import { PreviewProvider, ViewerWindow } from "@site/src/components/Preview";
 
 /**
  * Wraps Docusaurus's original Root (which provides ColorModeProvider, etc.)
@@ -19,7 +18,7 @@ export default function Root({ children }) {
     <PreviewProvider>
       <OriginalRoot>
         {children}
-        <PreviewViewer />
+        <ViewerWindow />
       </OriginalRoot>
     </PreviewProvider>
   );

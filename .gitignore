@@ -1,6 +1,11 @@
 # Dependencies
 /node_modules
 
+# Example files
+notes/
+!notes/index.mdx
+static/example*
+
 # Production
 /build
 *tmp*
