@@ -16,6 +16,11 @@ exports.usrConf = {
   disable_theme_switch: false,
   rss: true,
 
+  // Optional: Custom CORS Proxy for downloading external images/files in the Preview Viewer.
+  // Leave empty ("") to use the public default (allorigins.win).
+  // E.g., "https://cors-proxy.yourname.workers.dev/?url="
+  cors_proxy: "",
+
   hero_section: {
     title: "Your Name",
     profession: "Your Profession",

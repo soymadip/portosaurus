@@ -105,6 +105,12 @@ const config = {
         },
       ],
     },
+
+    corsProxyList: [
+      usrConf.cors_proxy,
+      "https://cors-proxy.soymadip.workers.dev/?url=",
+      "https://api.allorigins.win/raw?url=",
+    ].filter(Boolean),
   },
 
   presets: [
