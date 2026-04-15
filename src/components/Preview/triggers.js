@@ -5,13 +5,14 @@ import Tooltip from "@site/src/components/Tooltip";
 import styles from "./styles.module.css";
 
 // Normalize props into a sources array
-function normalizeSources({ path, label, sources }) {
+function normalizeSources({ path, id, sources, children }) {
   if (sources && sources.length > 0) return sources;
-  if (path) return [{ path, label: label || path.split("/").pop() }];
+  const label = (typeof children === "string" ? children : null) || path?.split("/").pop();
+  if (path) return [{ path, label }];
   return [];
 }
 
-// --- Inline trigger: <Preview path="..." label="...">link text</Preview> ---
+// --- Inline trigger: <Preview path="..." id="...">link text</Preview> ---
 export default function Preview(props) {
   const { children } = props;
   const {
@@ -21,18 +22,17 @@ export default function Preview(props) {
     closePreview,
   } = usePreview();
   const location = useLocation();
-  
-  const srcList = useMemo(() => normalizeSources(props), [
-    props.path,
-    props.label,
-    props.sources,
-  ]);
+
+  const srcList = useMemo(
+    () => normalizeSources(props),
+    [props.path, props.label, props.sources, props.children],
+  );
 
   // Hash-based deep link auto-open
-  const { path, label, id } = props;
+  const { path, id } = props;
   const autoId =
     id ||
-    (label || path?.split("/").pop() || "")
+    ((typeof children === "string" ? children : null) || path?.split("/").pop() || "")
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
@@ -41,7 +41,8 @@ export default function Preview(props) {
     // Timeout ensuring Docusaurus has fully hydrated before aggressively opening the modal
     const timer = setTimeout(() => {
       // Use native window hash because router useLocation() becomes stale when we use replaceState() silently
-      const currentHash = typeof window !== "undefined" ? window.location.hash : location.hash;
+      const currentHash =
+        typeof window !== "undefined" ? window.location.hash : location.hash;
       if (autoId && currentHash === `#${autoId}`) {
         openPreview(srcList, 0, autoId);
       }
@@ -87,24 +88,36 @@ export default function Preview(props) {
 // --- Footer source list: <SourcePreview sources={[...]} /> ---
 export function SourcePreview(props) {
   const { prefixText = "Source file: " } = props;
-  const { isOpen, sources: activeSources, activeIndex, openPreview, closePreview, setDocked } = usePreview();
+  const {
+    isOpen,
+    sources: activeSources,
+    activeIndex,
+    openPreview,
+    closePreview,
+    setDocked,
+  } = usePreview();
   const location = useLocation();
-  
-  const srcList = useMemo(() => normalizeSources(props), [
-    props.path,
-    props.label,
-    props.sources,
-  ]);
+
+  const srcList = useMemo(
+    () => normalizeSources(props),
+    [props.path, props.label, props.sources],
+  );
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      const currentHash = typeof window !== "undefined" ? window.location.hash : location.hash;
+      const currentHash =
+        typeof window !== "undefined" ? window.location.hash : location.hash;
       if (!currentHash) return;
-      
+
       const hashStr = currentHash.replace("#", "");
       const targetIdx = srcList.findIndex((src) => {
         const sourceLabel = src?.label || src?.path?.split("/").pop() || "";
-        const sourceHash = props.id || sourceLabel.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        const sourceHash =
+          props.id ||
+          sourceLabel
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
         return sourceHash === hashStr;
       });
 
@@ -114,7 +127,14 @@ export function SourcePreview(props) {
       }
     }, 100);
     return () => clearTimeout(timer);
-  }, [location.hash, srcList, openPreview, props.id, props.defaultDocked, setDocked]);
+  }, [
+    location.hash,
+    srcList,
+    openPreview,
+    props.id,
+    props.defaultDocked,
+    setDocked,
+  ]);
 
   if (srcList.length === 0) return null;
 
@@ -126,12 +146,18 @@ export function SourcePreview(props) {
       activeSources.length === srcList.length &&
       activeSources[idx]?.path === srcList[idx]?.path &&
       activeIndex === idx;
-      
+
     if (isSame) {
       closePreview();
     } else {
-      const sourceLabel = srcList[idx]?.label || srcList[idx]?.path.split("/").pop() || "";
-      const sourceHash = props.id || sourceLabel.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+      const sourceLabel =
+        srcList[idx]?.label || srcList[idx]?.path.split("/").pop() || "";
+      const sourceHash =
+        props.id ||
+        sourceLabel
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
       if (props.defaultDocked) setDocked(true);
       openPreview(srcList, idx, sourceHash);
     }

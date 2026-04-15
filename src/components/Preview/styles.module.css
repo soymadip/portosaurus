@@ -219,9 +219,9 @@
 .baseText {
   color: var(--ifm-font-color-base);
   font-family: serif;
-  padding-top: 5px;
+  padding-top: 4.3px;
   padding-left: 3px;
-  font-size: x-small;
+  font-size: small;
   font-weight: normal !important;
 }
 

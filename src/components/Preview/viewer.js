@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
+import { useLocation } from "@docusaurus/router";
 import { Highlight } from "prism-react-renderer";
 import Tooltip from "@site/src/components/Tooltip";
 import { usePreview } from "./context";
@@ -17,7 +18,30 @@ import "react-pdf/dist/Page/TextLayer.css";
 // --- Dynamic PDF import ---
 let PdfDocument, PdfPage, pdfjs;
 
-const TEXT_EXTS = ["md", "txt", "js", "ts", "jsx", "tsx", "py", "json", "css", "yaml", "yml", "sh", "toml", "rs", "go", "java", "c", "cpp", "h", "html", "xml", "sql"];
+const TEXT_EXTS = [
+  "md",
+  "txt",
+  "js",
+  "ts",
+  "jsx",
+  "tsx",
+  "py",
+  "json",
+  "css",
+  "yaml",
+  "yml",
+  "sh",
+  "toml",
+  "rs",
+  "go",
+  "java",
+  "c",
+  "cpp",
+  "h",
+  "html",
+  "xml",
+  "sql",
+];
 const IMAGE_EXTS = ["png", "jpg", "jpeg", "gif", "webp", "svg"];
 
 function getExt(path) {
@@ -68,7 +92,11 @@ function CodeView({ code, language }) {
           }}
         >
           {tokens.map((line, i) => (
-            <div key={i} {...getLineProps({ line })} style={{ display: "flex" }}>
+            <div
+              key={i}
+              {...getLineProps({ line })}
+              style={{ display: "flex" }}
+            >
               <span
                 style={{
                   display: "inline-block",
@@ -96,9 +124,26 @@ function CodeView({ code, language }) {
 
 export default function PreviewViewer() {
   const {
-    isOpen, isDocked, sources, activeIndex, dockWidth,
-    closePreview, setDocked, setActiveIndex, setDockWidth,
+    isOpen,
+    isDocked,
+    sources,
+    activeIndex,
+    dockWidth,
+    closePreview,
+    setDocked,
+    setActiveIndex,
+    setDockWidth,
   } = usePreview();
+  const location = useLocation();
+
+  // Auto-close preview on route change
+  const prevPathRef = useRef(location.pathname);
+  useEffect(() => {
+    if (prevPathRef.current !== location.pathname) {
+      prevPathRef.current = location.pathname;
+      if (isOpen) closePreview();
+    }
+  }, [location.pathname, isOpen, closePreview]);
 
   const [mounted, setMounted] = useState(false);
   const [fileCache, setFileCache] = useState({});
@@ -117,8 +162,7 @@ export default function PreviewViewer() {
       PdfDocument = mod.Document;
       PdfPage = mod.Page;
       pdfjs = mod.pdfjs;
-      pdfjs.GlobalWorkerOptions.workerSrc =
-        `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+      pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
       setPdfReady(true);
     });
     return () => setMounted(false);
@@ -137,7 +181,10 @@ export default function PreviewViewer() {
     if (fileCache[path] || errors[path]) return;
     setLoading(true);
     fetch(resolveUrl(path))
-      .then((r) => { if (!r.ok) throw new Error(r.statusText); return r.text(); })
+      .then((r) => {
+        if (!r.ok) throw new Error(r.statusText);
+        return r.text();
+      })
       .then((text) => setFileCache((p) => ({ ...p, [path]: text })))
       .catch((err) => setErrors((p) => ({ ...p, [path]: err.message })))
       .finally(() => setLoading(false));
@@ -161,7 +208,7 @@ export default function PreviewViewer() {
   // --- Dock layout: body class + CSS variable + native sidebar collapse ---
   useEffect(() => {
     const active = isOpen && isDocked;
-    
+
     // Toggle body classes inside the effect
     if (active) {
       document.body.classList.add("preview-is-docked");
@@ -172,9 +219,13 @@ export default function PreviewViewer() {
     }
 
     // Single toggle button — always present, switches aria-label on state change
-    const sidebarToggleBtn = document.querySelector('[class*="collapseSidebarButton"]');
+    const sidebarToggleBtn = document.querySelector(
+      '[class*="collapseSidebarButton"]',
+    );
     // Check if sidebar is currently collapsed by looking for the expand button label
-    const isCollapsed = !!document.querySelector('[aria-label="Expand sidebar"]');
+    const isCollapsed = !!document.querySelector(
+      '[aria-label="Expand sidebar"]',
+    );
 
     if (active) {
       // Only collapse if NOT already collapsed, and track that we did it
@@ -192,27 +243,30 @@ export default function PreviewViewer() {
 
     // Dynamic Navbar Tracking (for hideOnScroll functionality)
     const updateNavOffset = () => {
-      const nav = document.querySelector('.navbar');
+      const nav = document.querySelector(".navbar");
       if (nav) {
-        // rect.bottom accurately reflects the bottom edge of the navbar, 
+        // rect.bottom accurately reflects the bottom edge of the navbar,
         // even when hidden via CSS transforms (translateY(-100%)).
         const rect = nav.getBoundingClientRect();
         const offset = Math.max(0, rect.bottom);
-        document.documentElement.style.setProperty('--dock-top-offset', `${offset}px`);
+        document.documentElement.style.setProperty(
+          "--dock-top-offset",
+          `${offset}px`,
+        );
       }
     };
 
     if (active) {
       updateNavOffset();
-      window.addEventListener('scroll', updateNavOffset, { passive: true });
-      window.addEventListener('resize', updateNavOffset, { passive: true });
+      window.addEventListener("scroll", updateNavOffset, { passive: true });
+      window.addEventListener("resize", updateNavOffset, { passive: true });
     }
 
     return () => {
       document.body.classList.remove("preview-is-docked");
-      document.documentElement.style.removeProperty('--dock-top-offset');
-      window.removeEventListener('scroll', updateNavOffset);
-      window.removeEventListener('resize', updateNavOffset);
+      document.documentElement.style.removeProperty("--dock-top-offset");
+      window.removeEventListener("scroll", updateNavOffset);
+      window.removeEventListener("resize", updateNavOffset);
     };
   }, [isOpen, isDocked, dockWidth]);
 
@@ -220,7 +274,9 @@ export default function PreviewViewer() {
   useEffect(() => {
     if (!isOpen || isDocked) return;
     document.body.style.overflow = "hidden";
-    const handler = (e) => { if (e.key === "Escape") closePreview(); };
+    const handler = (e) => {
+      if (e.key === "Escape") closePreview();
+    };
     window.addEventListener("keydown", handler);
     return () => {
       document.body.style.overflow = "";
@@ -277,13 +333,20 @@ export default function PreviewViewer() {
 
   // --- Content renderer ---
   const renderContent = () => {
-    if (loading) return <div className={styles.loading}><div className={styles.spinner} /></div>;
+    if (loading)
+      return (
+        <div className={styles.loading}>
+          <div className={styles.spinner} />
+        </div>
+      );
 
     const { path } = currentFile;
     if (errors[path]) {
       return (
         <div className={styles.errorState}>
-          <p>Could not load: <code>{path}</code></p>
+          <p>
+            Could not load: <code>{path}</code>
+          </p>
           <p className={styles.errorMsg}>{errors[path]}</p>
         </div>
       );
@@ -292,22 +355,39 @@ export default function PreviewViewer() {
     if (fileType === "image") {
       return (
         <div className={styles.imageView}>
-          <img src={fileUrl} alt={currentFile.label || ""} className={styles.image} />
+          <img
+            src={fileUrl}
+            alt={currentFile.label || ""}
+            className={styles.image}
+          />
         </div>
       );
     }
 
     if (fileType === "pdf") {
       if (!pdfReady || !PdfDocument) {
-        return <div className={styles.loading}><div className={styles.spinner} /></div>;
+        return (
+          <div className={styles.loading}>
+            <div className={styles.spinner} />
+          </div>
+        );
       }
       return (
         <div className={styles.pdfView}>
           <PdfDocument
             file={fileUrl}
             onLoadSuccess={({ numPages: n }) => setNumPages(n)}
-            onLoadError={(err) => setErrors((p) => ({ ...p, [path]: err.message || "Invalid or missing PDF file." }))}
-            loading={<div className={styles.loading}><div className={styles.spinner} /></div>}
+            onLoadError={(err) =>
+              setErrors((p) => ({
+                ...p,
+                [path]: err.message || "Invalid or missing PDF file.",
+              }))
+            }
+            loading={
+              <div className={styles.loading}>
+                <div className={styles.spinner} />
+              </div>
+            }
           >
             {Array.from({ length: numPages || 0 }, (_, i) => (
               <PdfPage
@@ -329,7 +409,8 @@ export default function PreviewViewer() {
         <div className={styles.webView}>
           {hintVisible && (
             <div className={styles.webHint}>
-              Some pages block embedding. Use <strong>Visit</strong> to open externally.
+              Some pages block embedding. Use <strong>Visit</strong> to open
+              externally.
             </div>
           )}
           <iframe
@@ -344,7 +425,12 @@ export default function PreviewViewer() {
 
     // text / code — uses self-contained Prism, no Docusaurus providers needed
     const content = fileCache[path];
-    if (!content) return <div className={styles.loading}><div className={styles.spinner} /></div>;
+    if (!content)
+      return (
+        <div className={styles.loading}>
+          <div className={styles.spinner} />
+        </div>
+      );
     return <CodeView code={content} language={ext} />;
   };
 
@@ -352,7 +438,7 @@ export default function PreviewViewer() {
   const displayTitle =
     fileType === "web"
       ? currentFile.path.replace(/^https?:\/\//, "").split("/")[0]
-      : (currentFile.label || currentFile.path.split("/").pop());
+      : currentFile.label || currentFile.path.split("/").pop();
 
   const header = (
     <div className={styles.modalHeader}>
@@ -365,27 +451,51 @@ export default function PreviewViewer() {
       <div className={styles.headerControls}>
         {fileType === "web" ? (
           <Tooltip msg="Open externally" position="bottom" underline={false}>
-            <a href={fileUrl} target="_blank" rel="noopener noreferrer" className={styles.headerAction}>
+            <a
+              href={fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.headerAction}
+            >
               <IconLink className={styles.headerIcon} />
               <span className={styles.btnText}>Visit</span>
             </a>
           </Tooltip>
         ) : (
           <Tooltip msg="Download file" position="bottom" underline={false}>
-            <button onClick={handleDownload} className={`${styles.headerAction} ${styles.downloadButton}`}>
+            <button
+              onClick={handleDownload}
+              className={`${styles.headerAction} ${styles.downloadButton}`}
+            >
               <IconSave className={styles.headerIconSmall} />
               <span className={styles.btnText}>Save</span>
             </button>
           </Tooltip>
         )}
-        <Tooltip msg={isDocked ? "Switch to popup" : "Dock to side"} position="bottom" underline={false}>
-          <button onClick={() => setDocked(!isDocked)} className={`${styles.headerAction} ${styles.dockToggle}`}>
-            {isDocked ? <IconPopup className={styles.headerIcon} /> : <IconDock className={styles.headerIcon} />}
-            <span className={styles.btnText}>{isDocked ? "Popup" : "Dock"}</span>
+        <Tooltip
+          msg={isDocked ? "Switch to popup" : "Dock to side"}
+          position="bottom"
+          underline={false}
+        >
+          <button
+            onClick={() => setDocked(!isDocked)}
+            className={`${styles.headerAction} ${styles.dockToggle}`}
+          >
+            {isDocked ? (
+              <IconPopup className={styles.headerIcon} />
+            ) : (
+              <IconDock className={styles.headerIcon} />
+            )}
+            <span className={styles.btnText}>
+              {isDocked ? "Popup" : "Dock"}
+            </span>
           </button>
         </Tooltip>
         <Tooltip msg="Close" position="bottom" underline={false}>
-          <button onClick={closePreview} className={`${styles.headerAction} ${styles.headerActionClose}`}>
+          <button
+            onClick={closePreview}
+            className={`${styles.headerAction} ${styles.headerActionClose}`}
+          >
             <IconClose className={styles.headerIconSmall} />
           </button>
         </Tooltip>
@@ -414,7 +524,11 @@ export default function PreviewViewer() {
   if (isDocked) {
     return createPortal(
       <div className={styles.dockedContainer} style={{ width: dockWidth }}>
-        <div className={styles.resizer} onMouseDown={startResize} title="Drag to resize" />
+        <div
+          className={styles.resizer}
+          onMouseDown={startResize}
+          title="Drag to resize"
+        />
         {header}
         <div className={styles.dockedContent}>
           {tabs}

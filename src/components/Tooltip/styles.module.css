@@ -17,14 +17,17 @@
 }
 
 .tooltip {
-  position: absolute;
+  position: fixed;
   background-color: var(--tooltip-color, var(--ifm-background-surface-color));
-  color: var(--ifm-font-color-base);
+  color: var(--tooltip-text-color, var(--ifm-font-color-base));
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 0.8rem;
   font-weight: 400;
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
+  max-width: min(320px, 90vw);
+  width: max-content;
   z-index: 9999;
   opacity: 0;
   animation: tooltipFadeIn 0.15s ease-out forwards;
@@ -39,12 +42,11 @@
   background-color: inherit;
 }
 
-/* Positioning variations */
+/* Positioning: coordinates are set via JS (top/left on the element).
+   These classes only handle the transform offset from that anchor point. */
+
 .top {
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(-10px);
-  margin-bottom: 4px;
+  transform: translateX(-50%) translateY(-100%);
 }
 
 .top .arrow {
@@ -55,9 +57,7 @@
 }
 
 .bottom {
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
+  transform: translateX(-50%);
 }
 
 .bottom .arrow {
@@ -68,9 +68,7 @@
 }
 
 .left {
-  right: 100%;
-  top: 50%;
-  transform: translateY(-50%) translateX(-6px);
+  transform: translateX(-100%) translateY(-50%);
 }
 
 .left .arrow {
@@ -80,9 +78,7 @@
 }
 
 .right {
-  left: 100%;
-  top: 50%;
-  transform: translateY(-50%) translateX(6px);
+  transform: translateY(-50%);
 }
 
 .right .arrow {
@@ -92,8 +88,12 @@
 }
 
 @keyframes tooltipFadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Accessibility */
