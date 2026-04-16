@@ -1,2 +1,17 @@
 [tools]
+uv = "latest"
+"pipx:commitizen" = "latest"
 bun = "latest"
+
+[env]
+_.path = './bin'
+CZ_CONFIG = 'src/cz/cz.yaml'
+
+[shell_alias]
+cz = "cz --config $CZ_CONFIG "
+
+[tasks]
+bump = "cz bump"
+commit = "cz commit"
+changelog = "cz changelog"
+pr = "gh pr create"
