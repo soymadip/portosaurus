@@ -1,5 +1,5 @@
 // List of domains allowed to USE this proxy.
-// Leave empty [] to allow any domain, or add your site (e.g. "https://your-custom-site.dev")
+// Leave empty [] to allow any domain, or add your site
 const ALLOWED_ORIGINS = [
   "https://soymadip.github.io",
   "https://soymadip.is-a.dev",
