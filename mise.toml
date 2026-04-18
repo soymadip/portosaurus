@@ -8,10 +8,10 @@ _.path = './bin'
 CZ_CONFIG = 'src/cz/cz.yaml'
 
 [shell_alias]
-cz = "cz --config $CZ_CONFIG "
+cz = "cz "
 
 [tasks]
-bump = "cz bump"
-commit = "cz commit"
-changelog = "cz changelog"
+bump = "cz --config $CZ_CONFIG  bump"
+commit = "cz --config $CZ_CONFIG commit"
+changelog = "cz --config $CZ_CONFIG changelog"
 pr = "gh pr create"
