@@ -104,7 +104,13 @@ export function resolveVars(
   if (obj && typeof obj === "object") {
     const result = {};
     for (const [key, value] of Object.entries(obj)) {
-      result[key] = resolveVars(value, UserConfig, systemVars, pathStack, depth);
+      result[key] = resolveVars(
+        value,
+        UserConfig,
+        systemVars,
+        pathStack,
+        depth,
+      );
     }
     return result;
   }

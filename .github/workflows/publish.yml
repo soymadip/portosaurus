@@ -31,8 +31,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-bun-
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          registry-url: "https://registry.npmjs.org"
+
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
       - name: Publish to NPM
-        run: bun publish --access public
+        run: npm publish --access public --provenance

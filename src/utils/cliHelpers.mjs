@@ -72,11 +72,7 @@ export function ensureContentDirs(UserRoot) {
  * Spawn a Docusaurus command and wait for it to complete.
  */
 export function runDocusaurus(command, extraArgs, UserRoot, configPath) {
-  const {
-    command: cmd,
-    args: pmArgs,
-    packageManager,
-  } = getDocuCmd(UserRoot);
+  const { command: cmd, args: pmArgs, packageManager } = getDocuCmd(UserRoot);
 
   logger.info(`Running docusaurus ${command} (via ${packageManager})`);
 
