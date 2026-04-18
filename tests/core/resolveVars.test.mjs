@@ -1,21 +1,21 @@
 import { expect, test, describe } from "bun:test";
-import { resolveVars } from "../../src/core/createDocuConf.mjs";
+import { resolveVars } from "../../src/utils/configUtils.mjs";
 
 describe("resolveVars", () => {
   const mockConfig = {
     site_url: "https://example.com",
     hero_section: {
       title: "My Portfolio",
-      profile_pic: "@porto/img/icon.png",
+      profile_pic: "{{portoRoot}}/img/icon.png",
     },
     nested: {
       ref: "{{hero_section.title}}",
     },
   };
 
-  const mockAliases = {
-    "@porto/": "/porto/assets/",
-    "@site/": "/user/static/",
+  const mockSystemVars = {
+    portoRoot: "/absolute/porto",
+    siteRoot: "/absolute/site",
   };
 
   test("should resolve template variables {{...}}", () => {
@@ -23,18 +23,18 @@ describe("resolveVars", () => {
     expect(resolved.nested.ref).toBe("My Portfolio");
   });
 
-  test("should strip path aliases (@porto/, @site/)", () => {
-    const resolved = resolveVars(mockConfig, mockConfig, mockAliases);
-    expect(resolved.hero_section.profile_pic).toBe("img/icon.png");
+  test("should resolve system variables from systemVars", () => {
+    const resolved = resolveVars(mockConfig, mockConfig, mockSystemVars);
+    expect(resolved.hero_section.profile_pic).toBe("/absolute/porto/img/icon.png");
   });
 
-  test("should handle chained resolutions (ref -> alias)", () => {
+  test("should handle chained resolutions (ref -> systemVar)", () => {
     const complexConfig = {
       ...mockConfig,
       chained: "{{hero_section.profile_pic}}",
     };
-    const resolved = resolveVars(complexConfig, complexConfig, mockAliases);
-    expect(resolved.chained).toBe("img/icon.png");
+    const resolved = resolveVars(complexConfig, complexConfig, mockSystemVars);
+    expect(resolved.chained).toBe("/absolute/porto/img/icon.png");
   });
 
   test("should handle missing variables gracefully", () => {
@@ -92,32 +92,29 @@ describe("resolveVars", () => {
     expect(resolved.literal).toBe("{{dont_resolve_me}}");
   });
 
-  test("should resolve aliases nested deep inside arrays and objects", () => {
+  test("should resolve systemVars nested deep inside arrays and objects", () => {
     const config = {
       complex: {
-        items: [{ icon: "@porto/img/1.png" }, "@site/static/2.png"],
+        items: [{ icon: "{{portoRoot}}/img/1.png" }, "{{siteRoot}}/static/2.png"],
       },
     };
-    const resolved = resolveVars(config, config, mockAliases);
-    expect(resolved.complex.items[0].icon).toBe("img/1.png");
-    expect(resolved.complex.items[1]).toBe("static/2.png");
+    const resolved = resolveVars(config, config, mockSystemVars);
+    expect(resolved.complex.items[0].icon).toBe("/absolute/porto/img/1.png");
+    expect(resolved.complex.items[1]).toBe("/absolute/site/static/2.png");
   });
 
-  test("should resolve variables first, then strip aliases", () => {
-    const config = {
-      prefix: "@porto",
-      full_path: "{{prefix}}/img/icon.png",
-    };
-    const resolved = resolveVars(config, config, mockAliases);
-    expect(resolved.full_path).toBe("img/icon.png");
-  });
-
-  test("should handle mixed types in arrays", () => {
+  test("should handle mixed types in arrays with systemVars", () => {
     const config = {
       val: "site",
-      list: [1, true, "{{val}}", { nested: "@porto/test" }, null],
+      list: [1, true, "{{val}}", { nested: "{{portoRoot}}/test" }, null],
     };
-    const resolved = resolveVars(config, config, mockAliases);
-    expect(resolved.list).toEqual([1, true, "site", { nested: "test" }, null]);
+    const resolved = resolveVars(config, config, mockSystemVars);
+    expect(resolved.list).toEqual([
+      1,
+      true,
+      "site",
+      { nested: "/absolute/porto/test" },
+      null,
+    ]);
   });
 });
