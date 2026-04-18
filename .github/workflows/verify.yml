@@ -37,6 +37,10 @@ jobs:
 
       - name: Smoke Test
         run: |
+          # Configure Git identity for the CI runner
+          git config --global user.email "ci@portosaurus.framework"
+          git config --global user.name "Portosaurus CI"
+
           # Initialize a test project using the local binary
           bun bin/portosaurus.mjs init smoke-test-site --no-install
 
