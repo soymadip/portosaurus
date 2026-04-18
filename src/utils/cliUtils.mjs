@@ -1,12 +1,9 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import { spawn } from "child_process";
 import { logger } from "./logger.mjs";
 import { getDocuCmd } from "./packageManager.mjs";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export const PortoRoot = path.resolve(__dirname, "../..");
+import { PortoRoot } from "../core/constants.mjs";
 
 /**
  * Write the ephemeral .portosaurus/docusaurus.config.mjs shim.

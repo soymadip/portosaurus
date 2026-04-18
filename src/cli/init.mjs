@@ -2,7 +2,8 @@ import fs from "fs";
 import path from "path";
 import { logger } from "../utils/logger.mjs";
 import { getPackageManager } from "../utils/packageManager.mjs";
-import { PortoRoot, mirrorSync } from "../utils/cliHelpers.mjs";
+import { mirrorSync } from "../utils/cliUtils.mjs";
+import { PortoRoot } from "../core/constants.mjs";
 
 export async function initCommand(projectName, options) {
   const UsrProjDir = path.resolve(process.cwd(), projectName);

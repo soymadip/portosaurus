@@ -13,9 +13,10 @@ build/
 Thumbs.db
 
 # Project-specific bloat
-TEST/
-proxy/
+TEST*
+test*
 tests/
+proxy/
 
 
 # Unignore

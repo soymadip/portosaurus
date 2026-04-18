@@ -25,7 +25,9 @@ describe("resolveVars", () => {
 
   test("should resolve system variables from systemVars", () => {
     const resolved = resolveVars(mockConfig, mockConfig, mockSystemVars);
-    expect(resolved.hero_section.profile_pic).toBe("/absolute/porto/img/icon.png");
+    expect(resolved.hero_section.profile_pic).toBe(
+      "/absolute/porto/img/icon.png",
+    );
   });
 
   test("should handle chained resolutions (ref -> systemVar)", () => {
@@ -95,7 +97,10 @@ describe("resolveVars", () => {
   test("should resolve systemVars nested deep inside arrays and objects", () => {
     const config = {
       complex: {
-        items: [{ icon: "{{portoRoot}}/img/1.png" }, "{{siteRoot}}/static/2.png"],
+        items: [
+          { icon: "{{portoRoot}}/img/1.png" },
+          "{{siteRoot}}/static/2.png",
+        ],
       },
     };
     const resolved = resolveVars(config, config, mockSystemVars);

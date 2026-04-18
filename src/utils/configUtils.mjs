@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { logger } from "./logger.mjs";
-import { PortoRoot } from "./cliHelpers.mjs";
+import { PortoRoot } from "../core/constants.mjs";
 
 /**
  * Deep merge two objects. Source values override target values.

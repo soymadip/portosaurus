@@ -5,7 +5,7 @@ import {
   validateProject,
   writePortoConfigShim,
   runDocusaurus,
-} from "../utils/cliHelpers.mjs";
+} from "../utils/cliUtils.mjs";
 
 export async function serveCommand(siteDir) {
   const UserRoot = siteDir

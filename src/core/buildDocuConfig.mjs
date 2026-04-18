@@ -13,9 +13,7 @@ import {
   useEnabled,
   createStaticAssetResolver,
 } from "../utils/configUtils.mjs";
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PortoRoot = path.resolve(__dirname, "../../");
+import { PortoRoot } from "./constants.mjs";
 
 // ─── Main Config Generator ─────────────────────────────────
 

@@ -6,8 +6,8 @@ import {
   ensureContentDirs,
   writePortoConfigShim,
   runDocusaurus,
-  PortoRoot,
-} from "../utils/cliHelpers.mjs";
+} from "../utils/cliUtils.mjs";
+import { PortoRoot } from "../core/constants.mjs";
 
 export async function devCommand(siteDir, extraArgs) {
   const UserRoot = siteDir
