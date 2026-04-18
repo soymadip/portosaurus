@@ -1,22 +1,33 @@
-name: Deploy proxy to Cloudflare Workers
+name: Deploy Proxy to Cloudflare
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'proxy/**'
+      - "proxy/**"
+  workflow_dispatch:
 
 jobs:
   deploy:
+    name: Deploy Worker
     runs-on: ubuntu-latest
-    name: Deploy
     steps:
-      - uses: actions/checkout@v4
-      
+      - uses: actions/checkout@v6
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
-          
+        with:
+          bun-version: latest
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v5
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
       - name: Deploy with Wrangler
         run: cd proxy && bunx wrangler deploy
         env:

@@ -19,8 +19,6 @@ NEW_VERSION="${1:-$CZ_PRE_NEW_VERSION}"
 
 VERSION_FILES=(
     # ["PKGBUILD"]='^ *pkgver=.* > pkgver={{new_version}} ; ^ *pkgrel=.* > pkgrel=1'
-    # ["app/bin/myctl"]='^MYCTL_VER=.* > MYCTL_VER="{{new_version}}"'
-    # ["scripts/install.sh"]='^VERSION=.* > VERSION="{{new_version}}"'
     ["package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
 )
 

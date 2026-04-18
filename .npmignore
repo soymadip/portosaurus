@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Cache and build artifacts
+.docusaurus/
+.cache/
+.cache-loader/
+build/
+*.tgz
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Project-specific bloat
+TEST/
+proxy/
+tests/
+
+
+# Unignore
+!src/template/*

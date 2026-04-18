@@ -1,20 +1,32 @@
 # Dependencies
 /node_modules
 
-# Example files
-notes/
-!notes/index.mdx
+# Template files
+src/template/node_modules
+src/template/notes/*
+!src/template/notes/welcome.mdx
+
+src/template/blog/*
+!src/template/blog/authors.yml
+!src/template/blog/welcome.md
+
+# Scratch files
 static/example*
+TEST
+test-site
+scratch
 
 # Production
 /build
 *tmp*
 *temp*
+!template
 *favicon/
 TestimonialsSection/
 
 # Generated files
 .docusaurus
+.portosaurus/
 .cache-loader
 .wrangler/
 

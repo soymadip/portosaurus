@@ -1,25 +1,16 @@
-import OriginalRoot from "@theme-original/Root";
-import { PreviewProvider, ViewerWindow } from "@site/src/components/Preview";
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { PreviewProvider, ViewerWindow } from "./components/Preview/index.js";
 
 /**
- * Wraps Docusaurus's original Root (which provides ColorModeProvider, etc.)
- * so that PreviewViewer has access to all theme-level React contexts.
- *
- * Tree structure:
- *   <PreviewProvider>         ← our global state (no Docusaurus hooks)
- *     <OriginalRoot>          ← provides ColorModeProvider, etc.
- *       {children}            ← the full Docusaurus app
- *       <PreviewViewer />     ← inside ColorModeProvider ✓
- *     </OriginalRoot>
- *   </PreviewProvider>
+ * Custom Root component that wraps the entire Docusaurus app.
+ * Provides the PreviewProvider context and ViewerWindow at the top level
+ * so that all theme components have access to preview functionality.
  */
 export default function Root({ children }) {
   return (
     <PreviewProvider>
-      <OriginalRoot>
-        {children}
-        <ViewerWindow />
-      </OriginalRoot>
+      {children}
+      <BrowserOnly>{() => <ViewerWindow />}</BrowserOnly>
     </PreviewProvider>
   );
 }

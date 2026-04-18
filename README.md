@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./static/img/icon.png" width=150>
+    <img src="./src/assets/img/icon.svg" width=150>
     <h1>Portosaurus</h1>
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
 </div>
@@ -137,7 +137,7 @@ module.exports = {
 - [Docusaurus](https://docusaurus.io/) - The static site builder framework this is built upon.
 - [React](https://react.dev) - UI library for building the interactive components.
 - [React Icons](https://react-icons.github.io/) - Icon library used throughout the site.
-- Libraries listed in [package.json](https://github.com/soymadip/portosaurus/blob/compiler/package.json#L16) - Essential dependencies.
+- Libraries listed in [package.json](./package.json) - Essential dependencies.
 - [Hugo Profile](https://hugo-profile.netlify.app/) - Design inspiration.
 - [Catppuccin](https://github.com/catppuccin/catppuccin) - Color scheme that inspired the site's palette.
 - [Deepseek R1](https://www.deepseek.com/) hosted using [Ollama](https://ollama.com/library/deepseek-r1) - prism.js theme & project card component.

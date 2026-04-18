@@ -1,24 +1,39 @@
 {
   "name": "portosaurus",
-  "version": "0.15.1",
-  "private": true,
+  "version": "2.1.12",
+  "private": false,
+  "homepage": "https://github.com/soymadip/portosaurus",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soymadip/portosaurus.git"
+  },
+  "bin": {
+    "portosaurus": "bin/portosaurus.mjs"
+  },
+  "files": [
+    "bin/",
+    "src/assets/",
+    "src/cli/",
+    "src/core/",
+    "src/plugins/",
+    "src/template/",
+    "src/theme/",
+    "src/utils/"
+  ],
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "clear &&  $npm_execpath i && docusaurus start && docusaurus clear",
-    "build": "$npm_execpath i && docusaurus build",
-    "serve": "$npm_execpath i && docusaurus serve",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "swizzle": "docusaurus swizzle",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "test": "bun test",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.0",
     "@docusaurus/preset-classic": "^3.10.0",
     "@easyops-cn/docusaurus-search-local": "^0.52.1",
     "@mdx-js/react": "^3.1.1",
+    "chalk": "^5.4.1",
     "clsx": "^2.1.1",
+    "commander": "^13.1.0",
+    "consola": "^3.4.2",
     "favicons": "7.2.0",
     "framer-motion": "^12.38.0",
     "plugin-image-zoom": "github:flexanalytics/plugin-image-zoom",
@@ -32,12 +47,10 @@
     "sharp": "^0.34.4",
     "slick-carousel": "^1.8.1"
   },
-  "overrides": {
-    "webpack": "5.105.4"
-  },
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.0",
-    "@docusaurus/types": "^3.10.0"
+    "@docusaurus/types": "^3.10.0",
+    "prettier": "^3.8.3"
   },
   "browserslist": {
     "production": [

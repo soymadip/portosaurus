@@ -1,13 +1,14 @@
-import MDXComponents from "@theme-original/MDXComponents";
+import React from "react";
+import MDXComponents from "@docusaurus/theme-classic/lib/theme/MDXComponents";
 import Details from "@theme/Details";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-import { Pv, SrcPv } from "@site/src/components/Preview";
-import Tooltip from "@site/src/components/Tooltip";
-import NoteCards, { TopicList } from "@site/src/components/NoteIndex";
+import { Pv, SrcPv } from "./components/Preview/index.js";
+import Tooltip from "./components/Tooltip/index.js";
+import NoteCards, { TopicList } from "./components/NoteIndex/index.js";
 
-export default {
+const components = {
   ...MDXComponents,
   Pv,
   SrcPv,
@@ -18,3 +19,6 @@ export default {
   TabItem,
   Tooltip,
 };
+
+export default components;
+

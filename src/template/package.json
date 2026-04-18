@@ -1,0 +1,20 @@
+{
+  "name": "{{projectName}}",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "portosaurus dev",
+    "start": "portosaurus start",
+    "build": "portosaurus build",
+    "serve": "portosaurus serve"
+  },
+  "dependencies": {
+    "portosaurus": "^{{portoVer}}"
+  },
+  "overrides": {
+    "webpack": "5.105.4"
+  },
+  "resolutions": {
+    "webpack": "5.105.4"
+  }
+}
