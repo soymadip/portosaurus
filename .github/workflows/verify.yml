@@ -1,4 +1,4 @@
-name: CI / Quality Gate
+name: Code Quality Check
 
 on:
   push:
@@ -35,5 +35,11 @@ jobs:
       - name: Run unit tests
         run: bun test
 
-      - name: Smoke Test (Build Template)
-        run: bun run build
+      - name: Smoke Test
+        run: |
+          # Initialize a test project using the local binary
+          bun bin/portosaurus.mjs init smoke-test-site --no-install
+          
+          # Run build on the generated site using local framework code
+          cd smoke-test-site
+          bun ../bin/portosaurus.mjs build

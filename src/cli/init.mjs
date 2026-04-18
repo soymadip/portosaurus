@@ -117,9 +117,8 @@ export async function initCommand(projectName, options) {
     // Install dependencies
     const pm = getPackageManager(UsrProjDir);
 
-    logger.info(`Installing dependencies with ${pm.name}...`);
-
     if (options.install !== false) {
+      logger.info(`Installing dependencies with ${pm.name}...`);
       logger.info(`Running ${pm.install}...`);
       try {
         const { execSync } = await import("child_process");
