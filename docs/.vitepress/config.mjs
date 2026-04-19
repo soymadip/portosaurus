@@ -36,6 +36,10 @@ const metadata = {
 };
 
 export default withMermaid({
+  base: process.env.GITHUB_REPOSITORY
+    ? `/${process.env.GITHUB_REPOSITORY.split("/")[1]}/`
+    : "/",
+
   vite: {
     publicDir: "../public",
 
