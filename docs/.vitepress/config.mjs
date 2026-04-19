@@ -31,7 +31,7 @@ const metadata = {
     docusaurus: "https://docusaurus.io/",
     vitepress: "https://vitepress.dev/",
     yaml: "https://yaml.org/",
-    staticShort: "https://github.com/soymadip/staticshort"
+    staticShort: "https://github.com/soymadip/staticshort",
   },
 };
 

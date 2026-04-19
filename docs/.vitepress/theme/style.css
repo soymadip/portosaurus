@@ -125,7 +125,7 @@
   border-top: none !important;
   border-bottom: 2px solid var(--vp-c-brand-soft);
   padding-bottom: 0.25em;
-  margin-top: .9rem;
+  margin-top: 0.9rem;
 }
 .vp-doc h3 {
   font-size: 1.5rem !important;

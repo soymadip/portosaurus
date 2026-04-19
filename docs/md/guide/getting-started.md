@@ -1,10 +1,8 @@
 # Getting Started
 
-
 ## Initialization
 
 We will be creating new project **`<yourUsername>.github.io`** (`YourUsername` is your github username). In Github, this repo is a special repo that becomes your github pages url.
-
 
 Bootstrap your project directory using the CLI
 
@@ -29,8 +27,6 @@ soymadip.gitub.io
 ├── package.json      # Standard js package.json
 └── README.md         # Project Readme
 ```
-
-
 
 ## Launch the Dev Server
 

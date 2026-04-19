@@ -13,6 +13,7 @@ npx {{meta.pkg}} init <project-name> [options]
 ```
 
 **Options:**
+
 - `--no-install`: Defer dependency resolution to manual execution.
 - `--no-git-pages`: Bypass automated GitHub Pages OIDC configuration.
 
@@ -27,6 +28,7 @@ npx {{meta.pkg}} dev [project-path]
 ```
 
 **Core Features:**
+
 - **Schema Guard**: Real-time YAML validation and typo detection.
 - **Dynamic Resolution**: On-the-fly resolution of `{{variables}}`.
 - **Hot-Reloading**: Instantaneous HMR for both content and metadata blueprints.
@@ -42,4 +44,5 @@ npx {{meta.pkg}} build [project-path]
 ```
 
 **Artifact Generation:**
+
 - Optimized static assets are exported to the `build/` directory, ready for immutable deployment.
