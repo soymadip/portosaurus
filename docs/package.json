@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "dev": "vitepress dev --host",
+    "build": "vitepress build",
+    "preview": "vitepress preview --host"
+  },
+  "devDependencies": {
+    "markdown-it-task-lists": "^2.1.1",
+    "mermaid": "^11.14.0",
+    "vitepress": "^2.0.0-alpha.17",
+    "vitepress-plugin-mermaid": "^2.0.17",
+    "vue": "^3.5.32"
+  }
+}

@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev": "portosaurus dev",
-    "start": "portosaurus start",
-    "build": "portosaurus build",
+    "dev": "$npm_execpath install && portosaurus dev",
+    "start": "$npm_execpath install && portosaurus start",
+    "build": "$npm_execpath install && portosaurus build",
     "serve": "portosaurus serve"
   },
   "dependencies": {

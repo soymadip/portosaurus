@@ -93,9 +93,9 @@ commitizen:
     - git push origin $(git branch --show-current) --follow-tags
   pre_bump_hooks:
     - src/cz/bumper.sh
-    - bun format
     - bun install
     - npm install
+    - bun format
   tag_format: v$version
   template: src/cz/changelog.j2
   update_changelog_on_bump: false

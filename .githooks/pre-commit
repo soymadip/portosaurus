@@ -3,6 +3,3 @@
 # Git pre-commit hook to run formatting
 echo "Running bun format..."
 bun format
-
-# Re-add formatted files to the commit
-git add .

@@ -1,5 +1,5 @@
 # Dependencies
-/node_modules
+node_modules/
 
 # Template files
 src/template/node_modules
@@ -17,7 +17,8 @@ test-site
 scratch
 
 # Production
-/build
+build/
+dist/
 *tmp*
 *temp*
 !template
@@ -29,6 +30,7 @@ TestimonialsSection/
 .portosaurus/
 .cache-loader
 .wrangler/
+cache
 
 # Misc
 .DS_Store

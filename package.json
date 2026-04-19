@@ -1,8 +1,9 @@
 {
   "name": "portosaurus",
+  "description": "Complete portfolio cum personal website solution for your digital personality.",
   "version": "3.0.2",
   "private": false,
-  "homepage": "https://github.com/soymadip/portosaurus",
+  "homepage": "https://soymadip.github.io/portosaurus",
   "repository": {
     "type": "git",
     "url": "https://github.com/soymadip/portosaurus.git"
@@ -36,6 +37,7 @@
     "consola": "^3.4.2",
     "favicons": "7.2.0",
     "framer-motion": "^12.38.0",
+    "js-yaml": "^4.1.1",
     "plugin-image-zoom": "github:flexanalytics/plugin-image-zoom",
     "prism-react-renderer": "^2.4.1",
     "react": "^18.0.0",
@@ -50,7 +52,8 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "^3.10.0",
     "@docusaurus/types": "^3.10.0",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "vitepress": "^2.0.0-alpha.17"
   },
   "browserslist": {
     "production": [
