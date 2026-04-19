@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 import { createRequire } from "module";
-import { logger } from "../utils/logger.mjs";
 
 import {
   deepMerge,
@@ -89,13 +87,14 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
   }
 
   // Paths for content — these point directly to the user's project
-  const UserNotesDir = path.resolve(UserRoot, "notes");
-  const UserBlogDir = path.resolve(UserRoot, "blog");
+  const UserNotesDir = "notes";
+  const UserBlogDir = "blog";
 
   const PortoFaviconCacheDir = path.resolve(
     UserRoot,
     ".docusaurus/portosaurus/favicon",
   );
+
   const StaticDirs = [
     UserStaticDir,
     PortoAssetDir,
@@ -104,7 +103,6 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
 
   /**
    * Validates a static asset path with fallback.
-   * Aliases (@porto/, @site/) are already resolved globally by resolveAliases().
    *   - Remote URLs (http/https) pass through as-is.
    *   - Local paths are checked against UserStaticDir, then PortoAssetDir.
    */

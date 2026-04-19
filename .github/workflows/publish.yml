@@ -9,11 +9,11 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
-    environment: npm # Matches the environment name in NPM settings
+    environment: npm
 
     permissions:
       contents: read
-      id-token: write # Required for Trusted Publishing (OIDC)
+      id-token: write
 
     steps:
       - uses: actions/checkout@v6
