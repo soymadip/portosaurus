@@ -30,7 +30,7 @@ export function resolveVars(context, metadata) {
     str = str.replace(/{{currentDate}}/g, date);
 
     // Handle {{portoVersion}}
-    str = str.replace(/{{portoVersion}}/g, metadata.versions?.porto || "N/A");
+    str = str.replace(/{{portoVersion}}/g, metadata.versions?.porto || "0.0.0");
 
     // Handle {{meta.*}}, {{custom.*}}, {{env.*}}
     str = str.replace(

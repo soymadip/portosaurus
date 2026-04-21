@@ -13,12 +13,12 @@ const metadata = {
     title: pkg.name.charAt(0).toUpperCase() + pkg.name.slice(1),
     desc: "for your digital personality",
     tagLine: pkg.description,
-    repo: pkg.homepage ? pkg.homepage.replace(/\/$/, "") : "",
+    repo: pkg.repository.url ? pkg.homepage.replace(/\/$/, "") : "",
   },
 
   // Versions & Requirements
   versions: {
-    porto: pkg.version,
+    porto: pkg.version || "0.0.0",
     node_min: pkg.engines?.node || "20.0+",
   },
 
