@@ -106,6 +106,7 @@ import {
   SiElasticsearch,
   SiGraphql,
   SiGoogledrive,
+  SiLua,
 } from "react-icons/si";
 
 import {
@@ -204,6 +205,7 @@ export const iconMap = {
   php: { icon: FaPhp, color: "#777BB4" },
   html: { icon: FaHtml5, color: "#E34F26" },
   css: { icon: FaCss3Alt, color: "#1572B6" },
+  lua: { icon: SiLua, color: "#000080" },
   sql: { icon: SiMysql, color: "#4479A1" },
   postgresql: { icon: BiLogoPostgresql, color: "#336791" },
   postgres: { icon: BiLogoPostgresql, color: "#336791" },

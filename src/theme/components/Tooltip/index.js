@@ -8,40 +8,43 @@ export default function Tooltip({
   position = "top",
   color,
   underline = true,
+  gap = 4,
+  shadow,
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef(null);
 
-  const tooltipStyle = color
-    ? {
-        "--tooltip-color": color,
-        "--tooltip-text-color": "var(--ifm-font-color-base-inverse)",
-      }
-    : {};
+  const tooltipStyle = {
+    ...(color && {
+      "--tooltip-color": color,
+      "--tooltip-text-color": "var(--ifm-font-color-base-inverse)",
+    }),
+    ...(shadow && { "--tooltip-shadow": shadow }),
+  };
 
   const show = useCallback(() => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const gap = 8;
+    const tooltipGap = gap;
 
     let top, left;
     switch (position) {
       case "bottom":
-        top = rect.bottom + gap;
+        top = rect.bottom + tooltipGap;
         left = rect.left + rect.width / 2;
         break;
       case "left":
         top = rect.top + rect.height / 2;
-        left = rect.left - gap;
+        left = rect.left - tooltipGap;
         break;
       case "right":
         top = rect.top + rect.height / 2;
-        left = rect.right + gap;
+        left = rect.right + tooltipGap;
         break;
       case "top":
       default:
-        top = rect.top - gap;
+        top = rect.top - tooltipGap;
         left = rect.left + rect.width / 2;
         break;
     }

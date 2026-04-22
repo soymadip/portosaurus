@@ -8,98 +8,158 @@
 
 .hasUnderline {
   cursor: help;
-  border-bottom: 1.5px dotted var(--ifm-color-primary);
-  transition: border-bottom-color 0.2s ease;
+  text-decoration: none;
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ifm-color-primary), transparent 40%) 1px,
+    transparent 1.2px
+  );
+  background-position: bottom;
+  background-size: 6px 2.5px;
+  background-repeat: space no-repeat;
+  padding-bottom: 1px;
+  transition: background-image 0.2s ease;
 }
 
 .hasUnderline:hover {
-  border-bottom-style: dashed;
-  border-bottom-color: var(--ifm-color-primary-darker);
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ifm-color-primary-darker), transparent 10%) 1.2px,
+    transparent 1.5px
+  );
 }
 
 .tooltip {
   position: fixed;
   background-color: var(--tooltip-color, var(--ifm-background-surface-color));
   color: var(--tooltip-text-color, var(--ifm-font-color-base));
-  padding: 6px 10px;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  font-weight: 400;
+  padding: 8px 12px;
+  border-radius: var(--ifm-global-radius);
+  font-size: 0.85rem;
+  font-weight: 450;
+  text-align: center;
+  line-height: 1.4;
   white-space: normal;
   word-break: break-word;
-  max-width: min(320px, 90vw);
+  overflow-wrap: anywhere;
+  max-width: min(240px, 90vw);
   width: max-content;
   z-index: 9999;
   opacity: 0;
-  animation: tooltipFadeIn 0.15s ease-out forwards;
-  box-shadow: var(--ifm-global-shadow-md);
+  filter: var(--tooltip-shadow, drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5)));
+  border: 1px solid var(--ifm-color-emphasis-300);
   pointer-events: none;
+}
+
+.top {
+  transform: translateX(-50%) translateY(-100%);
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.bottom {
+  transform: translateX(-50%);
+  animation: popDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.left {
+  transform: translateX(-100%) translateY(-50%);
+  animation: popLeft 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.right {
+  transform: translateY(-50%);
+  animation: popRight 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 .arrow {
   position: absolute;
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   background-color: inherit;
-}
-
-/* Positioning: coordinates are set via JS (top/left on the element).
-   These classes only handle the transform offset from that anchor point. */
-
-.top {
-  transform: translateX(-50%) translateY(-100%);
 }
 
 .top .arrow {
   top: 100%;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  margin-top: -4px;
-}
-
-.bottom {
-  transform: translateX(-50%);
+  margin-top: -5.5px;
+  border-right: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .bottom .arrow {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%) rotate(45deg);
-  margin-bottom: -4px;
-}
-
-.left {
-  transform: translateX(-100%) translateY(-50%);
+  margin-bottom: -5.5px;
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  border-top: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .left .arrow {
-  right: -4px;
+  right: -5.5px;
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
-}
-
-.right {
-  transform: translateY(-50%);
+  border-right: 1px solid var(--ifm-color-emphasis-300);
+  border-top: 1px solid var(--ifm-color-emphasis-300);
 }
 
 .right .arrow {
-  left: -4px;
+  left: -5.5px;
   top: 50%;
   transform: translateY(-50%) rotate(45deg);
+  border-left: 1px solid var(--ifm-color-emphasis-300);
+  border-bottom: 1px solid var(--ifm-color-emphasis-300);
 }
 
-@keyframes tooltipFadeIn {
+@keyframes popUp {
   from {
     opacity: 0;
+    transform: translateX(-50%) translateY(-95%) scale(0.9);
   }
   to {
     opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
+  }
+}
+
+@keyframes popDown {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-5%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes popLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-95%) translateY(-50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-100%) translateY(-50%) scale(1);
+  }
+}
+
+@keyframes popRight {
+  from {
+    opacity: 0;
+    transform: translateX(5%) translateY(-50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(-50%) scale(1);
   }
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
   .tooltip {
-    animation: none;
+    animation: none !important;
+    opacity: 1;
   }
 }
