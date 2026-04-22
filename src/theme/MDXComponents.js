@@ -1,4 +1,3 @@
-import React from "react";
 import MDXComponents from "@docusaurus/theme-classic/lib/theme/MDXComponents";
 import Details from "@theme/Details";
 import Tabs from "@theme/Tabs";
