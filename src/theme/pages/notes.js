@@ -1,7 +1,7 @@
 import Layout from "@theme/Layout";
 import NoteCards from "../components/NoteIndex/index.js";
 import { usePluginData } from "@docusaurus/useGlobalData";
-import ScrollToTop from "../components/ScrollToTop/index.js";
+import NavArrow from "../components/NavArrow/index.js";
 import HashNavigation from "../utils/HashNavigation.js";
 
 const style = {
@@ -70,7 +70,7 @@ export default function Notes() {
             </p>
           </header>
           <NoteCards />
-          <ScrollToTop />
+          <NavArrow />
           <HashNavigation
             elementPrefix="note-"
             elementSelector=".note-card"

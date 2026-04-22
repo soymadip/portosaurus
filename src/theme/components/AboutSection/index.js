@@ -6,7 +6,7 @@ export default function AboutSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
   const aboutMe = customFields.aboutMe || {};
-  
+
   const [sectionRef, isVisible] = useScrollReveal();
 
   return (

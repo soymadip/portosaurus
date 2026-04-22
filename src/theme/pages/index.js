@@ -8,7 +8,7 @@ import AboutSection from "../components/AboutSection/index.js";
 import ProjectsSection from "../components/ProjectsSection/index.js";
 import ContactSection from "../components/ContactSection/index.js";
 import ExperienceSection from "../components/ExperienceSection/index.js";
-import ScrollToTop from "../components/ScrollToTop/index.js";
+import NavArrow from "../components/NavArrow/index.js";
 
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
@@ -74,8 +74,8 @@ export default function Home() {
           />
         )}
 
-        {/* Scroll to top button */}
-        <ScrollToTop hideDelay={3500} />
+        {/* Smart Navigation Arrow */}
+        <NavArrow />
       </main>
     </Layout>
   );

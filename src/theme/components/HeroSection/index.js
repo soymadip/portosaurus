@@ -1,5 +1,6 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import SocialLinks from "../SocialLinks/index.js";
+import { FaChevronDown } from "react-icons/fa";
 import styles from "./styles.module.css";
 
 export default function HeroSection({ id, className }) {
