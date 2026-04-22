@@ -118,7 +118,7 @@
   position: relative;
   border-radius: var(--ifm-card-border-radius);
   overflow: hidden;
-  box-shadow: 0 10px 20px var(--ifm-shadow-color);
+  box-shadow: none;
   transform: none;
   transition:
     transform 0.4s ease,
@@ -136,14 +136,19 @@
   bottom: 0;
   border: 2px solid var(--ifm-color-primary);
   border-radius: var(--ifm-card-border-radius);
-  opacity: 0.2;
+  opacity: 0;
   pointer-events: none;
   z-index: 1;
+  transition: opacity 0.4s ease;
+}
+
+.imageWrapper:hover::before {
+  opacity: 0.3;
 }
 
 .imageWrapper:hover {
   transform: translateY(-8px);
-  box-shadow: 0 15px 30px var(--ifm-shadow-color);
+  box-shadow: 0 20px 40px var(--ifm-shadow-color);
 }
 
 .aboutImage {
@@ -308,7 +313,8 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  animation-delay: calc(0.1s + (var(--card-index, 0) * 0.1s));
+  transform: translateY(10px);
+  animation: skillAppear 0.5s ease-out forwards;
   box-shadow: var(--ifm-global-shadow-lw);
 }
 

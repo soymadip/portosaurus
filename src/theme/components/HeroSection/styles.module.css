@@ -255,7 +255,7 @@
   height: 270px;
   border-radius: 20%;
   object-fit: cover;
-  box-shadow: 0 10px 25px var(--ifm-shadow-color);
+  box-shadow: none;
   margin-top: -30px;
   margin-right: 2rem;
   transition:
@@ -268,7 +268,7 @@
 
 .profilePic:hover {
   transform: scale(1.04) translateY(-8px);
-  box-shadow: 0 15px 30px var(--ifm-shadow-color);
+  box-shadow: 0 20px 40px var(--ifm-shadow-color);
 }
 
 /* Responsive styles for sections */
@@ -311,7 +311,7 @@
     margin-top: -20px;
     margin-bottom: 1.2rem;
     margin-right: 0;
-    box-shadow: 0 8px 20px var(--ifm-shadow-color);
+    box-shadow: none;
   }
 
   .profilePic:hover {
@@ -418,7 +418,7 @@
     height: 160px;
     margin-top: -25px;
     margin-bottom: 1.5rem;
-    box-shadow: 0 6px 15px var(--ifm-shadow-color);
+    box-shadow: none;
   }
 
   .title {
