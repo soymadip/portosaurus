@@ -13,7 +13,6 @@ The configuration is divided into several main blocks that map directly to the r
 - **`tools`**: Functional utilities like link shorteners.
 - **`custom`**: User-defined variables for re-use.
 
-
 ## `site`
 
 The `site` block contains global settings for your site identity and SEO. This information is used to generate meta tags, site titles, and social sharing previews.
@@ -32,7 +31,6 @@ The `site` block contains global settings for your site identity and SEO. This i
 | `rss`                | `boolean` | `true`           | Enable RSS and Atom feeds for the blog.                          |
 | `head_tags`          | `array`   | `[]`             | Custom HTML tags to inject into `<head>` (see Advanced section). |
 | `cors_proxy`         | `array`   | `[]`             | Custom CORS proxies for image loading (see Advanced section).    |
-
 
 ## `theme`
 
@@ -65,7 +63,6 @@ Fine-tune the behavior of the Markdown renderer and documentation features.
 | `on_broken_links`  | `string`  | `"throw"` | MD-specific broken link behavior.       |
 | `on_broken_images` | `string`  | `"throw"` | MD-specific broken image behavior.      |
 | `mermaid`          | `boolean` | `true`    | Enable support for Mermaid.js diagrams. |
-
 
 ## `home_page`
 
@@ -101,21 +98,24 @@ The about section allows you to provide a more detailed biography and list your 
 
 The project shelf is a curated showcase of your best work. You can feature specific projects to give them more prominence.
 
-| Key      | Type      | Default | Description                                 |
-| :------- | :-------- | :------ | :------------------------------------------ |
-| `enable` | `boolean` | `true`  | Toggle the project showcase.                |
-| `list`   | `array`   | `[]`    | List of project objects (see schema below). |
+| Key        | Type      | Default | Description                                 |
+| :--------- | :-------- | :------ | :------------------------------------------ |
+| `enable`   | `boolean` | `true`  | Toggle the project showcase.                |
+| `projects` | `array`   | `[]`    | List of project objects (see schema below). |
 
 **Project Object Schema:**
 
-| Key        | Type      | Description                                        |
-| :--------- | :-------- | :------------------------------------------------- |
-| `title`    | `string`  | Name of the project.                               |
-| `img`      | `string`  | Path to project screenshot/thumbnail (optional).   |
-| `featured` | `boolean` | If true, the project gets a prominent layout.      |
-| `desc`     | `string`  | Brief description of the project and tech stack.   |
-| `tags`     | `array`   | List of tech keywords (e.g., `["React", "Node"]`). |
-| `link`     | `string`  | URL to the repository or live demo.                |
+| Key        | Type      | Default            | Description                                                                                                                                |
+| :--------- | :-------- | :----------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`    | `string`  | `"Future Project"` | Name of the project.                                                                                                                       |
+| `img`      | `string`  | `(blank icon)`     | Path to project thumbnail. Supports internal paths using `{{portoRoot}}` (e.g., `{{portoRoot}}/src/assets/img/icon.png`) or external URLs. |
+| `state`    | `string`  | `"active"`         | Project status badge (`active`, `completed`, `maintenance`, `paused`, `archived`, `planned`). Rendered as a themed pill in the top-right.  |
+| `featured` | `boolean` | `false`            | If true, the project gets a prominent border and is **automatically sorted to the beginning** of the carousel.                             |
+| `desc`     | `string`  | `"Coming soon..."` | Brief description of the project and tech stack.                                                                                           |
+| `tags`     | `array`   | `[]`               | Tech keywords (e.g., `["React", "Node"]`). Displayed as micro-glass pills inside the image container.                                      |
+| `website`  | `string`  | `null`             | URL to the live website or production version.                                                                                             |
+| `repo`     | `string`  | `null`             | URL to the source code repository (e.g., GitHub).                                                                                          |
+| `demo`     | `string`  | `null`             | URL to a live demo or interactive preview.                                                                                                 |
 
 ### `experience`
 
@@ -128,12 +128,12 @@ The experience section provides a timeline of your professional career, educatio
 
 **Experience Object Schema:**
 
-| Key        | Type     | Description                                        |
-| :--------- | :------- | :------------------------------------------------- |
-| `company`  | `string` | Name of the organization.                          |
-| `role`     | `string` | Your job title.                                    |
-| `duration` | `string` | Time period (e.g., "2022 - Present").              |
-| `desc`     | `string` | Summary of your responsibilities and achievements. |
+| Key        | Type     | Default | Description                                        |
+| :--------- | :------- | :------ | :------------------------------------------------- |
+| `company`  | `string` | `null`  | Name of the organization.                          |
+| `role`     | `string` | `null`  | Your job title.                                    |
+| `duration` | `string` | `null`  | Time period (e.g., "2022 - Present").              |
+| `desc`     | `string` | `null`  | Summary of your responsibilities and achievements. |
 
 ### `social`
 
@@ -146,12 +146,11 @@ Manage your social media presence and contact links. These are usually displayed
 
 **Social Link Schema:**
 
-| Key    | Type     | Description                                          |
-| :----- | :------- | :--------------------------------------------------- |
-| `name` | `string` | Name of the platform (e.g., "GitHub").               |
-| `icon` | `string` | Icon identifier (supports FontAwesome/Lucide names). |
-| `link` | `string` | URL to your profile.                                 |
-
+| Key    | Type     | Default | Description                                          |
+| :----- | :------- | :------ | :--------------------------------------------------- |
+| `name` | `string` | `null`  | Name of the platform (e.g., "GitHub").               |
+| `icon` | `string` | `null`  | Icon identifier (supports FontAwesome/Lucide names). |
+| `link` | `string` | `null`  | URL to your profile.                                 |
 
 ## `tasks`
 
@@ -166,12 +165,11 @@ The `tasks` block powers a public roadmap and goal tracking system. It allows yo
 
 **Task `list` Object Schema:**
 
-| Key      | Type     | Description                                       |
-| :------- | :------- | :------------------------------------------------ |
-| `title`  | `string` | Short name of the task.                           |
-| `status` | `string` | Current progress (`done`, `todo`, `in-progress`). |
-| `desc`   | `string` | Optional details about the task.                  |
-
+| Key      | Type     | Default  | Description                                       |
+| :------- | :------- | :------- | :------------------------------------------------ |
+| `title`  | `string` | `null`   | Short name of the task.                           |
+| `status` | `string` | `"todo"` | Current progress (`done`, `todo`, `in-progress`). |
+| `desc`   | `string` | `null`   | Optional details about the task.                  |
 
 ## `tools`
 
@@ -187,7 +185,6 @@ A built-in utility to create short, memorable URLs that redirect to external sit
 | `deploy_path` | `string`  | `"/l"`  | URL base path for redirects.           |
 | `short_links` | `object`  | `{}`    | Key-value map of slugs to target URLs. |
 
-
 ## `custom`
 
 Define any key-value pairs in the `custom` block to reference them throughout your content using the `{{custom.key}}` syntax. This is useful for centralizing information like usernames or common links.
@@ -197,7 +194,6 @@ custom:
   github: "yourusername"
   twitter: "@yourhandle"
 ```
-
 
 ## Advanced Configuration
 
@@ -215,4 +211,3 @@ site:
         src: "https://example.com/script.js"
         async: true
 ```
-

@@ -10,9 +10,18 @@ Use double curly braces to reference a variable: `{{variable_name}}`.
 
 ### System Variables
 
-- `\{{portoVersion}}`: Current {{meta.project.title}} version.
-- `\{{compileYear}}`: Year at build time (e.g. {{compileYear}}).
-- `\{{compileDate}}`: Date at build time.
+- `{{portoVersion}}`: Current {{meta.project.title}} version.
+- `{{portoRoot}}`: Absolute path to the Portosaurus installation root. Crucial for referencing internal assets (e.g., `{{portoRoot}}/src/assets/img/icon.png`).
+- `{{compileYear}}`: Year at build time.
+- `{{compileDate}}`: Date at build time.
+
+### Configuration References
+
+You can reference values from the `site` block within other parts of your configuration:
+
+- `{{site.title}}`: Site title from the site block.
+- `{{site.tagline}}`: Site tagline from the site block.
+- `{{site.url}}`: Site URL from the site block.
 
 ### Environment Variables
 
