@@ -24,7 +24,10 @@
   min-height: calc(100vh - 60px);
   margin-bottom: 0;
   width: 100%;
-  padding: 1.5rem 0 5rem;
+  padding: 3rem 0 7rem;
+  position: relative;
+  overflow: visible !important;
+  z-index: 100;
   background-color: var(--ifm-background-color);
 }
 
@@ -32,6 +35,20 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem 2rem;
+  overflow: visible !important;
+}
+
+.projectsCarousel,
+.projectsCarousel :global(.slick-slider),
+.projectsCarousel :global(.slick-list),
+.projectsCarousel :global(.slick-track),
+.projectsCarousel :global(.slick-slide) {
+  overflow: visible !important;
+}
+
+.projectsCarousel {
+  padding: 2.5rem 0 !important;
+  margin: -2.5rem 0 !important;
 }
 
 .projectsHeader {
@@ -60,27 +77,95 @@
 /* Carousel Styles */
 .carouselContainer {
   position: relative;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0.75rem 2rem 0;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  width: 100%;
 }
 
 .carouselWrapper {
-  width: 100%;
-  overflow: hidden;
-  margin-bottom: 35px;
+  flex: 1;
+  min-width: 0; /* Important for flex children */
+  overflow: visible !important;
+  position: relative;
+}
+
+.carouselControl {
+  background: var(--ifm-color-emphasis-100);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--ifm-color-primary);
+  box-shadow: var(--ifm-global-shadow-lw);
+  z-index: 10;
+  flex-shrink: 0;
+  position: static !important;
+}
+
+.prevButton,
+.nextButton {
+  position: static !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+}
+
+.carouselControl:hover:not(:disabled) {
+  background: var(--ifm-color-primary);
+  color: var(--ifm-color-white);
+  transform: scale(1.1) !important;
+}
+
+.carouselControl:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .projectsCarousel {
   width: 100%;
-  margin: 0 auto;
+  margin: 0;
+  padding: 0; /* Resetting previously added padding */
+}
+
+.projectsCarousel :global(.slick-list) {
+  margin: 0 !important;
+}
+
+.carouselArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1000;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+.prevArrow {
+  left: -40px !important;
+}
+
+.nextArrow {
+  right: -40px !important;
 }
 
 .carouselSlide {
-  padding: 4px 8px;
+  padding: 10px 12px;
   height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.carouselSlide:hover {
+  z-index: 999;
 }
 
 .carouselCard {
@@ -100,6 +185,11 @@
     border-color 0.3s ease;
   border: 1px solid var(--ifm-shadow-color);
   width: 100%;
+  transform: translate3d(0, 0, 0);
+}
+
+.carouselSlide:hover .carouselCard {
+  transform: scale(1.02) translate3d(0, 0, 0);
 }
 
 .featuredCard {
@@ -130,12 +220,15 @@
 }
 
 .carouselCard:hover {
-  transform: scale(1.02);
-  border-color: var(--ifm-color-primary);
+  transform: scale(1.02) translate3d(0, 0, 0);
+  border-color: rgba(var(--ifm-color-primary-rgb), 0.4);
+  z-index: 999;
 }
 
 .featuredCard:hover {
-  border-width: 1.5px;
+  border-width: 2px;
+  border-color: var(--ifm-color-primary);
+  box-shadow: none;
 }
 
 .projectImageContainer {
@@ -143,24 +236,35 @@
   width: 100%;
   padding-top: 62%;
   overflow: hidden;
-  background-color: var(--ifm-shadow-color);
-  border-bottom-left-radius: var(--ifm-card-border-radius);
-  border-bottom-right-radius: var(--ifm-card-border-radius);
+  background-color: rgba(var(--ifm-color-primary-rgb), 0.05);
+  border-top-left-radius: var(--ifm-card-border-radius);
+  border-top-right-radius: var(--ifm-card-border-radius);
+  clip-path: inset(
+    0 round var(--ifm-card-border-radius) var(--ifm-card-border-radius) 0 0
+  );
+  border-bottom: 1px solid var(--ifm-hr-border-color);
 }
 
 .projectImage {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transform: scale(1.05);
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
+  object-fit: contain;
+  object-position: center;
+  transform: scale(1.05) translate3d(0, 0, 0);
   transition: transform 0.5s ease;
+  color: transparent;
+  font-size: 0;
+  text-indent: -9999px;
+  backface-visibility: hidden;
 }
 
-.carouselCard:hover .projectImage {
-  transform: scale(1.12);
+.carouselSlide:hover .projectImage {
+  transform: scale(1.12) translate3d(0, 0, 0);
 }
 
 /* Card content styling */
@@ -200,6 +304,7 @@
 
 .stateCompleted {
   background-color: var(--ifm-color-blue);
+  color: var(--ifm-color-black);
 }
 
 .stateMaintenance {
@@ -241,27 +346,31 @@
   line-height: 1.4;
 }
 
-/* Tags styling */
+/* Tags styling (Responsive Bottom Row) */
 .projectTags {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  z-index: 5;
   display: flex;
+  flex-direction: row;
   flex-wrap: wrap;
-  gap: 0.25rem;
-  margin: 0.5rem 0 0.8rem;
-  opacity: 0.85;
-  justify-content: center;
+  gap: 4px;
+  align-items: center;
 }
 
 .projectTag {
-  background-color: var(--ifm-shadow-color);
-  color: var(--ifm-font-color-secondary);
-  padding: 0.02rem 0.3rem;
-  padding-top: 0px;
-  border-radius: 40px;
-  font-size: 0.55rem;
-  font-weight: 400;
-  transition: background-color 0.2s ease;
-  border: 1px solid var(--ifm-color-gray-500);
-  margin: 0.05rem;
+  background-color: color-mix(in srgb, var(--ifm-color-black), transparent 60%);
+  backdrop-filter: blur(12px);
+  color: var(--ifm-color-white);
+  padding: 0px 1px 1px 2px;
+  border-radius: 3px;
+  font-size: 0.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  border: none;
+  box-shadow: var(--ifm-global-shadow-lw);
 }
 
 /* Links styling */
@@ -549,11 +658,15 @@
   .projectLinks {
     padding: 0.8rem 1.1rem 1.3rem;
     gap: 0.7rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .projectLinks {
-    padding: 0.8rem 1.1rem 1.3rem;
-    gap: 0.7rem;
+  .projectLink {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.75rem;
+    min-width: 80px;
+    justify-content: center;
   }
 
   .prevButton {

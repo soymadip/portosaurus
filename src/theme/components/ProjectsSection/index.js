@@ -101,6 +101,13 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
         return processed;
       });
+      
+      // Sort projects: featured first, then original order
+      processedProjects.sort((a, b) => {
+        if (a.featured && !b.featured) return -1;
+        if (!a.featured && b.featured) return 1;
+        return 0;
+      });
 
       // Calculate pagination and placeholder needs
       const totalPages = Math.ceil(processedProjects.length / slides);
@@ -457,6 +464,17 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                           />
                         )}
 
+                        {/* Project tags (Responsive Bottom Row) */}
+                        {project.tags?.length > 0 && (
+                          <div className={styles.projectTags}>
+                            {project.tags.map((tag) => (
+                              <span key={tag} className={styles.projectTag}>
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
                         {/* Featured badge */}
                         {project.featured && (
                           <div
@@ -472,15 +490,6 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                       <div className={styles.projectContent}>
                         <h3 className={styles.projectTitle}>{project.title}</h3>
 
-                        {project.tags?.length > 0 && (
-                          <div className={styles.projectTags}>
-                            {project.tags.map((tag) => (
-                              <span key={tag} className={styles.projectTag}>
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
 
                         <p className={styles.projectDescription}>
                           {project.description}
