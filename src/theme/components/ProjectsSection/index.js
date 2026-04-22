@@ -9,6 +9,7 @@ import {
   FaStar,
 } from "react-icons/fa";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useScrollReveal from "../../hooks/useScrollReveal";
 import styles from "./styles.module.css";
 
 // Import slick carousel css
@@ -29,6 +30,8 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
   const [totalPages, setTotalPages] = useState(1);
   const activeDotRef = useRef(null);
   const dotsContainerRef = useRef(null);
+
+  const [sectionRef, isVisible] = useScrollReveal();
 
   // Default Settings
   const projectDefaults = {
@@ -393,7 +396,8 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
   return (
     <div
       id={id}
-      className={`${styles.projectsSection} ${className || ""}`}
+      ref={sectionRef}
+      className={`${styles.projectsSection} ${isVisible ? "is-visible" : ""} ${className || ""}`}
       role="region"
       aria-label="Projects section"
     >
@@ -437,6 +441,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                     data-project-id={project.id}
                     aria-roledescription="slide"
                     aria-label={`Project ${index + 1} of ${projects.length}: ${project.title}`}
+                    style={{ "--card-index": index }}
                   >
                     <div
                       className={`${styles.carouselCard} ${project.featured ? styles.featuredCard : ""}`}

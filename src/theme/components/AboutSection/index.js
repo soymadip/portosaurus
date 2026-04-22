@@ -1,15 +1,19 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useScrollReveal from "../../hooks/useScrollReveal";
 import styles from "./styles.module.css";
 
 export default function AboutSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
   const aboutMe = customFields.aboutMe || {};
+  
+  const [sectionRef, isVisible] = useScrollReveal();
 
   return (
     <div
       id={id}
-      className={`${styles.aboutSection} ${className || ""}`}
+      ref={sectionRef}
+      className={`${styles.aboutSection} ${isVisible ? "is-visible" : ""} ${className || ""}`}
       role="region"
       aria-label="About me section"
     >

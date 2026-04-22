@@ -1,6 +1,8 @@
+import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { iconMap } from "../../config/iconMappings";
 import { FaQuestionCircle } from "react-icons/fa";
+import useScrollReveal from "../../hooks/useScrollReveal";
 import styles from "./styles.module.css";
 
 const sortEmail = (links) => {
@@ -27,12 +29,15 @@ export default function ContactSection({ id, className, title, subtitle }) {
   const { customFields } = siteConfig;
   let socialLinks = customFields.socialLinks.links || [];
 
+  const [sectionRef, isVisible] = useScrollReveal();
+
   socialLinks = sortEmail(socialLinks);
 
   return (
     <div
       id={id}
-      className={`${styles.contactSection} ${className || ""}`}
+      ref={sectionRef}
+      className={`${styles.contactSection} ${isVisible ? "is-visible" : ""} ${className || ""}`}
       role="region"
       aria-label="Contact section"
     >

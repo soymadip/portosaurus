@@ -11,7 +11,7 @@
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -22,7 +22,7 @@
 @keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(-30px);
+    transform: translateX(-40px);
   }
   to {
     opacity: 1;
@@ -33,7 +33,7 @@
 @keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(30px);
+    transform: translateX(40px);
   }
   to {
     opacity: 1;
@@ -41,10 +41,10 @@
   }
 }
 
-@keyframes gentleAppear {
+@keyframes scaleIn {
   from {
     opacity: 0;
-    transform: scale(0.96);
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -89,7 +89,7 @@
   color: var(--ifm-font-color-tertiary);
   font-family: var(--ifm-font-family-base);
   margin-bottom: 0.2rem;
-  animation: slideUp 0.6s ease-out 0.4s both;
+  animation: slideUp 0.8s ease-out 0.4s both;
 }
 
 .title {
@@ -98,7 +98,7 @@
   margin: 0.2rem 0;
   color: var(--ifm-color-primary);
   font-family: var(--ifm-font-family-base);
-  animation: slideUp 0.6s ease-out 0.6s both;
+  animation: slideUp 0.8s ease-out 0.6s both;
   transition: all 0.3s ease;
   position: relative;
   display: inline-block;
@@ -132,7 +132,7 @@
   font-family: var(--ifm-font-family-base);
   margin-left: 0.1rem;
   margin-right: 0.5rem;
-  animation: slideUp 0.6s ease-out 0.6s both;
+  animation: slideUp 0.8s ease-out 0.6s both;
 }
 
 /* Subtitle section */
@@ -140,7 +140,7 @@
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  animation: slideUp 0.6s ease-out 0.8s both;
+  animation: slideUp 0.8s ease-out 0.8s both;
 }
 
 .subtitle {
@@ -189,7 +189,7 @@
   max-width: 600px;
   font-family: var(--ifm-font-family-base);
   text-align: left;
-  animation: slideUp 0.6s ease-out 1s both;
+  animation: slideUp 0.8s ease-out 1s both;
 }
 
 /* Action row styling */
@@ -197,7 +197,7 @@
   display: flex;
   align-items: center;
   margin-top: 2.5rem;
-  animation: slideUp 0.6s ease-out 1.2s both;
+  animation: slideUp 0.8s ease-out 1.2s both;
 }
 
 .cta {
@@ -261,7 +261,7 @@
   transition:
     transform 0.5s ease,
     box-shadow 0.5s ease;
-  animation: gentleAppear 0.8s ease-out both;
+  animation: scaleIn 0.8s ease-out both;
   will-change: transform;
   position: relative;
 }

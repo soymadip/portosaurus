@@ -1,8 +1,8 @@
 /* Animations */
-@keyframes slideUp {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -10,10 +10,10 @@
   }
 }
 
-@keyframes fadeIn {
+@keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -55,9 +55,13 @@
   font-weight: 600;
   color: var(--ifm-color-primary);
   margin-bottom: 0.6rem;
-  animation: slideUp 0.5s ease-out forwards;
+  opacity: 0;
   position: relative;
   display: inline-block;
+}
+
+:global(.is-visible) .contactTitle {
+  animation: slideUp 0.8s ease-out forwards;
 }
 
 .contactSubtitle {
@@ -65,7 +69,11 @@
   color: var(--ifm-font-color-tertiary);
   max-width: 600px;
   margin: 0.05rem auto 0;
-  animation: slideUp 0.5s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+:global(.is-visible) .contactSubtitle {
+  animation: slideUp 0.8s ease-out 0.2s forwards;
 }
 
 /* SocialCard */
@@ -99,8 +107,6 @@
     transform 0.3s ease,
     box-shadow 0.3s ease,
     background-color 0.3s ease;
-  animation: fadeIn 0.5s ease-out forwards;
-  animation-delay: calc(0.1s + (var(--card-index, 0) * 0.1s));
   box-shadow: var(--ifm-global-shadow-lw);
   text-decoration: none;
   display: flex;
@@ -112,6 +118,11 @@
   --icon-hover-color: var(--ifm-color-primary);
   text-align: center;
   overflow: hidden;
+}
+
+:global(.is-visible) .socialCard {
+  animation: fadeIn 0.8s ease-out forwards;
+  animation-delay: calc(0.1s + (var(--card-index, 0) * 0.1s));
 }
 
 .socialCard:hover {
