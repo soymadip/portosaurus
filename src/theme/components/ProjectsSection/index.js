@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect, useCallback, useMemo } from "react";
 import Slider from "react-slick";
 import {
-  FaGithub,
+  FaCode,
   FaGlobe,
   FaPlay,
   FaChevronLeft,
@@ -75,53 +75,45 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
     (projectList, slides) => {
       if (!projectList?.length) return { projects: [], totalPages: 0 };
 
-      // Sort featured first
-      const sortedProjects = [...projectList]
-        .sort((a, b) => (a.featured ? -1 : 0) - (b.featured ? -1 : 0))
-        .map((project) => {
-          // Apply defaults if value not null
-          const processedProject = {
-            ...project,
-            description:
-              project.desc === undefined ? projectDefaults.desc : project.desc,
-            image:
-              project.image === undefined
-                ? projectDefaults.image
-                : project.image,
-            tags:
-              project.tags === undefined
-                ? [...projectDefaults.tags]
-                : project.tags,
-            state:
-              project.state === undefined
-                ? projectDefaults.state
-                : project.state,
-          };
+      // Normalize and prepare projects for display
+      const processedProjects = projectList.map((project, index) => {
+        const processed = {
+          ...project,
+          // Normalize common keys
+          description:
+            project.description || project.desc || projectDefaults.desc,
+          image: project.image || project.img || projectDefaults.image,
+          tags: project.tags || projectDefaults.tags,
+          state: project.state || projectDefaults.state,
+          website: project.website || project.link,
+          demo: project.demo || project.Demo,
+        };
 
-          // Add ID
-          if (!processedProject.id) {
-            processedProject.id = processedProject.title
+        // Ensure every project has a unique ID for React keys and navigation
+        if (!processed.id) {
+          processed.id =
+            (processed.title || "project")
               .toLowerCase()
               .replace(/[^\w\s-]/g, "")
               .replace(/\s+/g, "-")
-              .replace(/-+/g, "-");
-          }
+              .replace(/-+/g, "-") + `-${index}`;
+        }
 
-          return processedProject;
-        });
+        return processed;
+      });
 
       // Calculate pagination and placeholder needs
-      const totalPages = Math.ceil(sortedProjects.length / slides);
+      const totalPages = Math.ceil(processedProjects.length / slides);
       const slotsPerPage = slides;
       const totalSlots = totalPages * slotsPerPage;
-      const placeholderCount = totalSlots - sortedProjects.length;
+      const placeholderCount = totalSlots - processedProjects.length;
 
       // Return prepared data
       return {
         projects:
           placeholderCount > 0
-            ? createPlaceholders(placeholderCount, sortedProjects)
-            : sortedProjects,
+            ? createPlaceholders(placeholderCount, processedProjects)
+            : processedProjects,
         totalPages,
       };
     },
@@ -296,7 +288,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
   // Project link renderer
   const renderProjectLink = useCallback((url, Icon, label, ariaLabel) => {
-    if (!url) return null;
+    if (!url || url === "#" || url === "") return null;
 
     return (
       <a
@@ -504,14 +496,14 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                         )}
 
                         {renderProjectLink(
-                          project.github,
-                          FaGithub,
+                          project.repo,
+                          FaCode,
                           "Source",
                           `Repository with source code`,
                         )}
 
                         {renderProjectLink(
-                          project.Demo,
+                          project.demo,
                           FaPlay,
                           "Demo",
                           `Live demo for ${project.title}`,
