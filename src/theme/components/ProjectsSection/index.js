@@ -36,7 +36,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
     desc: "Coming soon...",
     image: "img/project-blank.png",
     state: "active",
-    tags: ["planned"],
+    tags: [],
   };
 
   const createPlaceholders = useCallback(
@@ -83,7 +83,8 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
           description:
             project.description || project.desc || projectDefaults.desc,
           image: project.image || project.img || projectDefaults.image,
-          tags: project.tags || projectDefaults.tags,
+          tags:
+            project.tags !== undefined ? project.tags : projectDefaults.tags,
           state: project.state || projectDefaults.state,
           website: project.website || project.link,
           demo: project.demo || project.Demo,
@@ -101,7 +102,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
         return processed;
       });
-      
+
       // Sort projects: featured first, then original order
       processedProjects.sort((a, b) => {
         if (a.featured && !b.featured) return -1;
@@ -249,6 +250,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
       variableWidth: false,
       swipeToSlide: false,
       focusOnSelect: false,
+      arrows: false,
       responsive: [
         {
           breakpoint: 1024,
@@ -264,7 +266,6 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
             slidesToShow: 1,
             slidesToScroll: 1,
             dots: false,
-            arrows: false,
           },
         },
       ],
@@ -489,7 +490,6 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
                       <div className={styles.projectContent}>
                         <h3 className={styles.projectTitle}>{project.title}</h3>
-
 
                         <p className={styles.projectDescription}>
                           {project.description}
