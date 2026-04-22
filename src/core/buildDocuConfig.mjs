@@ -214,15 +214,15 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             path: UserNotesDir,
             sidebarPath,
             admonitions: {
-              keywords: [
-                "note",
-                "tip",
-                "info",
-                "warning",
-                "danger",
-                "question",
-              ],
               extendDefaults: true,
+              // keywords: [
+              //   "note",
+              //   "tip",
+              //   "info",
+              //   "warning",
+              //   "danger",
+              //   "question",
+              // ],
             },
           },
           blog: {
