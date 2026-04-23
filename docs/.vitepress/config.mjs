@@ -86,6 +86,13 @@ export default withMermaid({
       { text: "Roadmap", link: "/roadmap" },
     ],
 
+    banner: {
+      enabled: true,
+      text: "🚧 This documentation is a Work In Progress!",
+    },
+
+    metadata: metadata,
+
     sidebar: [
       {
         text: "User Guide",
@@ -93,7 +100,24 @@ export default withMermaid({
           { text: "Getting Started", link: "/guide/getting-started" },
           { text: "Dynamic Variables", link: "/guide/variables" },
           { text: "Configuration", link: "/guide/config" },
-          { text: "Markdown Features", link: "/guide/markdown" },
+          {
+            text: "Markdown Features",
+            link: "/guide/markdown",
+            collapsed: true,
+            items: [
+              {
+                text: "Interactive Previews",
+                link: "/guide/markdown/previews",
+              },
+              { text: "Tabs", link: "/guide/markdown/tabs" },
+              { text: "Details", link: "/guide/markdown/details" },
+              { text: "Tooltips", link: "/guide/markdown/tooltips" },
+              {
+                text: "Note Cards",
+                link: "/guide/markdown/note-cards",
+              },
+            ],
+          },
         ],
       },
       {
@@ -112,7 +136,5 @@ export default withMermaid({
     ],
 
     socialLinks: [{ icon: "github", link: metadata.project.repo }],
-
-    metadata: metadata,
   },
 });
