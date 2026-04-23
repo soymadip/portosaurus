@@ -30,7 +30,9 @@ if (typeof window !== "undefined") {
         v-if="theme.banner?.enabled && frontmatter.layout !== 'home'"
         class="wip-strip"
       >
-        {{ theme.banner.text || '🚧 This documentation is a Work In Progress!' }}
+        {{
+          theme.banner.text || "🚧 This documentation is a Work In Progress!"
+        }}
       </div>
     </template>
   </Layout>

@@ -86,13 +86,13 @@ The hero section is the first thing visitors see. It should provide a clear and 
 
 The about section allows you to provide a more detailed biography and list your technical skills.
 
-| Key      | Type      | Default | Description                                     |
-| :------- | :-------- | :------ | :---------------------------------------------- |
+| Key              | Type      | Default       | Description                                     |
+| :--------------- | :-------- | :------------ | :---------------------------------------------- |
 | `enable`         | `boolean` | `true`        | Toggle the About section.                       |
 | `heading`        | `string`  | `"About Me"`  | Heading for the about section.                  |
 | `image`          | `string`  | `null`        | Optional bio image (falls back to profile pic). |
 | `bio`            | `array`   | `[...]`       | List of strings, each rendered as a paragraph.  |
-| `skills_heading` | `string`  | `"My Skills"` | Heading for the technical skills section.        |
+| `skills_heading` | `string`  | `"My Skills"` | Heading for the technical skills section.       |
 | `skills`         | `array`   | `[]`          | List of skills to display as badges.            |
 | `resume`         | `string`  | `null`        | Link to your resume/CV file.                    |
 

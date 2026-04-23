@@ -4,7 +4,7 @@ Use the `<Tabs />` and `<TabItem />` components to create tabbed content blocks.
 
 ## Basic Usage
 
-```jsx
+````jsx
 <Tabs>
   <TabItem value="js" label="JavaScript">
     ```javascript console.log("Hello World"); ```
@@ -13,7 +13,7 @@ Use the `<Tabs />` and `<TabItem />` components to create tabbed content blocks.
     ```python print("Hello World") ```
   </TabItem>
 </Tabs>
-```
+````
 
 ## Props
 

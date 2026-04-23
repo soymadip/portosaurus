@@ -11,4 +11,3 @@ Portosaurus supports standard Markdown, MDX components, and custom interactive f
   - [Tooltips](./markdown/tooltips.md)
   - [Note Cards & Topics](./markdown/note-cards.md)
 - **Dynamic Variables**: Use placeholders that resolve at build time. [Learn more](./variables.md).
-
