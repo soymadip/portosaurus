@@ -40,7 +40,7 @@ custom:
   twitter_handle: "@myname"
 
 hero_section:
-  description: "Follow me on Twitter: \{{custom.twitter_handle}}"
+  desc: "Follow me on Twitter: \{{custom.twitter_handle}}"
 ```
 
 ## Literals & Escaping

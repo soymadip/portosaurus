@@ -18,15 +18,15 @@ Check out my resume: <Pv href="/resume.pdf">View PDF</Pv>
 
 You can customize the preview behavior using various props:
 
-| Prop        | Type      | Description                                                     |
-| :---------- | :-------- | :-------------------------------------------------------------- |
-| `href`      | `string`  | The path or URL of the file to preview.                         |
-| `title`     | `string`  | Custom title for the window header. Overrides filename/label.   |
-| `modal`     | `boolean` | If `true`, opens as a centered pop-up with a themed backdrop.   |
-| `docked`    | `boolean` | If `true`, pins the window to the side upon opening.            |
-| `desc`      | `string`  | Optional description that appears as a tooltip on hover.        |
-| `id`        | `string`  | Custom slug for deep-linking (e.g., `#my-custom-id-pv:window`). |
-| `activeIdx` | `number`  | The index of the file to show first (if using `sources`).       |
+| Prop        | Type   | Description                                                     |
+| :---------- | :----- | :-------------------------------------------------------------- |
+| `href`      | `str`  | The path or URL of the file to preview.                         |
+| `title`     | `str`  | Custom title for the window header. Overrides filename/label.   |
+| `modal`     | `bool` | If `true`, opens as a centered pop-up with a themed backdrop.   |
+| `docked`    | `bool` | If `true`, pins the window to the side upon opening.            |
+| `desc`      | `str`  | Optional description that appears as a tooltip on hover.        |
+| `id`        | `str`  | Custom slug for deep-linking (e.g., `#my-custom-id-pv:window`). |
+| `activeIdx` | `int`  | The index of the file to show first (if using `sources`).       |
 
 ### Examples
 

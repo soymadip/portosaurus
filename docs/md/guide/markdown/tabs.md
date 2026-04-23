@@ -19,15 +19,15 @@ Use the `<Tabs />` and `<TabItem />` components to create tabbed content blocks.
 
 ### `<Tabs />`
 
-| Prop           | Type     | Description                                                 |
-| :------------- | :------- | :---------------------------------------------------------- |
-| `defaultValue` | `string` | The value of the tab to show by default.                    |
-| `groupId`      | `string` | Sync selection across multiple tab blocks with the same ID. |
+| Prop           | Type  | Description                                                 |
+| :------------- | :---- | :---------------------------------------------------------- |
+| `defaultValue` | `str` | The value of the tab to show by default.                    |
+| `groupId`      | `str` | Sync selection across multiple tab blocks with the same ID. |
 
 ### `<TabItem />`
 
-| Prop      | Type      | Description                                   |
-| :-------- | :-------- | :-------------------------------------------- |
-| `value`   | `string`  | **(Required)** Unique identifier for the tab. |
-| `label`   | `string`  | The text displayed on the tab button.         |
-| `default` | `boolean` | Set to `true` to make this the default tab.   |
+| Prop      | Type   | Description                                   |
+| :-------- | :----- | :-------------------------------------------- |
+| `value`   | `str`  | **(Required)** Unique identifier for the tab. |
+| `label`   | `str`  | The text displayed on the tab button.         |
+| `default` | `bool` | Set to `true` to make this the default tab.   |
