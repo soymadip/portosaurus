@@ -9,6 +9,7 @@ import { initCommand } from "../src/cli/init.mjs";
 import { devCommand } from "../src/cli/dev.mjs";
 import { buildCommand } from "../src/cli/build.mjs";
 import { serveCommand } from "../src/cli/serve.mjs";
+import { schemaCommand } from "../src/cli/schema.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PortoRoot = path.resolve(__dirname, "..");
@@ -51,5 +52,12 @@ program
   .command("serve [siteDir]")
   .description("Serve the built static site locally")
   .action(serveCommand);
+
+program
+  .command("schema", { hidden: true })
+  .description("Generate the configuration JSON schema")
+  .argument("[outputPath]", "Path to output the schema file")
+  .argument("[sourcePath]", "Path to the source file to scan")
+  .action(schemaCommand);
 
 program.parse();

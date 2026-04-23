@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - "docs/**"
+      - "src/core/buildDocuConfig.mjs"
+      - "src/cli/schema.mjs"
+      - "package.json"
   workflow_dispatch:
 
 permissions:
@@ -28,7 +31,13 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
-      - name: Install dependencies
+      - name: Install Root Dependencies
+        run: bun install
+
+      - name: Generate Config Schema
+        run: bun run docs:schema
+
+      - name: Install Docs Dependencies
         run: bun install
         working-directory: docs
 

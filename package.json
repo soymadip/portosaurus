@@ -24,7 +24,8 @@
   "scripts": {
     "test": "bun test",
     "lint": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "docs:schema": "$npm_execpath ./bin/portosaurus.mjs schema ./docs/public/configSchema.json"
   },
   "dependencies": {
     "@docusaurus/core": "^3.10.0",

@@ -60,7 +60,7 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
 
   // ─────────────────────── Build the Docusaurus config ───────────────────────
 
-  // Values that are regularly used
+  /** The primary title of your website (e.g., your name or brand) */
   const siteName = get("site.title", "Your Name");
   const siteUrl = usrSiteUrl;
   const sitePath = ursSitePath;
@@ -72,6 +72,8 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
   const config = {
     projectName: siteName,
     title: siteName,
+
+    /** A short, catchy description shown below the title on the home page */
     tagline: get(
       "site.tagline",
       "Short description about you, your passion, your goals etc.",
@@ -87,7 +89,11 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
     ),
 
     organizationName: siteName,
+
+    /** Behavior when a broken anchor link is found (throw, warn, ignore) */
     onBrokenAnchors: get("site.on_broken_anchors", "throw"),
+
+    /** Behavior when a broken internal link is found (throw, warn, ignore) */
     onBrokenLinks: get("site.on_broken_links", "throw"),
 
     // TODO: research & allow to configure this
@@ -143,8 +149,13 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
       },
 
       aboutMe: {
+        /** Enable or disable the About Me section entirely */
         enable: get("home_page.about.enable", true),
+
+        /** Heading text for the About section */
         heading: get("home_page.about.heading", "About Me"),
+
+        /** The main image for the About section */
         image: resolveStaticAsset(
           get(
             "home_page.about.image",
@@ -154,29 +165,42 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
           ),
           "img/icon.png",
         ),
+        /** A detailed bio or description about yourself (Array of strings for paragraphs) */
         bio: get("home_page.about.bio", [
           "I am a developer who loves turning ideas into reality.",
           "With background in computer science and a passion for design, I bridge the gap between aesthetics and functionality.",
           "Driven by curiosity and a commitment to excellence.",
         ]),
+
+        /** A list of your professional skills or technologies */
         skills: get("home_page.about.skills", [
           "skill1",
           "skill2",
           "skill3",
           "skill4",
         ]),
+        /** The title shown above the skills list */
         skillsHeading: get("home_page.about.skills_heading", "My Skills"),
+        /** Path to your professional resume (PDF or external link) */
         resume: resolveStaticAsset(get("home_page.about.resume", null), null),
       },
 
       projects: {
+        /** Enable or disable the Projects section */
         enable: get("home_page.project_shelf.enable", true),
+
+        /** Heading for the projects section */
         heading: get("home_page.project_shelf.heading", "My Projects"),
+
+        /** Sub-heading or description for your project shelf */
         subheading: get(
           "home_page.project_shelf.subheading",
           "A collection of all my works, with featured projects highlighted",
         ),
+        /** Enable automatic scrolling for the project cards */
         autoplay: get("home_page.project_shelf.autoplay", true),
+
+        /** The list of projects to display (Array of project objects) */
         projects: get("home_page.project_shelf.projects", [
           {
             title: "Project One",
@@ -205,22 +229,34 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
 
       // TODO
       experience: {
+        /** Enable or disable the Experience timeline */
         enable: get("home_page.experience.enable", false),
+
+        /** Heading for the experience section */
         heading: get("home_page.experience.heading", "Experience"),
+
+        /** Sub-heading for your professional journey */
         subheading: get(
           "home_page.experience.subheading",
           "My professional journey and work experience",
         ),
+        /** List of work history items */
         list: get("home_page.experience.list", []),
       },
 
       socialLinks: {
+        /** Enable or disable the Social Links / Contact section */
         enable: get("home_page.social.enable", true),
+
+        /** Heading for the contact section */
         heading: get("home_page.social.heading", "Get In Touch"),
+
+        /** Brief call-to-action or invitation to contact you */
         subheading: get(
           "home_page.social.subheading",
           "Feel free to reach out for collaborations, questions, or just to say hello!",
         ),
+        /** List of social media profiles and contact methods */
         links: get("home_page.social.links", [
           {
             name: "Email",
@@ -236,15 +272,23 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
       },
 
       robotsTxt: {
+        /** Enable generation of robots.txt file */
         enable: get("site.robots_txt.enable", true),
         rules: [{ disallow: [`/${UserNotesDir}/`, `/${UserTasksDir}/`] }],
+
+        /** Additional custom lines to add to robots.txt */
         customLines: get("site.robots_txt.custom_lines", []),
       },
 
       tasksPage: {
+        /** Enable or disable the Tasks/TODO page */
         enable: get("tasks.enable", false),
-        heading: get("tasks.heading", "Tasks"),
-        subheading: get("tasks.subheading", "Roadmap & Goals"),
+
+        /** Title for the Tasks page */
+        title: get("tasks.title", "Tasks"),
+
+        /** Subtitle for the Tasks page */
+        subtitle: get("tasks.subtitle", "My current focus and todo list"),
         taskList: get("tasks.list", []),
       },
     },
@@ -397,10 +441,12 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
               { label: "Notes", to: `/${UserNotesDir}` },
               { label: "Blog", to: `/${UserBlogDir}` },
               {
+                /** Toggle the Tasks page visibility */
                 enable: get("home_page.tasks.enable", false),
                 value: { label: "Tasks", to: `/${UserTasksDir}` },
               },
               {
+                /** Hide the 'Powered by Portosaurus' branding in the menu */
                 enable: !get("theme.appearance.disable_branding", false),
                 value: {
                   label: `Portosaurus v${portoVersion}`,
