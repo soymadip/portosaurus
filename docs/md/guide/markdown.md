@@ -16,4 +16,3 @@ Portosaurus goes beyond standard Markdown. We've built a suite of custom MDX com
 ## Dynamic Content
 
 - **Dynamic Variables**: Use placeholders like `{{site.title}}` that resolve automatically at build time, ensuring your documentation stays in sync with your config.
-
