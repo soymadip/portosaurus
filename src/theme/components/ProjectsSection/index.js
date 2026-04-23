@@ -17,12 +17,16 @@ import styles from "./styles.module.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-/// PART OF THIS COMPONENT IS AI GENERATED
-
-export default function ProjectsSection({ id, className, title, subtitle }) {
+export default function ProjectsSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
-  const projectShelf = siteConfig.customFields?.projects;
-  const isAutoplayEnabled = projectShelf?.autoplay ?? true;
+  const projectShelf = siteConfig.customFields?.projects || {};
+
+  if (projectShelf.enable === false) return null;
+
+  const isAutoplayEnabled = projectShelf.autoplay ?? true;
+
+  const displayHeading = projectShelf.heading;
+  const displaySubheading = projectShelf.subheading;
 
   const [projects, setProjects] = useState([]);
   const sliderRef = useRef(null);
@@ -360,8 +364,8 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
     >
       <div className={styles.projectsContainer}>
         <div className={styles.projectsHeader}>
-          <h2 className={styles.projectsTitle}>{title}</h2>
-          <p className={styles.projectsSubtitle}>{subtitle}</p>
+          <h2 className={styles.projectsTitle}>{displayHeading}</h2>
+          <p className={styles.projectsSubtitle}>{displaySubheading}</p>
         </div>
 
         {projects.length === 0 ? (

@@ -9,6 +9,8 @@ export default function AboutSection({ id, className }) {
   const { customFields } = siteConfig;
   const aboutMe = customFields.aboutMe || {};
 
+  if (aboutMe.enable === false) return null;
+
   const [sectionRef, isVisible] = useScrollReveal();
 
   return (

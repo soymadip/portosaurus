@@ -43,36 +43,16 @@ export default function Home() {
         <HeroSection id="me" />
 
         {/* About Section */}
-        {aboutMe.enable !== false && (
-          <AboutSection id="about" title="About Me" />
-        )}
+        <AboutSection id="about" />
 
         {/* Projects Section */}
-        {projects.enable !== false && (
-          <ProjectsSection
-            id="projects"
-            title="My Projects"
-            subtitle="A collection of all my works, with featured projects highlighted"
-          />
-        )}
+        <ProjectsSection id="projects" />
 
         {/* Experience Section */}
-        {experience.enable !== false && (
-          <ExperienceSection
-            id="experience"
-            title="Experience"
-            subtitle="My professional journey and work experience"
-          />
-        )}
+        <ExperienceSection id="experience" />
 
         {/* Contact Section */}
-        {socialLinks.enable !== false && (
-          <ContactSection
-            id="contact"
-            title="Get In Touch"
-            subtitle="Feel free to reach out for collaborations, questions, or just to say hello!"
-          />
-        )}
+        <ContactSection id="contact" />
 
         {/* Smart Navigation Arrow */}
         <NavArrow />

@@ -1,6 +1,15 @@
+import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import styles from "./styles.module.css";
 
-export default function ExperienceSection({ id, className, title, subtitle }) {
+export default function ExperienceSection({ id, className }) {
+  const { siteConfig } = useDocusaurusContext();
+  const experience = siteConfig.customFields?.experience || {};
+
+  if (experience.enable === false) return null;
+
+  const displayHeading = experience.heading;
+  const displaySubheading = experience.subheading;
+
   return (
     <div
       id={id}
@@ -10,10 +19,8 @@ export default function ExperienceSection({ id, className, title, subtitle }) {
     >
       <div className={styles.experienceContainer}>
         <div className={styles.experienceHeader}>
-          <h2 className={styles.experienceTitle}>{title || "Experience"}</h2>
-          <p className={styles.experienceSubtitle}>
-            {subtitle || "My professional journey and work experience"}
-          </p>
+          <h2 className={styles.experienceTitle}>{displayHeading}</h2>
+          <p className={styles.experienceSubtitle}>{displaySubheading}</p>
         </div>
 
         <div className={styles.noticeWrapper}>

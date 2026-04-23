@@ -24,10 +24,17 @@ const sortEmail = (links) => {
   });
 };
 
-export default function ContactSection({ id, className, title, subtitle }) {
+export default function ContactSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
-  let socialLinks = customFields.socialLinks.links || [];
+  const socialLinksConfig = customFields.socialLinks || {};
+
+  if (socialLinksConfig.enable === false) return null;
+
+  let socialLinks = socialLinksConfig.links || [];
+
+  const displayHeading = socialLinksConfig.heading;
+  const displaySubheading = socialLinksConfig.subheading;
 
   const [sectionRef, isVisible] = useScrollReveal();
 
@@ -43,8 +50,8 @@ export default function ContactSection({ id, className, title, subtitle }) {
     >
       <div className={styles.contactContainer}>
         <div className={styles.contactHeader}>
-          <h2 className={styles.contactTitle}>{title}</h2>
-          <p className={styles.contactSubtitle}>{subtitle}</p>
+          <h2 className={styles.contactTitle}>{displayHeading}</h2>
+          <p className={styles.contactSubtitle}>{displaySubheading}</p>
         </div>
 
         {/* SocialCard */}
