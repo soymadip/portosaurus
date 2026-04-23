@@ -1,32 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { execSync } from "child_process";
 import { logger } from "./logger.mjs";
-import { PortoRoot } from "../core/constants.mjs";
-
-/**
- * Deep merge two objects. Source values override target values.
- * Arrays are replaced, not concatenated.
- */
-export function deepMerge(target, source) {
-  const result = { ...target };
-
-  for (const key of Object.keys(source)) {
-    if (
-      source[key] &&
-      typeof source[key] === "object" &&
-      !Array.isArray(source[key]) &&
-      target[key] &&
-      typeof target[key] === "object" &&
-      !Array.isArray(target[key])
-    ) {
-      result[key] = deepMerge(target[key], source[key]);
-    } else if (source[key] !== undefined) {
-      result[key] = source[key];
-    }
-  }
-  return result;
-}
 
 /**
  * Resolve {{...}} template references and @alias/ path prefixes
@@ -186,64 +160,14 @@ export function resolveBasePath(configValue) {
 }
 
 /**
- * Read the portosaurus package version.
- */
-export function getVersion() {
-  try {
-    const pkgPath = path.resolve(PortoRoot, "package.json");
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
-    return pkg.version || "0.0.0";
-  } catch {
-    return "N/A";
-  }
-}
-
-/**
- * Get the last git commit date in a human-readable format.
- */
-export function getGitDate(siteDir) {
-  try {
-    const result = execSync(
-      'git log -1 --format=%cd --date=format:"%B %d, %Y"',
-      {
-        cwd: siteDir,
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-      },
-    );
-    return result.trim();
-  } catch {
-    return new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-}
-
-/**
- * Filter items that have enable/value conditional structure.
- */
-export function useEnabled(items) {
-  if (!Array.isArray(items)) return [];
-  return items.flatMap((item) => {
-    if (
-      item &&
-      typeof item === "object" &&
-      "enable" in item &&
-      "value" in item
-    ) {
-      return item.enable === true ? [item.value] : [];
-    }
-    return [item];
-  });
-}
-
-/**
  * Creates a static asset resolver for a specific project.
  * Checks if a static asset exists in given path else fallback
  */
-export function createStaticAssetResolver(UserStaticDir, PortoAssetDir) {
+export function createStaticAssetResolver(
+  UserRoot,
+  UserStaticDir,
+  PortoAssetDir,
+) {
   return function resolveStaticAsset(primaryPath, fallbackPath) {
     // If no primary path provided, go straight to fallback
     if (!primaryPath) return fallbackPath || "";
@@ -253,21 +177,40 @@ export function createStaticAssetResolver(UserStaticDir, PortoAssetDir) {
       return primaryPath;
     }
 
-    // 2. Handle Absolute Paths (if resolved via template vars)
-    if (path.isAbsolute(primaryPath)) {
-      if (fs.existsSync(primaryPath)) {
+    // 2. Handle Relative Paths (./ or ../)
+    let resolvedPath = primaryPath;
+    if (
+      typeof primaryPath === "string" &&
+      (primaryPath.startsWith("./") || primaryPath.startsWith("../"))
+    ) {
+      resolvedPath = path.resolve(UserRoot, primaryPath);
+    }
+
+    // 3. Handle Absolute Paths
+    if (path.isAbsolute(resolvedPath)) {
+      if (fs.existsSync(resolvedPath)) {
         // If it's inside one of our static dirs, make it relative for Docusaurus
-        if (primaryPath.startsWith(UserStaticDir)) {
-          return path.relative(UserStaticDir, primaryPath);
+        let relativePath = "";
+        if (resolvedPath.startsWith(UserStaticDir)) {
+          relativePath = path.relative(UserStaticDir, resolvedPath);
+        } else if (resolvedPath.startsWith(PortoAssetDir)) {
+          relativePath = path.relative(PortoAssetDir, resolvedPath);
         }
-        if (primaryPath.startsWith(PortoAssetDir)) {
-          return path.relative(PortoAssetDir, primaryPath);
+
+        if (relativePath) {
+          // Ensure it's a web-friendly URL (leading slash and forward slashes)
+          const urlPath = relativePath.split(path.sep).join("/");
+          return urlPath.startsWith("/") ? urlPath : `/${urlPath}`;
         }
-        return primaryPath;
+
+        // If it's outside static dirs, Docusaurus won't be able to serve it directly
+        // via a string URL. We return the absolute path as a last resort,
+        // but ideally the user should put assets in a static dir.
+        return resolvedPath;
       }
     }
 
-    // 3. Search in static directories
+    // 4. Search in known static directories
     const existsInUser = fs.existsSync(
       path.resolve(UserStaticDir, primaryPath),
     );
@@ -279,7 +222,7 @@ export function createStaticAssetResolver(UserStaticDir, PortoAssetDir) {
       return primaryPath;
     }
 
-    // 4. Fallback Logic
+    // 5. Fallback Logic
     if (fallbackPath) {
       // Only warn if the user actually provided a primary path that we couldn't find
       if (primaryPath && primaryPath !== fallbackPath) {
@@ -292,21 +235,6 @@ export function createStaticAssetResolver(UserStaticDir, PortoAssetDir) {
 
     return "";
   };
-}
-/**
- * Safely retrieves a nested value from an object using a dot-notated path.
- */
-export function getNestedValue(obj, path, fallback) {
-  const parts = path.split(".");
-  let val = obj;
-  for (const part of parts) {
-    if (val == null || typeof val !== "object") {
-      val = undefined;
-      break;
-    }
-    val = val[part];
-  }
-  return val !== undefined ? val : fallback;
 }
 
 /**

@@ -2,21 +2,18 @@ import fs from "fs";
 import path from "path";
 import { logger } from "../utils/logger.mjs";
 import { getPackageManager } from "../utils/packageManager.mjs";
-import { mirrorSync } from "../utils/cliUtils.mjs";
-import { PortoRoot } from "../core/constants.mjs";
+import { mirrorSync } from "../utils/systemUtils.mjs";
+import { PortoRoot, PortoPkg } from "../core/constants.mjs";
 
 export async function initCommand(projectName, options) {
   const UsrProjDir = path.resolve(process.cwd(), projectName);
   const templateDir = path.resolve(PortoRoot, "src/template");
-  const packageJson = JSON.parse(
-    fs.readFileSync(path.resolve(PortoRoot, "package.json"), "utf8"),
-  );
 
   const TemplateVars = {
     projectName: projectName,
-    portoVer: packageJson.version,
-    portoHome: packageJson.homepage,
-    portoRepo: packageJson.repository.url,
+    portoVer: PortoPkg.version,
+    portoHome: PortoPkg.homepage,
+    portoRepo: PortoPkg.repository?.url || "",
   };
 
   const ignoreList = [
@@ -38,10 +35,7 @@ export async function initCommand(projectName, options) {
     process.exit(1);
   }
 
-  logger.box(
-    "Initializing New Portosaurus Project",
-    ` v${packageJson.version} `,
-  );
+  logger.box("Initializing New Portosaurus Project", ` v${PortoPkg.version} `);
 
   logger.info(`Creating new project in ${projectName}...`);
 

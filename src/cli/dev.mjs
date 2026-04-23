@@ -7,7 +7,7 @@ import {
   writePortoConfigShim,
   runDocusaurus,
 } from "../utils/cliUtils.mjs";
-import { PortoRoot } from "../core/constants.mjs";
+import { PortoPkg } from "../core/constants.mjs";
 
 export async function devCommand(siteDir, extraArgs) {
   const UserRoot = siteDir
@@ -16,10 +16,7 @@ export async function devCommand(siteDir, extraArgs) {
   validateProject(UserRoot);
   ensureContentDirs(UserRoot);
 
-  const packageJsonPath = path.resolve(PortoRoot, "package.json");
-  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
-
-  logger.box("Portosaurus Dev Server", `v${packageJson.version}`);
+  logger.box("Portosaurus Dev Server", `v${PortoPkg.version}`);
   logger.info("Starting development server...");
   try {
     const configPath = writePortoConfigShim(UserRoot);
