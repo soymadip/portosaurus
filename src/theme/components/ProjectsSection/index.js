@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useScrollReveal from "../../hooks/useScrollReveal";
+import Tooltip from "../Tooltip/index.js";
 import styles from "./styles.module.css";
 
 // Import slick carousel css
@@ -76,26 +77,19 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
     return 3;
   }, []);
 
-  const prepareProjects = useCallback(
-    (projectList, slides) => {
+  const prepareProjects = useCallback((projectList, slides) => {
       if (!projectList?.length) return { projects: [], totalPages: 0 };
 
-      // Normalize and prepare projects for display
       const processedProjects = projectList.map((project, index) => {
         const processed = {
           ...project,
-          // Normalize common keys
-          description:
-            project.description || project.desc || projectDefaults.desc,
-          image: project.image || project.img || projectDefaults.image,
-          tags:
-            project.tags !== undefined ? project.tags : projectDefaults.tags,
-          state: project.state || projectDefaults.state,
-          website: project.website || project.link,
-          demo: project.demo || project.Demo,
+        description: project.description || project.desc || "N/A",
+        icon: project.icon || "img/project-blank.png",
+        bg: project.bg || null,
+        tags: project.tags || [],
+        state: project.state || "completed",
         };
 
-        // Ensure every project has a unique ID for React keys and navigation
         if (!processed.id) {
           processed.id =
             (processed.title || "project")
@@ -117,23 +111,11 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
         return 0;
       });
 
-      // Calculate pagination and placeholder needs
-      const totalPages = Math.ceil(processedProjects.length / slides);
-      const slotsPerPage = slides;
-      const totalSlots = totalPages * slotsPerPage;
-      const placeholderCount = totalSlots - processedProjects.length;
-
-      // Return prepared data
       return {
-        projects:
-          placeholderCount > 0
-            ? createPlaceholders(placeholderCount, processedProjects)
-            : processedProjects,
+      projects: processedProjects,
         totalPages,
       };
-    },
-    [createPlaceholders, projectDefaults],
-  );
+  }, []);
 
   // Load and set up projects on initial load and on resize
   useEffect(() => {
@@ -468,26 +450,48 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                         </div>
                       )}
 
-                      <div className={styles.projectImageContainer}>
-                        {project.image && (
+                      <div
+                        className={styles.projectImageContainer}
+                        style={{
+                          backgroundColor:
+                            project.bg ||
+                            "rgba(var(--ifm-color-primary-rgb), 0.05)",
+                        }}
+                      >
                           <img
-                            src={project.image}
+                          src={project.icon}
                             alt={project.title}
                             className={styles.projectImage}
                             loading="lazy"
                           />
-                        )}
 
-                        {/* Project tags (Responsive Bottom Row) */}
-                        {project.tags?.length > 0 && (
+                        {/* Project tags */}
+                        {project.tags?.length > 0 &&
+                          (() => {
+                            const extraCount = project.tags.length - 3;
+                            return (
                           <div className={styles.projectTags}>
-                            {project.tags.map((tag) => (
+                                {project.tags.slice(0, 3).map((tag) => (
                               <span key={tag} className={styles.projectTag}>
                                 {tag}
                               </span>
                             ))}
+                                {extraCount > 0 && (
+                                  <Tooltip
+                                    msg={project.tags.slice(3).join(", ")}
+                                    underline={false}
+                                    gap={13}
+                                  >
+                                    <span
+                                      className={`${styles.projectTag} ${styles.extraTagBtn}`}
+                                    >
+                                      +{extraCount}
+                                    </span>
+                                  </Tooltip>
+                                )}
                           </div>
-                        )}
+                            );
+                          })()}
 
                         {/* Featured badge */}
                         {project.featured && (
