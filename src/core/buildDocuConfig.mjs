@@ -1,206 +1,252 @@
 import fs from "fs";
 import path from "path";
-import { createRequire } from "module";
-
+import { PortoRoot, Paths, PortoPkg } from "./constants.mjs";
 import {
-  deepMerge,
+  loadPkg,
+  getGitDate,
+  useEnabled,
+  getNestedValue,
+} from "../utils/systemUtils.mjs";
+import {
   resolveVars,
   resolveSiteUrl,
   resolveBasePath,
-  getVersion,
-  useEnabled,
   createStaticAssetResolver,
+  buildHeadTags,
 } from "../utils/configUtils.mjs";
-import { PortoRoot } from "./constants.mjs";
 
-// ─── Main Config Generator ─────────────────────────────────
+export function buildDocuConfig(UserConfigRaw, UserRoot) {
+  // Get user Project Version
+  const usrProjectVer = loadPkg(UserRoot).version || "0.0.0";
 
-/**
- * Creates a Docusaurus config from a user's Portosaurus config.
- *
- * @param {Object} rawUserConfig - The user's config object (export of config.js).
- *                                 May be { usrConf: {...} } or just {...}.
- * @param {string} UserRoot      - Absolute path to the user's project root.
- * @returns {Object} Complete Docusaurus configuration object.
- */
-export function buildDocuConfig(rawUserConfig, UserRoot) {
-  // Support both { usrConf: {...} } and direct config objects
-  const UserConfigRaw = rawUserConfig.usrConf ?? rawUserConfig;
+  const portoVersion = PortoPkg.version || "0.0.0";
+  const portoRepo = (PortoPkg.repository?.url || "").replace(/\.git$/, "");
+  const lastUpdated = getGitDate(UserRoot);
 
-  // Load master template defaults for fallback resolution
-  const require = createRequire(import.meta.url);
-  const templateDefaults = require("../template/config.js").usrConf;
-
-  // Static directories — defined early so aliases can reference them
+  // Static directories
   const UserStaticDir = path.resolve(UserRoot, "static");
-  const PortoAssetDir = path.resolve(PortoRoot, "src/assets");
+  const PortoAssetDir = Paths.assets;
 
-  // Hydrate the configuration by deep-merging user config over the template defaults.
-  // This ensures that even if the user deletes nested fields, the structure remains safe.
-  const merged = deepMerge(templateDefaults, UserConfigRaw);
+  // Resolve static asset path with fallback
+  const resolveStaticAsset = createStaticAssetResolver(
+    UserRoot,
+    UserStaticDir,
+    PortoAssetDir,
+  );
 
-  // Find Docusaurus root for reference
-  let docuRoot = "";
-  try {
-    docuRoot = path.dirname(require.resolve("@docusaurus/core/package.json"));
-  } catch {
-    // If not found (e.g. during some build stages), fallback to node_modules relative to PortoRoot
-    docuRoot = path.resolve(PortoRoot, "node_modules/@docusaurus/core");
-  }
+  // Resolve SiteURL and BasePath for Docusaurus Root
+  const usrSiteUrl = resolveSiteUrl(UserConfigRaw.site?.url || "auto");
+  const ursSitePath = resolveBasePath(UserConfigRaw.site?.path || "auto");
 
-  // Resolve {{...}} template variables path prefixes in one pass
-  const UserConfig = resolveVars(merged, merged, {
+  // Resolve {{...}} template variables in user config
+  const UserConfig = resolveVars(UserConfigRaw, UserConfigRaw, {
     siteRoot: UserRoot,
     portoRoot: PortoRoot,
-    docuRoot: docuRoot,
+    compileYear: new Date().getFullYear(),
+    compileDate: new Date().toLocaleDateString(),
+    portoVersion,
+    projectVersion: usrProjectVer,
+    siteUrl: usrSiteUrl,
+    baseUrl: ursSitePath,
+    lastUpdated,
+    isProd: process.env.NODE_ENV === "production",
+    isDev: process.env.NODE_ENV === "development",
+    nodeEnv: process.env.NODE_ENV || "development",
+    custom: UserConfigRaw.custom || {},
   });
 
-  // Compute derived values
-  const siteUrl = resolveSiteUrl(UserConfig.site_url);
-  const basePath = resolveBasePath(UserConfig.site_path);
-  const version = getVersion();
+  // Helper to get nested values with fallbacks
+  const get = (...args) => getNestedValue(UserConfig, ...args);
 
-  const UserProjName = UserConfig.hero_section.title;
+  // ─────────────────────── Build the Docusaurus config ───────────────────────
 
-  // Resolve internal paths
+  // Values that are regularly used
+  const siteName = get("site.title", "Your Name");
+  const siteUrl = usrSiteUrl;
+  const sitePath = ursSitePath;
 
-  // Prism themes
-  let catppuccinMocha, catppuccinLatte;
-  try {
-    const prism = require(path.resolve(PortoRoot, "src/theme/config/prism.js"));
-    catppuccinMocha = prism.catppuccinMocha;
-    catppuccinLatte = prism.catppuccinLatte;
-  } catch {
-    catppuccinMocha = {};
-    catppuccinLatte = {};
-  }
-
-  // Meta tags
-  let PortoMetaTags = [];
-  try {
-    const meta = require(
-      path.resolve(PortoRoot, "src/theme/config/metaTags.js"),
-    );
-    PortoMetaTags = meta.PortoMetaTags ?? meta.metaTags ?? [];
-  } catch {
-    // OK — no meta tags
-  }
-
-  // Paths for content — these point directly to the user's project
   const UserNotesDir = "notes";
   const UserBlogDir = "blog";
-
-  const PortoFaviconCacheDir = path.resolve(
-    UserRoot,
-    ".docusaurus/portosaurus/favicon",
-  );
-
-  const StaticDirs = [
-    UserStaticDir,
-    PortoAssetDir,
-    PortoFaviconCacheDir,
-  ].filter((d) => fs.existsSync(d));
-
-  /**
-   * Validates a static asset path with fallback.
-   *   - Remote URLs (http/https) pass through as-is.
-   *   - Local paths are checked against UserStaticDir, then PortoAssetDir.
-   */
-  const resolveStaticAsset = createStaticAssetResolver(
-    UserStaticDir,
-    PortoAssetDir,
-  );
-
-  // Pages
-  const PortoPagesDir = path.resolve(PortoRoot, "src/theme/pages");
-
-  // Theme overrides
-  const PortoThemeDir = path.resolve(PortoRoot, "src/theme");
-
-  // Sidebar config
-  const sidebarPath = path.resolve(PortoRoot, "src/theme/config/sidebar.js");
-
-  // CSS
-  const PortoCustomCss = path.resolve(PortoRoot, "src/theme/css/custom.css");
-
-  // ───────────────────────Build the Docusaurus config ───────────────────────
+  const UserTasksDir = "tasks";
 
   const config = {
-    projectName: UserConfig.hero_section.title,
-    title: UserConfig.hero_section.title,
-    tagline: UserConfig.hero_section.description,
+    projectName: siteName,
+    title: siteName,
+    tagline: get(
+      "site.tagline",
+      "Short description about you, your passion, your goals etc.",
+    ),
+
+    url: siteUrl,
+    baseUrl: sitePath,
+
+    // Checks user's given favicon path -> internal favicon/favicon.ico -> img/icon.png
     favicon: resolveStaticAsset(
-      UserConfig.favicon,
+      get("site.favicon", ""),
       resolveStaticAsset("favicon/favicon.ico", "img/icon.png"),
     ),
-    url: siteUrl,
-    baseUrl: basePath,
 
-    organizationName: UserConfig.hero_section.title,
-    deploymentBranch: "gh-pages",
-    onBrokenAnchors: "ignore",
-    onBrokenLinks: "warn",
+    organizationName: siteName,
+    onBrokenAnchors: get("site.on_broken_anchors", "throw"),
+    onBrokenLinks: get("site.on_broken_links", "throw"),
 
+    // TODO: research & allow to configure this
     i18n: {
       defaultLocale: "en",
       locales: ["en"],
     },
 
-    headTags: PortoMetaTags,
+    headTags: buildHeadTags([
+      {
+        meta: {
+          name: "msapplication-TileColor",
+          content: "var(--ifm-background-color)",
+        },
+      },
+      {
+        meta: {
+          name: "theme-color",
+          content: "var(--ifm-background-color)",
+        },
+      },
+      ...get("site.head_tags", []),
+    ]),
 
     customFields: {
-      version,
-
-      heroSection: {
-        profilePic: resolveStaticAsset(
-          UserConfig.hero_section.profile_pic,
-          "img/icon.png",
-        ),
-        intro: UserConfig.hero_section.intro,
-        title: UserConfig.hero_section.title,
-        subtitle: UserConfig.hero_section.subtitle,
-        profession: UserConfig.hero_section.profession,
-        description: UserConfig.hero_section.description,
-        learnMoreButtonTxt: UserConfig.hero_section.learn_more_button_txt,
-      },
-
-      aboutMe: {
-        enable: UserConfig.about_me.enable,
-        image: resolveStaticAsset(
-          UserConfig.about_me.image ?? UserConfig.hero_section.profile_pic,
-          "img/icon.png",
-        ),
-        description: UserConfig.about_me.description,
-        skills: UserConfig.about_me.skills,
-        resumeLink: UserConfig.about_me.resume_link,
-      },
-
-      projects: UserConfig.project_shelf,
-      experience: UserConfig.experience,
-
-      socialLinks: {
-        enable: UserConfig.social_links.enable,
-        links: UserConfig.social_links.links,
-      },
-
-      robotsTxt: {
-        enable: UserConfig.robots_txt,
-        rules: [{ disallow: ["/notes/", "/tasks/"] }],
-        customLines: [],
-      },
-
-      tasksPage: {
-        enable: UserConfig.tasks_page.enable,
-        title: UserConfig.tasks_page.title,
-        description: UserConfig.tasks_page.description,
-        taskList: UserConfig.tasks_page.tasks,
-      },
+      portoVersion,
 
       corsProxyList: [
-        ...[].concat(UserConfig.cors_proxy || []),
+        ...[].concat(get("site.cors_proxy", [])),
         "https://cors-proxy.soymadip.workers.dev/?url=",
         "https://api.allorigins.win/raw?url=",
       ].filter(Boolean),
+
+      heroSection: {
+        profilePic: resolveStaticAsset(
+          get("home_page.hero.profile_pic", "site.favicon", ""),
+          "img/icon.png",
+        ),
+        intro: get("home_page.hero.intro", "Hello there, I'm"),
+        title: get("home_page.hero.title", "site.title", "Your Name"),
+        subtitle: get("home_page.hero.subtitle", "I am a"),
+        profession: get("home_page.hero.profession", "Your Profession"),
+        desc: get(
+          "home_page.hero.desc",
+          "site.tagline",
+          "Welcome to my portfolio.",
+        ),
+        learnMoreButtonTxt: get(
+          "home_page.hero.learn_more_btn_txt",
+          "Learn More",
+        ),
+        social: get("home_page.hero.social", null),
+      },
+
+      aboutMe: {
+        enable: get("home_page.about.enable", true),
+        heading: get("home_page.about.heading", "About Me"),
+        image: resolveStaticAsset(
+          get(
+            "home_page.about.image",
+            "home_page.hero.profile_pic",
+            "site.favicon",
+            "",
+          ),
+          "img/icon.png",
+        ),
+        bio: get("home_page.about.bio", [
+          "I am a developer who loves turning ideas into reality.",
+          "With background in computer science and a passion for design, I bridge the gap between aesthetics and functionality.",
+          "Driven by curiosity and a commitment to excellence.",
+        ]),
+        skills: get("home_page.about.skills", [
+          "skill1",
+          "skill2",
+          "skill3",
+          "skill4",
+        ]),
+        skillsHeading: get("home_page.about.skills_heading", "My Skills"),
+        resume: resolveStaticAsset(get("home_page.about.resume", null), null),
+      },
+
+      projects: {
+        enable: get("home_page.project_shelf.enable", true),
+        heading: get("home_page.project_shelf.heading", "My Projects"),
+        subheading: get(
+          "home_page.project_shelf.subheading",
+          "A collection of all my works, with featured projects highlighted",
+        ),
+        autoplay: get("home_page.project_shelf.autoplay", true),
+        projects: get("home_page.project_shelf.projects", [
+          {
+            title: "Project One",
+            desc: "A brief description of your project and the tech used.",
+            tags: ["React", "Portosaurus"],
+            state: "active",
+            website: "https://example.com",
+            repo: "https://github.com/",
+            demo: "https://example.com/demo",
+          },
+          {
+            title: "Project Two",
+            icon: PortoRoot + "/img/icon.png",
+            featured: true,
+            desc: "Another awesome project you've built recently.",
+            tags: ["python", "tag2"],
+            state: "completed",
+            website: "https://example.com",
+            repo: "https://github.com/",
+          },
+        ]).map((p) => ({
+          ...p,
+          icon: resolveStaticAsset(p.icon, ""),
+        })),
+      },
+
+      // TODO
+      experience: {
+        enable: get("home_page.experience.enable", false),
+        heading: get("home_page.experience.heading", "Experience"),
+        subheading: get(
+          "home_page.experience.subheading",
+          "My professional journey and work experience",
+        ),
+        list: get("home_page.experience.list", []),
+      },
+
+      socialLinks: {
+        enable: get("home_page.social.enable", true),
+        heading: get("home_page.social.heading", "Get In Touch"),
+        subheading: get(
+          "home_page.social.subheading",
+          "Feel free to reach out for collaborations, questions, or just to say hello!",
+        ),
+        links: get("home_page.social.links", [
+          {
+            name: "Email",
+            desc: "Send me an email",
+            url: "mailto://you@yourdomain.com",
+          },
+          {
+            name: "LinkedIn",
+            desc: "Connect on LinkedIn",
+            url: "https://www.linkedin.com/in/yourusername",
+          },
+        ]),
+      },
+
+      robotsTxt: {
+        enable: get("site.robots_txt.enable", true),
+        rules: [{ disallow: [`/${UserNotesDir}/`, `/${UserTasksDir}/`] }],
+        customLines: get("site.robots_txt.custom_lines", []),
+      },
+
+      tasksPage: {
+        enable: get("tasks.enable", false),
+        heading: get("tasks.heading", "Tasks"),
+        subheading: get("tasks.subheading", "Roadmap & Goals"),
+        taskList: get("tasks.list", []),
+      },
     },
 
     presets: [
@@ -210,9 +256,9 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
         }),
         {
           docs: {
-            routeBasePath: "notes",
+            routeBasePath: UserNotesDir,
             path: UserNotesDir,
-            sidebarPath,
+            sidebarPath: path.resolve(PortoRoot, "src/theme/config/sidebar.js"),
             admonitions: {
               extendDefaults: true,
               // keywords: [
@@ -227,7 +273,7 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
           },
           blog: {
             path: UserBlogDir,
-            feedOptions: UserConfig.rss
+            feedOptions: get("site.rss", true)
               ? { type: ["rss", "atom"], xslt: true }
               : undefined,
             showReadingTime: false,
@@ -236,10 +282,10 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             onUntruncatedBlogPosts: "warn",
           },
           theme: {
-            customCss: PortoCustomCss,
+            customCss: path.resolve(PortoRoot, "src/theme/css/custom.css"),
           },
           pages: {
-            path: PortoPagesDir,
+            path: path.resolve(PortoRoot, "src/theme/pages"),
           },
         },
       ],
@@ -251,44 +297,51 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
       [
         path.resolve(PortoRoot, "src/plugins/theme.mjs"),
         {
-          themeDir: PortoThemeDir,
+          themeDir: path.resolve(PortoRoot, "src/theme"),
         },
       ],
     ],
 
     markdown: {
-      mermaid: true,
+      mermaid: get("theme.markdown.mermaid", true),
       hooks: {
-        onBrokenMarkdownLinks: "warn",
+        onBrokenMarkdownLinks: get("theme.markdown.on_broken_links", "throw"),
+        onBrokenMarkdownImages: get("theme.markdown.on_broken_images", "throw"),
       },
     },
 
     themeConfig: {
-      image: resolveStaticAsset(UserConfig.social_card, "img/social-card.jpeg"),
+      image: resolveStaticAsset(
+        get("site.social_card", ""),
+        "img/social-card.jpeg",
+      ),
+
       docs: {
         sidebar: {
-          hideable: UserConfig.collapsable_sidebar,
+          hideable: get("theme.navigation.collapsable_sidebar", true),
         },
       },
+
       imageZoom: {
         options: {
           margin: 2,
           background: "rgba(var(--ifm-background-color-rgb), 0.9)",
         },
       },
+
       colorMode: {
-        defaultMode: UserConfig.dark_mode ? "dark" : "light",
-        disableSwitch: UserConfig.disable_theme_switch,
+        defaultMode: get("theme.appearance.dark_mode", true) ? "dark" : "light",
+        disableSwitch: get("theme.appearance.disable_switch", false),
       },
       navbar: {
-        title: UserProjName,
-        hideOnScroll: UserConfig.hide_navbar_on_scroll,
+        title: get("site.title", "Your Portfolio"),
+        hideOnScroll: get("theme.navigation.hide_navbar_on_scroll", true),
         logo: {
           alt: "Site Logo",
           src: resolveStaticAsset(
-            UserConfig.favicon,
+            get("site.favicon", ""),
             resolveStaticAsset(
-              UserConfig.hero_section.profile_pic,
+              get("home_page.hero.profile_pic", ""),
               "img/icon.png",
             ),
           ),
@@ -300,7 +353,7 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             className: "navbar-search-bar",
           },
           {
-            enable: UserConfig.about_me.enable,
+            enable: get("home_page.about.enable", true),
             value: {
               label: "About Me",
               to: "/#about",
@@ -309,7 +362,7 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             },
           },
           {
-            enable: UserConfig.project_shelf.enable,
+            enable: get("home_page.project_shelf.enable", true),
             value: {
               label: "Projects",
               to: "/#projects",
@@ -318,7 +371,7 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             },
           },
           {
-            enable: UserConfig.experience.enable,
+            enable: get("home_page.experience.enable", false),
             value: {
               label: "Experience",
               to: "/#experience",
@@ -327,7 +380,7 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             },
           },
           {
-            enable: UserConfig.social_links.enable,
+            enable: get("home_page.social.enable", true),
             value: {
               label: "Contact",
               to: "/#contact",
@@ -341,18 +394,18 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
             position: "right",
             className: "_navbar-more-items",
             items: useEnabled([
-              { label: "Notes", to: "/notes" },
-              { label: "Blog", to: "/blog" },
+              { label: "Notes", to: `/${UserNotesDir}` },
+              { label: "Blog", to: `/${UserBlogDir}` },
               {
-                enable: UserConfig.tasks_page.enable,
-                value: { label: "Tasks", to: "/tasks" },
+                enable: get("home_page.tasks.enable", false),
+                value: { label: "Tasks", to: `/${UserTasksDir}` },
               },
               {
-                enable: !UserConfig.disable_branding,
+                enable: !get("theme.appearance.disable_branding", false),
                 value: {
-                  label: `Portosaurus v${version}`,
+                  label: `Portosaurus v${portoVersion}`,
                   className: "_nav-protosaurus-version",
-                  to: "https://github.com/soymadip/portosaurus",
+                  to: portoRepo,
                 },
               },
             ]),
@@ -364,9 +417,23 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
         maxHeadingLevel: 4,
       },
       prism: {
-        theme: catppuccinLatte,
-        darkTheme: catppuccinMocha,
-        additionalLanguages: ["java", "php", "bash"],
+        theme: (function () {
+          try {
+            return require(path.resolve(PortoRoot, "src/theme/config/prism.js"))
+              .catppuccinLatte;
+          } catch {
+            return {};
+          }
+        })(),
+        darkTheme: (function () {
+          try {
+            return require(path.resolve(PortoRoot, "src/theme/config/prism.js"))
+              .catppuccinMocha;
+          } catch {
+            return {};
+          }
+        })(),
+        additionalLanguages: ["java", "php", "bash", "diff"],
       },
       footer: {},
     },
@@ -410,8 +477,8 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
           hashed: true,
           indexDocs: true,
           docsDir: UserNotesDir,
-          docsRouteBasePath: "notes",
-          searchContextByPaths: ["notes", "blog"],
+          docsRouteBasePath: UserNotesDir,
+          searchContextByPaths: [UserNotesDir, UserBlogDir],
           highlightSearchTermsOnTargetPage: true,
           explicitSearchResultPath: true,
           hideSearchBarWithNoSearchContext: true,
@@ -421,7 +488,11 @@ export function buildDocuConfig(rawUserConfig, UserRoot) {
       "plugin-image-zoom",
     ],
 
-    staticDirectories: StaticDirs,
+    staticDirectories: [
+      UserStaticDir,
+      PortoAssetDir,
+      path.resolve(UserRoot, ".docusaurus/portosaurus/favicon"),
+    ].filter((d) => fs.existsSync(d)),
   };
 
   return config;

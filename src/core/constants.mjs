@@ -1,13 +1,18 @@
 import path from "path";
 import { fileURLToPath } from "url";
+import { loadPkg } from "../utils/systemUtils.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * The absolute path to the Portosaurus package root.
- * Calculated relative to this file's location in src/utils/
  */
 export const PortoRoot = path.resolve(__dirname, "../../");
+
+/**
+ * The Portosaurus package.json content.
+ */
+export const PortoPkg = loadPkg(PortoRoot);
 
 /**
  * Common paths inside the framework
@@ -18,4 +23,5 @@ export const Paths = {
   theme: path.join(PortoRoot, "src/theme"),
   core: path.join(PortoRoot, "src/core"),
   plugins: path.join(PortoRoot, "src/plugins"),
+  utils: path.join(PortoRoot, "src/utils"),
 };
