@@ -59,7 +59,7 @@ export default withMermaid({
   cleanUrls: true,
 
   head: [
-    ["link", { rel: "icon", type: "image/svg+xml", href: "/img/icon.svg" }],
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/img/svg/icon.svg" }],
   ],
 
   title: metadata.project.title,
@@ -70,7 +70,7 @@ export default withMermaid({
   },
 
   themeConfig: {
-    logo: "/img/icon.svg",
+    logo: "/img/svg/icon.svg",
     outline: [2, 3],
 
     search: {

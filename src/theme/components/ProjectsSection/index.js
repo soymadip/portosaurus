@@ -20,6 +20,8 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function ProjectsSection({ id, className, title, subtitle }) {
   const { siteConfig } = useDocusaurusContext();
+  const projectShelf = siteConfig.customFields?.projects;
+  const isAutoplayEnabled = projectShelf?.autoplay ?? true;
 
   const [projects, setProjects] = useState([]);
   const sliderRef = useRef(null);
@@ -106,7 +108,9 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
         return processed;
       });
 
-      // Sort projects: featured first, then original order
+    const totalPages = Math.ceil(processedProjects.length / slides);
+
+    // Sort: Featured first
       processedProjects.sort((a, b) => {
         if (a.featured && !b.featured) return -1;
         if (!a.featured && b.featured) return 1;
@@ -244,11 +248,14 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
       dots: false,
       infinite: false,
       speed: 600,
-      slidesToShow: Math.min(projects.length, slidesToShow),
+      slidesToShow: slidesToShow,
       slidesToScroll: slidesToShow,
-      autoplay: false,
+      autoplay: isAutoplayEnabled,
+
+      autoplaySpeed: 5000,
+      pauseOnHover: true,
       adaptiveHeight: false,
-      centerPadding: "20px",
+      centerPadding: "0px",
       centerMode: false,
       variableWidth: false,
       swipeToSlide: false,
@@ -273,12 +280,11 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
         },
       ],
       className: styles.projectsCarousel,
-      beforeChange: (current, next) => {
+      beforeChange: (_, next) => {
         setAtBeginning(next === 0);
-        setCurrentSlide(Math.floor(next / slidesToShow));
-        setAtEnd(
-          next + Math.min(projects.length, slidesToShow) >= projects.length,
-        );
+        const nextSlideIndex = Math.floor(next / slidesToShow);
+        setCurrentSlide(nextSlideIndex);
+        setAtEnd(next + slidesToShow >= projects.length);
       },
     }),
     [projects, slidesToShow],
@@ -417,6 +423,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
         ) : (
           <div className={styles.carouselContainer}>
             {/* Desktop navigation buttons (sides) */}
+            {projects.length > slidesToShow && (
             <button
               className={`${styles.carouselControl} ${styles.prevButton} ${styles.desktopOnly} ${atBeginning ? styles.disabledButton : ""}`}
               onClick={goToPrev}
@@ -427,6 +434,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
             >
               <FaChevronLeft aria-hidden="true" />
             </button>
+            )}
 
             <div
               className={styles.carouselWrapper}
@@ -572,6 +580,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
             </div>
 
             {/* Desktop navigation button (right side) */}
+            {projects.length > slidesToShow && (
             <button
               className={`${styles.carouselControl} ${styles.nextButton} ${styles.desktopOnly} ${atEnd ? styles.disabledButton : ""}`}
               onClick={goToNext}
@@ -582,6 +591,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
             >
               <FaChevronRight />
             </button>
+            )}
           </div>
         )}
       </div>

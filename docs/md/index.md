@@ -6,7 +6,7 @@ hero:
   text: "{{meta.project.desc}}"
   tagline: "{{meta.project.tagLine}}"
   image:
-    src: /img/icon.svg
+    src: /img/svg/icon.svg
     alt: "{{meta.project.title}} Logo"
 
   actions:

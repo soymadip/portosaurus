@@ -28,7 +28,9 @@
   position: relative;
   overflow: visible !important;
   z-index: 100;
-  background-color: var(--ifm-background-color);
+  background-color: var(--ifm-background-color) !important;
+  box-shadow: none !important;
+  border: none !important;
 }
 
 .projectsContainer {
@@ -38,18 +40,12 @@
   overflow: visible !important;
 }
 
-.projectsCarousel,
-.projectsCarousel :global(.slick-slider),
-.projectsCarousel :global(.slick-list),
-.projectsCarousel :global(.slick-track),
-.projectsCarousel :global(.slick-slide) {
-  overflow: visible !important;
+.projectsCarousel {
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.projectsCarousel {
-  padding: 2.5rem 0 !important;
-  margin: -2.5rem 0 !important;
-}
 
 .projectsHeader {
   text-align: center;
@@ -99,13 +95,14 @@
 
 .carouselWrapper {
   flex: 1;
-  min-width: 0; /* Important for flex children */
-  overflow: visible !important;
+  min-width: 0;
+  overflow: hidden;
   position: relative;
+  padding: 1rem 0;
 }
 
 .carouselControl {
-  background: var(--ifm-color-emphasis-100);
+  background: var(--ifm-color-primary);
   border: none;
   border-radius: 50%;
   width: 44px;
@@ -115,26 +112,18 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  color: var(--ifm-color-primary);
-  box-shadow: var(--ifm-global-shadow-lw);
+  color: var(--ifm-color-emphasis-900);
+  box-shadow: var(--ifm-global-shadow-md);
   z-index: 10;
   flex-shrink: 0;
-  position: static !important;
-}
-
-.prevButton,
-.nextButton {
-  position: static !important;
-  left: auto !important;
-  right: auto !important;
-  top: auto !important;
-  transform: none !important;
+  position: relative;
 }
 
 .carouselControl:hover:not(:disabled) {
-  background: var(--ifm-color-primary);
-  color: var(--ifm-color-white);
-  transform: scale(1.1) !important;
+  background: var(--ifm-color-primary-darker);
+  color: var(--ifm-color-emphasis-900);
+  transform: scale(1.1);
+  box-shadow: var(--ifm-global-shadow-lw);
 }
 
 .carouselControl:disabled {
@@ -145,7 +134,7 @@
 .projectsCarousel {
   width: 100%;
   margin: 0;
-  padding: 0; /* Resetting previously added padding */
+  padding: 0; 
 }
 
 .projectsCarousel :global(.slick-list) {
@@ -219,17 +208,16 @@
   bottom: 10px;
   right: 10px;
   background-color: var(--ifm-color-primary);
-  color: var(--ifm-color-white);
-  width: 20px;
-  height: 20px;
+  color: var(--ifm-color-emphasis-900);
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   z-index: 5;
   box-shadow: var(--ifm-global-shadow-lw);
-  top: auto;
 }
 
 .featuredBadge svg {
@@ -363,11 +351,10 @@
   line-height: 1.4;
 }
 
-/* Tags styling (Responsive Bottom Row) */
 .projectTags {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: 10px;
+  left: 10px;
   z-index: 5;
   display: flex;
   flex-direction: row;
@@ -377,14 +364,14 @@
 }
 
 .projectTag {
-  background-color: color-mix(in srgb, var(--ifm-color-black), transparent 60%);
+  background-color: var(--ifm-shadow-color);
   backdrop-filter: blur(12px);
-  color: var(--ifm-color-white);
+  color: var(--ifm-font-color-tertiary);
   padding: 0px 1px 1px 2px;
   border-radius: 3px;
   font-size: 0.5rem;
   font-weight: 700;
-  text-transform: uppercase;
+  text-transform: capitalize;
   letter-spacing: 0.8px;
   border: none;
   box-shadow: var(--ifm-global-shadow-lw);
@@ -441,57 +428,6 @@
   color: var(--ifm-color-primary);
 }
 
-/* Carousel control buttons */
-.carouselControl {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: var(--ifm-color-primary);
-  color: var(--ifm-color-white);
-  border: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-  transition:
-    opacity 0.2s ease,
-    background-color 0.2s ease;
-  padding: 0;
-  box-shadow: var(--ifm-global-shadow-md);
-}
-
-.carouselControl svg {
-  width: 20px;
-  height: 20px;
-  fill: var(--ifm-color-white);
-}
-
-.carouselControl:hover {
-  transform: translateY(-50%) scale(1.1);
-}
-
-/* Disabled button style */
-.disabledButton {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.disabledButton:hover {
-  transform: translateY(-50%);
-  opacity: 0.5;
-}
-
-.prevButton {
-  left: -25px;
-}
-
-.nextButton {
-  right: -25px;
-}
 
 .noProjects {
   text-align: center;
@@ -504,8 +440,8 @@
 
 :global(.slick-track) {
   display: flex !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
 }
 
 :global(.slick-slide) {

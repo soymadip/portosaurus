@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./src/assets/img/icon.svg" width=110>
+    <img src="./src/assets/img/svg/icon.svg" width=110>
     <h1>Portosaurus</h1>
     <p>Complete portfolio cum personal website solution for your digital personality.</p>
     <br />
