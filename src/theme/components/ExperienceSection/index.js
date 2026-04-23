@@ -1,8 +1,15 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useBrokenLinks from "@docusaurus/useBrokenLinks";
 import styles from "./styles.module.css";
 
 export default function ExperienceSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
+  const brokenLinks = useBrokenLinks();
+
+  if (id) {
+    brokenLinks.collectAnchor(id);
+  }
+
   const experience = siteConfig.customFields?.experience || {};
 
   if (experience.enable === false) return null;

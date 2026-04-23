@@ -1,8 +1,8 @@
-import React from "react";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { iconMap } from "../../config/iconMappings";
 import { FaQuestionCircle } from "react-icons/fa";
 import useScrollReveal from "../../hooks/useScrollReveal";
+import useBrokenLinks from "@docusaurus/useBrokenLinks";
 import styles from "./styles.module.css";
 
 const sortEmail = (links) => {
@@ -26,6 +26,12 @@ const sortEmail = (links) => {
 
 export default function ContactSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
+  const brokenLinks = useBrokenLinks();
+
+  if (id) {
+    brokenLinks.collectAnchor(id);
+  }
+
   const { customFields } = siteConfig;
   const socialLinksConfig = customFields.socialLinks || {};
 

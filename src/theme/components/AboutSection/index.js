@@ -2,10 +2,17 @@ import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useScrollReveal from "../../hooks/useScrollReveal";
 import { FaDownload } from "react-icons/fa";
 import { Pv } from "../Preview/index.js";
+import useBrokenLinks from "@docusaurus/useBrokenLinks";
 import styles from "./styles.module.css";
 
 export default function AboutSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
+  const brokenLinks = useBrokenLinks();
+
+  if (id) {
+    brokenLinks.collectAnchor(id);
+  }
+
   const { customFields } = siteConfig;
   const aboutMe = customFields.aboutMe || {};
 

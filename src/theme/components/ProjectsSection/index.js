@@ -11,6 +11,7 @@ import {
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useScrollReveal from "../../hooks/useScrollReveal";
 import Tooltip from "../Tooltip/index.js";
+import useBrokenLinks from "@docusaurus/useBrokenLinks";
 import styles from "./styles.module.css";
 
 // Import slick carousel css
@@ -19,6 +20,12 @@ import "slick-carousel/slick/slick-theme.css";
 
 export default function ProjectsSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
+  const brokenLinks = useBrokenLinks();
+
+  if (id) {
+    brokenLinks.collectAnchor(id);
+  }
+
   const projectShelf = siteConfig.customFields?.projects || {};
 
   if (projectShelf.enable === false) return null;

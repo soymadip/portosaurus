@@ -1,10 +1,16 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
+import useBrokenLinks from "@docusaurus/useBrokenLinks";
 import SocialLinks from "../SocialLinks/index.js";
-import { FaChevronDown } from "react-icons/fa";
 import styles from "./styles.module.css";
 
 export default function HeroSection({ id, className }) {
   const { siteConfig } = useDocusaurusContext();
+  const brokenLinks = useBrokenLinks();
+
+  if (id) {
+    brokenLinks.collectAnchor(id);
+  }
+
   const { customFields } = siteConfig;
 
   const intro = customFields.heroSection.intro;
@@ -17,8 +23,8 @@ export default function HeroSection({ id, className }) {
 
   return (
     <div
-      className={`${styles.hero} ${className || ""}`}
       id={id}
+      className={`${styles.hero} ${className || ""}`}
       role="region"
       aria-label="Hero section"
     >

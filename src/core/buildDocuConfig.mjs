@@ -429,7 +429,7 @@ export function buildDocuConfig(UserConfigRaw, UserRoot) {
               label: "Contact",
               to: "/#contact",
               position: "right",
-              activeBaseRegex: "^/$contact",
+              activeBaseRegex: "^/#contact",
             },
           },
           {
