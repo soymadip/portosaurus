@@ -27,7 +27,9 @@ cd my-site
 bun run dev   # or: npm run dev
 ```
 
-For full installation guides and CLI reference, visit the **[Documentation](https://soymadip.github.io/portosaurus/)**.
+## Configuration
+
+For full installation, configuration guide, CLI reference, visit the **[Documentation](https://soymadip.github.io/portosaurus/)**.
 
 ## Credits
 

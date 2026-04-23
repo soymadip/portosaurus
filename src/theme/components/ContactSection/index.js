@@ -67,7 +67,7 @@ export default function ContactSection({ id, className }) {
               const name = social.name;
               const Icon = iconData.icon || FaQuestionCircle;
               const iconColor = iconData.color || "var(--ifm-color-primary)";
-              const description = social.desc || `Connect with me on ${name}`;
+              const desc = social.desc || `Connect with me on ${name}`;
               const url = social.url;
 
               return (
@@ -81,7 +81,7 @@ export default function ContactSection({ id, className }) {
                     "--card-index": index,
                     "--icon-hover-color": iconColor,
                   }}
-                  aria-label={`Connect with me on ${name}: ${description}`}
+                  aria-label={`Connect with me on ${name}: ${desc}`}
                   role="listitem"
                 >
                   {Icon && (
@@ -90,7 +90,7 @@ export default function ContactSection({ id, className }) {
                     </div>
                   )}
                   <h3 className={styles.socialTitle}>{name}</h3>
-                  <p className={styles.socialDesc}>{description}</p>
+                  <p className={styles.socialDesc}>{desc}</p>
                 </a>
               );
             })}

@@ -56,7 +56,7 @@ export default function ProjectsSection({ id, className }) {
     const processedProjects = projectList.map((project, index) => {
       const processed = {
         ...project,
-        description: project.description || project.desc || "N/A",
+        desc: project.desc || "N/A",
         icon: project.icon || "img/project-blank.png",
         bg: project.bg || null,
         tags: project.tags || [],
@@ -479,7 +479,7 @@ export default function ProjectsSection({ id, className }) {
                         <h3 className={styles.projectTitle}>{project.title}</h3>
 
                         <p className={styles.projectDescription}>
-                          {project.description}
+                          {project.desc}
                         </p>
                       </div>
 

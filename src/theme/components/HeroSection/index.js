@@ -11,7 +11,7 @@ export default function HeroSection({ id, className }) {
   const title = customFields.heroSection.title;
   const subtitle = customFields.heroSection.subtitle;
   const profession = customFields.heroSection.profession;
-  const description = customFields.heroSection.description;
+  const desc = customFields.heroSection.desc;
   const profilePic = customFields.heroSection.profilePic;
   const learnMoreButtonText = customFields.heroSection.learnMoreButtonTxt;
 
@@ -34,7 +34,7 @@ export default function HeroSection({ id, className }) {
             <h2 className={styles.profession}>{profession}</h2>
             <span className={styles.subtitle}>.</span>
           </div>
-          <p className={styles.description}>{description}</p>
+          <p className={styles.description}>{desc}</p>
           <div className={styles.actionRow}>
             <div className={styles.cta}>
               <a

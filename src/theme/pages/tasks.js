@@ -97,8 +97,8 @@ function TaskList({ filterStatus, taskList }) {
 
               <div className="task-cell task-cell-title">
                 <div className="task-title">{task.title}</div>
-                {task.description && (
-                  <div className="task-description">{task.description}</div>
+                {task.desc && (
+                  <div className="task-description">{task.desc}</div>
                 )}
               </div>
 
@@ -257,7 +257,7 @@ export default function TasksPage() {
 
   const tasksPage = customFields?.tasksPage;
   const title = tasksPage.title;
-  const description = tasksPage.description;
+  const desc = tasksPage.desc;
   const taskList =
     tasksPage.enable && tasksPage.taskList ? tasksPage.taskList : [];
 
@@ -287,12 +287,12 @@ export default function TasksPage() {
   }
 
   return (
-    <Layout title={title} description={description}>
+    <Layout title={title} description={desc}>
       <Head>
         <meta property="og:title" content={title} />
-        <meta property="og:description" content={description} />
+        <meta property="og:description" content={desc} />
         <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
+        <meta name="twitter:description" content={desc} />
       </Head>
 
       <div className="tasks-container">

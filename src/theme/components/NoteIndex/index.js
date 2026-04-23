@@ -55,7 +55,7 @@ function useNotes() {
         title,
         language,
         slug,
-        description: frontMatter.description || "",
+        desc: frontMatter.desc || "",
         position: frontMatter.sidebar_position || 999,
       };
     })
@@ -65,12 +65,12 @@ function useNotes() {
 /**
  * Individual Note Card Component
  */
-function NoteCard({ title, language, slug, description, index, docsBasePath }) {
+function NoteCard({ title, language, slug, desc, index, docsBasePath }) {
   const noteUrl = useBaseUrl(`${docsBasePath}/${slug}`);
   const { icon: Icon = FaBook, color = "var(--ifm-color-primary)" } =
     iconMap[language] || iconMap[title.toLowerCase()] || {};
 
-  const tooltipContent = description ? description : null;
+  const tooltipContent = desc ? desc : null;
 
   const cardInner = (
     <Link
@@ -129,7 +129,7 @@ export default function NoteCards() {
  * Topic List Helper (for inside notes)
  */
 export function TopicList({
-  description = "Click on the links below to explore the topics.",
+  desc = "Click on the links below to explore the topics.",
   style = {
     marginTop: "-2.5rem",
     marginBottom: "2.5rem",
@@ -138,7 +138,7 @@ export function TopicList({
 }) {
   return (
     <div style={style}>
-      <p dangerouslySetInnerHTML={{ __html: description }} />
+      <p dangerouslySetInnerHTML={{ __html: desc }} />
       <DocCardList />
     </div>
   );
