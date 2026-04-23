@@ -46,7 +46,6 @@
   padding: 0;
 }
 
-
 .projectsHeader {
   text-align: center;
   margin-bottom: 3.5rem;
@@ -134,7 +133,7 @@
 .projectsCarousel {
   width: 100%;
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }
 
 .projectsCarousel :global(.slick-list) {
@@ -199,7 +198,7 @@
 }
 
 .featuredCard {
-  border: 1.5px solid rgba(var(--ifm-color-primary-rgb), 0.7);
+  /* Just the star is enough now */
   box-shadow: var(--ifm-global-shadow-md);
 }
 
@@ -226,14 +225,8 @@
 
 .carouselCard:hover {
   transform: scale(1.02) translate3d(0, 0, 0);
-  border-color: rgba(var(--ifm-color-primary-rgb), 0.4);
+  border: 2px solid var(--ifm-color-primary);
   z-index: 999;
-}
-
-.featuredCard:hover {
-  border-width: 2px;
-  border-color: var(--ifm-color-primary);
-  box-shadow: none;
 }
 
 .projectImageContainer {
@@ -364,7 +357,7 @@
 }
 
 .projectTag {
-  background-color: var(--ifm-shadow-color);
+  background-color: var(--ifm-background-surface-color);
   backdrop-filter: blur(12px);
   color: var(--ifm-font-color-tertiary);
   padding: 0px 1px 1px 2px;
@@ -373,8 +366,16 @@
   font-weight: 700;
   text-transform: capitalize;
   letter-spacing: 0.8px;
-  border: none;
+  border: 1px solid var(--ifm-card-background-color);
   box-shadow: var(--ifm-global-shadow-lw);
+}
+
+.extraTagBtn {
+  background-color: var(--ifm-color-primary) !important;
+  color: var(--ifm-color-emphasis-900) !important;
+  border: 0.1px solid var(--ifm-color-primary) !important;
+  cursor: help;
+  opacity: 0.7;
 }
 
 /* Links styling */
@@ -427,7 +428,6 @@
   transform: scale(1.08);
   color: var(--ifm-color-primary);
 }
-
 
 .noProjects {
   text-align: center;

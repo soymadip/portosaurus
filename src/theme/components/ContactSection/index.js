@@ -43,11 +43,8 @@ export default function ContactSection({ id, className, title, subtitle }) {
     >
       <div className={styles.contactContainer}>
         <div className={styles.contactHeader}>
-          <h2 className={styles.contactTitle}>{title || "Get In Touch"}</h2>
-          <p className={styles.contactSubtitle}>
-            {subtitle ||
-              "Feel free to reach out for collaborations, questions, or just to say hello!"}
-          </p>
+          <h2 className={styles.contactTitle}>{title}</h2>
+          <p className={styles.contactSubtitle}>{subtitle}</p>
         </div>
 
         {/* SocialCard */}
@@ -60,11 +57,10 @@ export default function ContactSection({ id, className, title, subtitle }) {
             {socialLinks.map((social, index) => {
               const iconData = iconMap[social.icon] || {};
 
-              const name = social.name || "?";
+              const name = social.name;
               const Icon = iconData.icon || FaQuestionCircle;
               const iconColor = iconData.color || "var(--ifm-color-primary)";
-              const description =
-                name === "?" ? "" : social.desc || `Connect with me on ${name}`;
+              const description = social.desc || `Connect with me on ${name}`;
               const url = social.url;
 
               return (

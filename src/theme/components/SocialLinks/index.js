@@ -103,6 +103,7 @@ export default function SocialIcons({ showAll = false }) {
             position="top"
             color={displayColor}
             underline={false}
+            gap={17}
           >
             <a
               href={href}

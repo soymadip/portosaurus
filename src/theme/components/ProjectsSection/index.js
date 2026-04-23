@@ -36,37 +36,6 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
   const [sectionRef, isVisible] = useScrollReveal();
 
-  // Default Settings
-  const projectDefaults = {
-    title: "Future Project",
-    desc: "Coming soon...",
-    image: "img/project-blank.png",
-    state: "active",
-    tags: [],
-  };
-
-  const createPlaceholders = useCallback(
-    (count, existingProjects) => {
-      if (existingProjects.length === 0) return [];
-
-      return [
-        ...existingProjects,
-        ...Array.from({ length: count }, (_, i) => ({
-          ...projectDefaults,
-
-          // Dummy card config
-          state: "n/a",
-          title: `Project ${existingProjects.length + i + 1}`,
-          description: projectDefaults.desc,
-          image: projectDefaults.image,
-          id: `placeholder-${i}`,
-          tags: null,
-        })),
-      ];
-    },
-    [projectDefaults],
-  );
-
   // Get current slidesToShow based on screen width
   const getVisibleSlidesPerView = useCallback(() => {
     if (typeof window === "undefined") return 3;
@@ -78,43 +47,43 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
   }, []);
 
   const prepareProjects = useCallback((projectList, slides) => {
-      if (!projectList?.length) return { projects: [], totalPages: 0 };
+    if (!projectList?.length) return { projects: [], totalPages: 0 };
 
-      const processedProjects = projectList.map((project, index) => {
-        const processed = {
-          ...project,
+    const processedProjects = projectList.map((project, index) => {
+      const processed = {
+        ...project,
         description: project.description || project.desc || "N/A",
         icon: project.icon || "img/project-blank.png",
         bg: project.bg || null,
         tags: project.tags || [],
         state: project.state || "completed",
-        };
+      };
 
-        if (!processed.id) {
-          processed.id =
-            (processed.title || "project")
-              .toLowerCase()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/\s+/g, "-")
-              .replace(/-+/g, "-") + `-${index}`;
-        }
+      if (!processed.id) {
+        processed.id =
+          (processed.title || "project")
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-") + `-${index}`;
+      }
 
-        return processed;
-      });
+      return processed;
+    });
 
     const totalPages = Math.ceil(processedProjects.length / slides);
 
     // Sort: Featured first
-      processedProjects.sort((a, b) => {
-        if (a.featured && !b.featured) return -1;
-        if (!a.featured && b.featured) return 1;
-        return 0;
-      });
+    processedProjects.sort((a, b) => {
+      if (a.featured && !b.featured) return -1;
+      if (!a.featured && b.featured) return 1;
+      return 0;
+    });
 
-      return {
+    return {
       projects: processedProjects,
-        totalPages,
-      };
+      totalPages,
+    };
   }, []);
 
   // Load and set up projects on initial load and on resize
@@ -391,11 +360,8 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
     >
       <div className={styles.projectsContainer}>
         <div className={styles.projectsHeader}>
-          <h2 className={styles.projectsTitle}>{title || "My Projects"}</h2>
-          <p className={styles.projectsSubtitle}>
-            {subtitle ||
-              "A collection of all my works, with featured projects highlighted"}
-          </p>
+          <h2 className={styles.projectsTitle}>{title}</h2>
+          <p className={styles.projectsSubtitle}>{subtitle}</p>
         </div>
 
         {projects.length === 0 ? (
@@ -406,16 +372,16 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
           <div className={styles.carouselContainer}>
             {/* Desktop navigation buttons (sides) */}
             {projects.length > slidesToShow && (
-            <button
-              className={`${styles.carouselControl} ${styles.prevButton} ${styles.desktopOnly} ${atBeginning ? styles.disabledButton : ""}`}
-              onClick={goToPrev}
-              aria-label="View previous projects"
-              aria-disabled={atBeginning}
-              type="button"
-              disabled={atBeginning}
-            >
-              <FaChevronLeft aria-hidden="true" />
-            </button>
+              <button
+                className={`${styles.carouselControl} ${styles.prevButton} ${styles.desktopOnly} ${atBeginning ? styles.disabledButton : ""}`}
+                onClick={goToPrev}
+                aria-label="View previous projects"
+                aria-disabled={atBeginning}
+                type="button"
+                disabled={atBeginning}
+              >
+                <FaChevronLeft aria-hidden="true" />
+              </button>
             )}
 
             <div
@@ -458,24 +424,24 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                             "rgba(var(--ifm-color-primary-rgb), 0.05)",
                         }}
                       >
-                          <img
+                        <img
                           src={project.icon}
-                            alt={project.title}
-                            className={styles.projectImage}
-                            loading="lazy"
-                          />
+                          alt={project.title}
+                          className={styles.projectImage}
+                          loading="lazy"
+                        />
 
                         {/* Project tags */}
                         {project.tags?.length > 0 &&
                           (() => {
                             const extraCount = project.tags.length - 3;
                             return (
-                          <div className={styles.projectTags}>
+                              <div className={styles.projectTags}>
                                 {project.tags.slice(0, 3).map((tag) => (
-                              <span key={tag} className={styles.projectTag}>
-                                {tag}
-                              </span>
-                            ))}
+                                  <span key={tag} className={styles.projectTag}>
+                                    {tag}
+                                  </span>
+                                ))}
                                 {extraCount > 0 && (
                                   <Tooltip
                                     msg={project.tags.slice(3).join(", ")}
@@ -489,7 +455,7 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
                                     </span>
                                   </Tooltip>
                                 )}
-                          </div>
+                              </div>
                             );
                           })()}
 
@@ -585,16 +551,16 @@ export default function ProjectsSection({ id, className, title, subtitle }) {
 
             {/* Desktop navigation button (right side) */}
             {projects.length > slidesToShow && (
-            <button
-              className={`${styles.carouselControl} ${styles.nextButton} ${styles.desktopOnly} ${atEnd ? styles.disabledButton : ""}`}
-              onClick={goToNext}
-              aria-label="View next projects"
-              aria-disabled={atEnd}
-              type="button"
-              disabled={atEnd}
-            >
-              <FaChevronRight />
-            </button>
+              <button
+                className={`${styles.carouselControl} ${styles.nextButton} ${styles.desktopOnly} ${atEnd ? styles.disabledButton : ""}`}
+                onClick={goToNext}
+                aria-label="View next projects"
+                aria-disabled={atEnd}
+                type="button"
+                disabled={atEnd}
+              >
+                <FaChevronRight />
+              </button>
             )}
           </div>
         )}

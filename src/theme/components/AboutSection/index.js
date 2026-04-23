@@ -39,16 +39,14 @@ export default function AboutSection({ id, className }) {
 
             <div className={styles.bioTextContainer}>
               <div className={styles.bioText}>
-                {Array.isArray(aboutMe.description) ? (
-                  aboutMe.description.map((paragraph, index) => (
+                {Array.isArray(aboutMe.bio) ? (
+                  aboutMe.bio.map((paragraph, index) => (
                     <p key={index} className={styles.aboutParagraph}>
                       {paragraph}
                     </p>
                   ))
                 ) : (
-                  <p className={styles.aboutParagraph}>
-                    {aboutMe.description || "Information about me goes here."}
-                  </p>
+                  <p className={styles.aboutParagraph}>{aboutMe.bio}</p>
                 )}
               </div>
 
