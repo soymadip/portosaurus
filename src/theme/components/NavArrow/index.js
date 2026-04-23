@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import Tooltip from "../Tooltip";
 import styles from "./styles.module.css";
 
 export default function NavArrow() {
@@ -93,15 +94,21 @@ export default function NavArrow() {
       aria-label={
         direction === "down" ? "Scroll to next section" : "Scroll to top"
       }
-      title={direction === "down" ? "Next Section" : "Back to Top"}
     >
-      <div className={`${styles.iconWrapper} ${styles[direction]}`}>
-        {direction === "down" ? (
-          <FaChevronDown className={styles.chevron} />
-        ) : (
-          <FaChevronUp className={styles.chevron} />
-        )}
-      </div>
+      <Tooltip
+        msg={direction === "down" ? "Next Section" : "Back to Top"}
+        position="top"
+        gap={25}
+        underline={false}
+      >
+        <div className={`${styles.iconWrapper} ${styles[direction]}`}>
+          {direction === "down" ? (
+            <FaChevronDown className={styles.chevron} />
+          ) : (
+            <FaChevronUp className={styles.chevron} />
+          )}
+        </div>
+      </Tooltip>
     </button>
   );
 }
