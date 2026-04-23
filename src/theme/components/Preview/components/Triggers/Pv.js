@@ -204,15 +204,17 @@ export default function Pv(props) {
     return <span className={styles.previewContainer}>{trigger}</span>;
   }
 
+  const tooltipMsg = srcList[activeIdx]?.tooltip;
+
   return (
     <span className={styles.previewContainer}>
-      <Tooltip
-        msg={srcList[activeIdx]?.tooltip}
-        position="top"
-        underline={false}
-      >
-        {trigger}
-      </Tooltip>
+      {tooltipMsg ? (
+        <Tooltip msg={tooltipMsg} position="top" underline={false}>
+          {trigger}
+        </Tooltip>
+      ) : (
+        trigger
+      )}
     </span>
   );
 }

@@ -101,7 +101,7 @@ export default function SocialIcons({ showAll = false }) {
             key={index}
             msg={social.desc || social.icon || "Link"}
             position="top"
-            color={displayColor}
+            bg={displayColor}
             underline={false}
             gap={17}
           >
