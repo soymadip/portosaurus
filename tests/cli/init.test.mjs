@@ -51,14 +51,14 @@ describe("CLI: init", () => {
     expect(fs.existsSync(path.join(projectPath, "package.json"))).toBe(true);
     expect(fs.existsSync(path.join(projectPath, "config.yml"))).toBe(true);
     expect(fs.existsSync(path.join(projectPath, ".gitignore"))).toBe(true);
- 
+
     // 3. Verify package.json customization
     const pkg = JSON.parse(
       fs.readFileSync(path.join(projectPath, "package.json"), "utf8"),
     );
     expect(pkg.name).toBe(projectName);
     expect(pkg.dependencies.portosaurus).toBeDefined();
- 
+
     // 4. Verify config.yml existence
     expect(fs.existsSync(path.join(projectPath, "config.yml"))).toBe(true);
   });
