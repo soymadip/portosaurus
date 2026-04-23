@@ -7,11 +7,18 @@ import { useEffect, useRef } from "react";
  * - Collapses/expands the Docusaurus sidebar
  * - Tracks navbar height for dock top offset
  */
-export function useDockLayout(isOpen, isDocked, dockWidth) {
+export function useDockLayout(isOpen, isDocked, dockWidth, isModal) {
   const weCollapsedSidebar = useRef(false);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
+
+    // --- Modal scroll lock ---
+    if (isOpen && isModal) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
 
     const isMobile = window.innerWidth <= 768;
     const desktopDockActive = isOpen && isDocked && !isMobile;
@@ -63,8 +70,9 @@ export function useDockLayout(isOpen, isDocked, dockWidth) {
 
     return () => {
       document.body.classList.remove("pv-dock-active");
+      document.body.style.overflow = "";
       document.documentElement.style.removeProperty("--dock-top-offset");
       window.removeEventListener("resize", updateNavOffset);
     };
-  }, [isOpen, isDocked, dockWidth]);
+  }, [isOpen, isDocked, dockWidth, isModal]);
 }

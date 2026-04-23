@@ -1,3 +1,11 @@
+:root {
+  --pv-backdrop-bg: rgba(var(--ifm-color-emphasis-900-rgb), 0.1);
+  --pv-modal-shadow: 0 20px 50px rgba(var(--ifm-color-emphasis-900-rgb), 0.3);
+  --pv-modal-width: min(900px, 90vw);
+  --pv-modal-height: min(700px, 85vh);
+  --pv-modal-radius: var(--ifm-global-radius, 16px);
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -139,6 +147,30 @@
   width: 100vw;
   height: var(--mobile-peek-height, 40vh);
   border-radius: 16px 16px 0 0;
+}
+
+.previewBackdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--pv-backdrop-bg);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 5;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.modeModal .windowFrame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--pv-modal-width);
+  height: var(--pv-modal-height);
+  border-radius: var(--pv-modal-radius);
+  box-shadow: var(--pv-modal-shadow);
+  overflow: hidden;
+  z-index: 10;
 }
 
 /* --- Window Components: Header & Drag --- */

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import Tooltip from "../../Tooltip";
 import styles from "../styles.module.css";
 
@@ -16,6 +16,7 @@ export default function PreviewHeader({
   fileType,
   fileUrl,
   isDocked,
+  isModal,
   zoomLevel,
   onZoomChange,
   onToggleDock,
@@ -135,30 +136,32 @@ export default function PreviewHeader({
             </Tooltip>
           )}
 
-          {/* Dock / Popup toggle */}
-          <Tooltip
-            msg={isDocked ? "Open as popup" : "Dock to side"}
-            position="bottom"
-            underline={false}
-          >
-            <button
-              onClick={onToggleDock}
-              className={`${styles.headerAction} ${styles.dockToggle}`}
+          {/* Dock / Popup toggle (hidden in modal mode) */}
+          {!isModal && (
+            <Tooltip
+              msg={isDocked ? "Open as popup" : "Dock to side"}
+              position="bottom"
+              underline={false}
             >
-              {isDocked ? (
-                <IconPopup
-                  className={`${styles.headerIcon} ${styles.iconPopupTweak}`}
-                />
-              ) : (
-                <IconDock className={styles.headerIcon} />
-              )}
-              {showDockLabel && (
-                <span className={styles.btnText}>
-                  {isDocked ? "Popup" : "Dock"}
-                </span>
-              )}
-            </button>
-          </Tooltip>
+              <button
+                onClick={onToggleDock}
+                className={`${styles.headerAction} ${styles.dockToggle}`}
+              >
+                {isDocked ? (
+                  <IconPopup
+                    className={`${styles.headerIcon} ${styles.iconPopupTweak}`}
+                  />
+                ) : (
+                  <IconDock className={styles.headerIcon} />
+                )}
+                {showDockLabel && (
+                  <span className={styles.btnText}>
+                    {isDocked ? "Popup" : "Dock"}
+                  </span>
+                )}
+              </button>
+            </Tooltip>
+          )}
 
           {/* Close */}
           <Tooltip msg="Close" position="bottom" underline={false}>

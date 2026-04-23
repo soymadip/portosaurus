@@ -27,6 +27,7 @@ function getInitialState() {
   return {
     isOpen: false,
     isDocked: false,
+    isModal: false,
     dockWidth: defaultDockWidth,
     sources: [],
     activeIndex: 0,
@@ -45,11 +46,12 @@ function reducer(state, action) {
       return {
         ...state,
         isOpen: true,
+        isModal: !!action.isModal,
         sources: action.sources,
         activeIndex: action.index ?? 0,
       };
     case "CLOSE":
-      return { ...state, isOpen: false, isDocked: false };
+      return { ...state, isOpen: false, isDocked: false, isModal: false };
     case "SET_DOCKED":
       return { ...state, isDocked: action.value };
     case "SET_ACTIVE_INDEX":
@@ -69,12 +71,15 @@ function reducer(state, action) {
 export function PreviewProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, undefined, getInitialState);
 
-  const openPreview = useCallback((sources, index = 0, hashId = null) => {
-    if (hashId && typeof window !== "undefined") {
-      window.history.replaceState(null, null, "#" + hashId);
-    }
-    dispatch({ type: "OPEN", sources, index });
-  }, []);
+  const openPreview = useCallback(
+    (sources, index = 0, hashId = null, isModal = false) => {
+      if (hashId && typeof window !== "undefined") {
+        window.history.replaceState(null, null, "#" + hashId);
+      }
+      dispatch({ type: "OPEN", sources, index, isModal });
+    },
+    [],
+  );
 
   const closePreview = useCallback(() => {
     if (typeof window !== "undefined") {

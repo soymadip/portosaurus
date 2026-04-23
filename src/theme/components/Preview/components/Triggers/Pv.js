@@ -13,7 +13,14 @@ export function isTrue(val) {
 }
 
 // Normalize props into a sources array
-export function normalizeSources({ href, path, sources, children, desc }) {
+export function normalizeSources({
+  href,
+  path,
+  sources,
+  children,
+  desc,
+  title,
+}) {
   const rawSources =
     sources && sources.length > 0
       ? sources
@@ -63,10 +70,7 @@ export function normalizeSources({ href, path, sources, children, desc }) {
     const source = domain || urlLabel || "Local";
     const displayLabel = label || source;
 
-    let tooltip = sDesc;
-    if (!tooltip) {
-      tooltip = `${type}: ${source}`;
-    }
+    const tooltip = sDesc || null;
 
     return {
       path: sPath,
@@ -76,6 +80,7 @@ export function normalizeSources({ href, path, sources, children, desc }) {
       source,
       tooltip,
       id: src.id,
+      title: src.title || title,
     };
   });
 }
@@ -89,7 +94,10 @@ export default function Pv(props) {
     id: manualId,
     activeIdx = 0,
     sources: overrideSources,
+    modal = false,
+    title,
   } = props;
+
   const initialDocked = isTrue(props.docked);
   const {
     isOpen,
@@ -104,7 +112,7 @@ export default function Pv(props) {
 
   const srcList = useMemo(
     () => overrideSources || normalizeSources(props),
-    [props, overrideSources],
+    [props, overrideSources, title],
   );
 
   // Unified Slug & Hash Generation
@@ -123,7 +131,12 @@ export default function Pv(props) {
       const parsed = parsePvHash(window.location.hash);
       if (parsed && parsed.slug === slug) {
         setDocked(parsed.isDocked || initialDocked);
-        openPreview(srcList, activeIdx, generatePvHash(slug, parsed.isDocked));
+        openPreview(
+          srcList,
+          activeIdx,
+          generatePvHash(slug, parsed.isDocked),
+          modal,
+        );
       }
     }, 150);
     return () => clearTimeout(timer);
@@ -135,6 +148,7 @@ export default function Pv(props) {
     setDocked,
     initialDocked,
     activeIdx,
+    modal,
   ]);
 
   if (srcList.length === 0) return <span>{children}</span>;
@@ -150,39 +164,54 @@ export default function Pv(props) {
     if (isCurrentlyActive) {
       closePreview();
     } else {
-      const targetDocked = initialDocked || isDocked;
-      setDocked(targetDocked);
-      openPreview(srcList, activeIdx, generatePvHash(slug, targetDocked));
+      const targetDocked = !modal && (initialDocked || isDocked);
+      if (!modal) setDocked(targetDocked);
+      openPreview(
+        srcList,
+        activeIdx,
+        generatePvHash(slug, targetDocked),
+        modal,
+      );
     }
   };
 
   const targetHash = generatePvHash(slug, initialDocked || isDocked);
 
+  const trigger = (
+    <a
+      href={`#${targetHash}`}
+      className={`${styles.previewTrigger} ${isCurrentlyActive ? styles.activeTrigger : ""}`}
+      onClick={(e) => {
+        e.preventDefault();
+        handleClick();
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+    >
+      {children || srcList[activeIdx]?.label}
+    </a>
+  );
+
+  const hasTooltip = !!srcList[activeIdx]?.tooltip;
+
+  if (!hasTooltip) {
+    return <span className={styles.previewContainer}>{trigger}</span>;
+  }
+
   return (
     <span className={styles.previewContainer}>
       <Tooltip
-        msg={srcList[activeIdx]?.tooltip || "Preview"}
+        msg={srcList[activeIdx]?.tooltip}
         position="top"
         underline={false}
       >
-        <a
-          href={`#${targetHash}`}
-          className={`${styles.previewTrigger} ${isCurrentlyActive ? styles.activeTrigger : ""}`}
-          onClick={(e) => {
-            e.preventDefault();
-            handleClick();
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              handleClick();
-            }
-          }}
-        >
-          {children || srcList[activeIdx]?.label}
-        </a>
+        {trigger}
       </Tooltip>
     </span>
   );

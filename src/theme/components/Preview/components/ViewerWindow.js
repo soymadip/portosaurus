@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useLocation } from "@docusaurus/router";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
@@ -30,6 +30,7 @@ export default function PreviewViewer() {
   const {
     isOpen,
     isDocked,
+    isModal,
     sources,
     activeIndex,
     dockWidth,
@@ -112,18 +113,50 @@ export default function PreviewViewer() {
     setError,
   } = useFileFetch(currentFile?.path, fileType, isOpen);
 
-  useDockLayout(isOpen, isDocked, dockWidth);
+  useDockLayout(isOpen, isDocked, dockWidth, isModal);
   useDeepLinkHash(isOpen, sources, activeIndex, tabRefs, isDocked);
 
-  // --- Escape key to close floating window ---
+  // --- Escape key and Scroll Lock (Vimium support) ---
   useEffect(() => {
-    if (!isOpen || isDocked) return;
+    if (!isOpen) return;
+
     const handler = (e) => {
-      if (e.key === "Escape") closePreview();
+      // 1. Close on Escape
+      if (e.key === "Escape") {
+        closePreview();
+        return;
+      }
+
+      // 2. Prevent background scrolling (Vimium j/k, space, arrows) if modal
+      if (isModal) {
+        const scrollKeys = [
+          "j",
+          "k",
+          "ArrowUp",
+          "ArrowDown",
+          "PageUp",
+          "PageDown",
+          "Home",
+          "End",
+          " ",
+        ];
+
+        if (scrollKeys.includes(e.key)) {
+          // Check if the focus is already inside a scrollable element in our modal
+          const isInsideModal =
+            e.target.closest && e.target.closest("#pv-viewer");
+          if (!isInsideModal) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+        }
+      }
     };
-    window.addEventListener("keydown", handler);
-    return () => window.removeEventListener("keydown", handler);
-  }, [isOpen, isDocked, closePreview]);
+
+    window.addEventListener("keydown", handler, { capture: true });
+    return () =>
+      window.removeEventListener("keydown", handler, { capture: true });
+  }, [isOpen, isModal, closePreview]);
 
   // Reset zoom when switching modes
   useEffect(() => {
@@ -214,9 +247,10 @@ export default function PreviewViewer() {
 
   // --- Display title ---
   const displayTitle =
-    fileType === "web"
+    currentFile.title ||
+    (fileType === "web"
       ? currentFile.path.replace(/^https?:\/\//, "").split("/")[0]
-      : currentFile.label || currentFile.path.split("/").pop();
+      : currentFile.label || currentFile.path.split("/").pop());
 
   // --- Content Router ---
   const renderContent = () => {
@@ -286,9 +320,10 @@ export default function PreviewViewer() {
 
   // --- Layout calculations ---
   const isMobile = windowWidth <= 768;
-  const showAsDock = !isMobile && isDocked;
-  const showAsFloating = !isMobile && !isDocked;
-  const showAsPeek = isMobile && isDocked;
+  const showAsModal = isModal;
+  const showAsDock = !isMobile && isDocked && !isModal;
+  const showAsFloating = !isMobile && !isDocked && !isModal;
+  const showAsPeek = isMobile && (isDocked || isModal);
 
   // --- Header (shared across all modes) ---
   const header = (
@@ -297,6 +332,7 @@ export default function PreviewViewer() {
       fileType={fileType}
       fileUrl={fileUrl}
       isDocked={isDocked}
+      isModal={isModal}
       zoomLevel={zoomLevel}
       onZoomChange={setZoomLevel}
       onToggleDock={() => setDocked(!isDocked)}
@@ -361,12 +397,17 @@ export default function PreviewViewer() {
             ${showAsPeek ? styles.modePeek : ""}
             ${showAsDock ? styles.modeDock : ""}
             ${showAsFloating ? styles.modeFloating : ""}
+            ${showAsModal ? styles.modeModal : ""}
           `}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
         >
+          {showAsModal && (
+            <div className={styles.previewBackdrop} onClick={closePreview} />
+          )}
+
           {showAsPeek ? (
             /* Mobile peek: simple fixed bottom sheet */
             <motion.div
@@ -378,6 +419,19 @@ export default function PreviewViewer() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className={styles.peekHandle} />
+              <div className={styles.dragHandleWrapper}>{header}</div>
+              {innerContent}
+            </motion.div>
+          ) : showAsModal ? (
+            /* Desktop Modal: centered fixed window */
+            <motion.div
+              className={styles.windowFrame}
+              initial={{ opacity: 0, scale: 0.9, y: "-45%", x: "-50%" }}
+              animate={{ opacity: 1, scale: 1, y: "-50%", x: "-50%" }}
+              exit={{ opacity: 0, scale: 0.9, y: "-45%", x: "-50%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className={styles.dragHandleWrapper}>{header}</div>
               {innerContent}
             </motion.div>
