@@ -2,15 +2,13 @@ import React, { useEffect, useMemo } from "react";
 import { useLocation } from "@docusaurus/router";
 import { usePreview } from "../../state";
 import Tooltip from "../../../Tooltip";
-import { generatePvSlug, generatePvHash, parsePvHash } from "../../utils";
+import {
+  generatePvSlug,
+  generatePvHash,
+  parsePvHash,
+  classify,
+} from "../../utils";
 import styles from "../../styles.module.css";
-
-// Helper to normalize boolean props (handles "true", "false", and shorthand)
-export function isTrue(val) {
-  if (typeof val === "boolean") return val;
-  if (typeof val === "string") return val.toLowerCase() === "true";
-  return !!val;
-}
 
 // Normalize props into a sources array
 export function normalizeSources({
@@ -20,6 +18,7 @@ export function normalizeSources({
   children,
   desc,
   title,
+  id,
 }) {
   const rawSources =
     sources && sources.length > 0
@@ -43,18 +42,12 @@ export function normalizeSources({
     // Smart fallback for filename
     let urlLabel = "";
     let domain = "";
-    let type = "Web";
+    let type = "text";
 
     if (sPath) {
+      type = classify(sPath);
       const cleanPath = sPath.split(/[?#]/)[0].toLowerCase();
-      if (cleanPath.endsWith(".pdf")) type = "PDF";
-      else if (cleanPath.match(/\.(png|jpe?g|gif|svg|webp)$/)) type = "Image";
-      else if (
-        sPath.includes("youtube.com") ||
-        sPath.includes("youtu.be") ||
-        sPath.includes("vimeo.com")
-      )
-        type = "Video";
+      urlLabel = cleanPath.split("/").filter(Boolean).pop();
 
       try {
         if (sPath.startsWith("http") || sPath.startsWith("//")) {
@@ -64,7 +57,6 @@ export function normalizeSources({
           domain = url.hostname.replace("www.", "");
         }
       } catch (e) {}
-      urlLabel = cleanPath.split("/").filter(Boolean).pop();
     }
 
     const source = domain || urlLabel || "Local";
@@ -79,14 +71,14 @@ export function normalizeSources({
       type,
       source,
       tooltip,
-      id: src.id,
+      id: src.id || id,
       title: src.title || title,
     };
   });
 }
 
 /**
- * --- Inline trigger: <Pv href="..." id="...">link text</Pv> ---
+ * --- Inline trigger: <Pv href="..." mode="...">link text</Pv> ---
  */
 export default function Pv(props) {
   const {
@@ -94,19 +86,38 @@ export default function Pv(props) {
     id: manualId,
     activeIdx = 0,
     sources: overrideSources,
-    modal = false,
     title,
+    mode = "popup", // Default mode
+    modeSwitch = true,
+    underline = true,
   } = props;
 
-  const initialDocked = isTrue(props.docked);
+  // Strict validation: Must have exactly one of href/path OR sources
+  const hasSingleSource = !!(props.href || props.path);
+  const hasMultiSource = !!(overrideSources && overrideSources.length > 0);
+
+  if (!hasSingleSource && !hasMultiSource) {
+    console.error(
+      "<Pv> component requires either 'href', 'path', or 'sources' prop.",
+    );
+    return <span style={{ color: "red" }}>[Preview Error: Missing href]</span>;
+  }
+
+  if (hasSingleSource && hasMultiSource) {
+    console.error(
+      "<Pv> component cannot accept both 'href' and 'sources'. Choose one.",
+    );
+    return <span style={{ color: "red" }}>[Preview Error: Conflict]</span>;
+  }
+
   const {
     isOpen,
-    isDocked,
+    mode: currentMode,
     sources: activeSources,
     activeIndex,
     openPreview,
     closePreview,
-    setDocked,
+    setMode,
   } = usePreview();
   const location = useLocation();
 
@@ -115,40 +126,54 @@ export default function Pv(props) {
     [props, overrideSources, title],
   );
 
-  // Unified Slug & Hash Generation
-  const slug = useMemo(() => {
-    if (manualId) return manualId;
-    const label = typeof children === "string" ? children : null;
-    return generatePvSlug(
-      label,
-      props.href || props.path || srcList[activeIdx]?.path,
-    );
-  }, [manualId, children, props.href, props.path, srcList, activeIdx]);
+  // Unified Slug Generation (id > title > filename > children > preview)
+  const baseSlug = useMemo(() => {
+    if (manualId) return generatePvSlug(manualId);
+    if (title) return generatePvSlug(title);
+
+    const pathOrHref = props.href || props.path || srcList[activeIdx]?.path;
+    if (pathOrHref) {
+      const filename = pathOrHref
+        .split(/[?#]/)[0]
+        .split("/")
+        .filter(Boolean)
+        .pop();
+      if (filename) return generatePvSlug(filename);
+    }
+
+    const childrenText = typeof children === "string" ? children.trim() : null;
+    if (childrenText) return generatePvSlug(childrenText);
+
+    return "preview";
+  }, [manualId, title, props.href, props.path, srcList, activeIdx, children]);
 
   // Deep Link Detection
   useEffect(() => {
     const timer = setTimeout(() => {
       const parsed = parsePvHash(window.location.hash);
-      if (parsed && parsed.slug === slug) {
-        setDocked(parsed.isDocked || initialDocked);
+      if (parsed && parsed.slug === baseSlug) {
+        const hashMode = parsed.mode || mode;
+        setMode(hashMode);
         openPreview(
           srcList,
           activeIdx,
-          generatePvHash(slug, parsed.isDocked),
-          modal,
+          generatePvHash(baseSlug, hashMode),
+          hashMode,
+          baseSlug,
+          modeSwitch,
         );
       }
     }, 150);
     return () => clearTimeout(timer);
   }, [
     location.hash,
-    slug,
+    baseSlug,
     srcList,
     openPreview,
-    setDocked,
-    initialDocked,
+    setMode,
+    mode,
     activeIdx,
-    modal,
+    modeSwitch,
   ]);
 
   if (srcList.length === 0) return <span>{children}</span>;
@@ -164,23 +189,24 @@ export default function Pv(props) {
     if (isCurrentlyActive) {
       closePreview();
     } else {
-      const targetDocked = !modal && (initialDocked || isDocked);
-      if (!modal) setDocked(targetDocked);
+      setMode(mode);
       openPreview(
         srcList,
         activeIdx,
-        generatePvHash(slug, targetDocked),
-        modal,
+        generatePvHash(baseSlug, mode),
+        mode,
+        baseSlug,
+        modeSwitch,
       );
     }
   };
 
-  const targetHash = generatePvHash(slug, initialDocked || isDocked);
+  const targetHash = generatePvHash(baseSlug, mode);
 
   const trigger = (
     <a
       href={`#${targetHash}`}
-      className={`${styles.previewTrigger} ${isCurrentlyActive ? styles.activeTrigger : ""}`}
+      className={`${styles.previewTrigger} ${isCurrentlyActive ? styles.activeTrigger : ""} ${!underline ? styles.noUnderline : ""}`}
       onClick={(e) => {
         e.preventDefault();
         handleClick();

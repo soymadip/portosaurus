@@ -6,7 +6,9 @@ import styles from "../styles.module.css";
 export function LoadingState() {
   return (
     <div className={styles.loading}>
-      <div className={styles.spinner} />
+      <div className={styles.loadingIcon}>
+        <div className={styles.spinner} />
+      </div>
       <div className={styles.loadingText}>
         <p>Preparing preview...</p>
         <span>Fetching content from source</span>

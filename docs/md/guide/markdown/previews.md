@@ -1,93 +1,115 @@
 # Interactive Previews
 
-Portosaurus provides a powerful interactive preview system using the `<Pv />` component. This allows you to embed links that, when clicked, open a persistent preview window for images, PDFs, external websites, or source code.
+Portosaurus transforms static links into an **interactive multitasking system**. Instead of forcing users away to a new tab, Interactive Previews keep them engaged with your content by opening references in a premium, responsive window.
 
-## The `<Pv />` Component
+---
 
-The `<Pv />` component is available globally in all your Markdown and MDX files.
+## Component Reference
 
-### Basic Usage
+### `<Pv />` Props
 
-The simplest way to use it is by wrapping a link or text:
+| Prop | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| **`href`** | `string` | - | The path to the file or URL. |
+| **`sources`** | `array` | - | Array of `{path, label}` objects for tabbed views. |
+| **`mode`** | `string` | `"popup"` | Starting layout: `"popup"`, `"pip"`, or `"dock"`. |
+| `title` | `string` | - | Custom title for the window header. |
+| `id` | `string` | - | Custom ID for the URL hash (e.g. `#my-id:pv-popup`). |
+| `modeSwitch` | `boolean` | `true` | Show/hide the multitasking (Dock/PiP) toggle. |
+| `underline` | `boolean` | `true` | Show the distinctive dashed link style. |
+| `desc` | `string` | - | Tooltip text shown on hover. |
 
-```jsx
-Check out my resume: <Pv href="/resume.pdf">View PDF</Pv>
-```
+---
 
-### Advanced Parameters
-
-You can customize the preview behavior using various props:
-
-| Prop        | Type   | Description                                                     |
-| :---------- | :----- | :-------------------------------------------------------------- |
-| `href`      | `str`  | The path or URL of the file to preview.                         |
-| `title`     | `str`  | Custom title for the window header. Overrides filename/label.   |
-| `modal`     | `bool` | If `true`, opens as a centered pop-up with a themed backdrop.   |
-| `docked`    | `bool` | If `true`, pins the window to the side upon opening.            |
-| `desc`      | `str`  | Optional description that appears as a tooltip on hover.        |
-| `id`        | `str`  | Custom slug for deep-linking (e.g., `#my-custom-id-pv:window`). |
-| `activeIdx` | `int`  | The index of the file to show first (if using `sources`).       |
-
-### Examples
-
-#### 1. Centered Modal (Pop-up Mode)
-
-Perfect for resumes or critical documents where you want to focus the user's attention.
+### `<SrcPv />`
+A specialized trigger for lists. Perfect for "Resources" or "Downloads" sections.
 
 ```jsx
-<Pv href="/resume.pdf" title="Professional Resume" modal>
-  Preview My Resume
-</Pv>
-```
-
-#### 2. Pinned Sidebar (Docked Mode)
-
-Ideal for source code or documentation where you want to keep the main content visible alongside the preview.
-
-```jsx
-<Pv href="/main.js" docked>
-  View Source Code
-</Pv>
-```
-
-#### 3. Deep Linking
-
-By default, Portosaurus generates a slug from your link text. You can override this:
-
-```jsx
-<Pv href="/design-spec.pdf" id="specs">
-  Design Specifications
-</Pv>
-```
-
-This link can be shared as `https://yoursite.com/#specs-pv:window`.
-
-#### 4. Multiple Files (Tabbed View)
-
-You can pass an array of sources to create a tabbed preview experience:
-
-```jsx
-<Pv
-  title="Project Source"
-  sources={[
-    { path: "/src/main.js", label: "Logic" },
-    { path: "/src/styles.css", label: "Styles" },
-  ]}
->
-  View Source Code
-</Pv>
-```
-
-## The `<SrcPv />` Component
-
-The `<SrcPv />` component is a specialized version of the preview trigger, often used in footers to list source files.
-
-```jsx
-<SrcPv
+<SrcPv 
   prefixText="Resources: "
   sources={[
     { path: "https://github.com", label: "GitHub" },
-    { path: "/local-file.txt", label: "Local Docs" },
-  ]}
+    { path: "/manual.pdf", label: "User Manual" }
+  ]} 
 />
 ```
+
+---
+
+## Why use Previews?
+
+- **Keep the Flow**: Users can view PDFs, images, or code without losing their scroll position on the main article.
+- **Contextual Learning**: Display a code sample in a side-dock while the user reads the explanation.
+- **Immersive references**: Show full external websites or complex documents in a beautiful, controlled UI.
+
+---
+
+## The Core Component: `<Pv />`
+
+The `<Pv />` (Preview) component is your primary tool. Wrap any link or text with it to make it "Preview-able".
+
+```jsx
+<Pv href="/resume.pdf">View my Resume</Pv>
+```
+
+### Automatic File Detection
+You don't need to tell Portosaurus what kind of file it is. The system automatically detects and renders:
+- **Documents**: PDFs (with zoom/search).
+- **Code**: 100+ languages with syntax highlighting.
+- **Images**: High-res previews with click-to-zoom.
+- **Websites**: Full external sites with a "Visit" fallback.
+
+---
+
+## Choosing your Layout
+
+Portosaurus features a **3-tier adaptive engine** that ensures your previews look great on any device. You can set the starting `mode`, and the user can switch between them using the header controls.
+
+### 1. Popup (The Immersive Choice)
+The default mode. It opens a centered, high-contrast modal that focuses the user's entire attention on the document. Best for Resumes, full-screen images, or critical references.
+
+```jsx
+<Pv href="/design-spec.pdf" mode="popup">Open Specification</Pv>
+```
+
+### 2. PiP (The Multitasker)
+**Picture-in-Picture** mode creates a floating window that stays visible while the user scrolls the main page.
+- **Mobile**: Becomes a YouTube-style mini-player at the bottom.
+- **Desktop**: A sleek floating window you can drag anywhere.
+
+```jsx
+<Pv href="/demo.mp4" mode="pip">Watch Demo while reading</Pv>
+```
+
+### 3. Dock (The Pro Workflow)
+Splits the screen to show content side-by-side.
+- **Desktop**: Pushes the documentation to the left and docks the preview to the right (like a professional IDE).
+- **Mobile**: Becomes a bottom-half "Peek" sheet.
+
+```jsx
+<Pv href="/api-example.js" mode="dock">View Code Side-by-Side</Pv>
+```
+
+---
+
+## Advanced Features
+
+### Tabbed Collections (Multi-Source)
+You can group related files into a single preview window using the `sources` prop. Users can switch between files using an integrated tab bar.
+
+```jsx
+<Pv 
+  title="Project Source"
+  sources={[
+    { path: "/src/index.js", label: "Logic" },
+    { path: "/src/styles.css", label: "Theme" }
+  ]}
+>
+  Browse Project Files
+</Pv>
+```
+
+### Stable Deep Linking
+Every preview generates a unique URL hash. If a user finds a specific file in your dock, they can copy the URL and share it. When the next person opens that link, Portosaurus will **automatically open the previewer** to that exact file and mode.
+
+**Format**: `#my-slug:pv-dock`

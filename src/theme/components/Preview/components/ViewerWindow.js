@@ -10,34 +10,33 @@ import { classify, getExt, resolveUrl } from "../utils";
 import { useFileFetch } from "../hooks/useFileFetch";
 import { useDockLayout } from "../hooks/useDockLayout";
 import { useDeepLinkHash } from "../hooks/useDeepLinkHash";
+import { useAdaptiveSizing } from "../hooks/useAdaptiveSizing";
+import { useTouchZoom } from "../hooks/useTouchZoom";
 
 import PreviewHeader from "./PreviewHeader";
 import FileTabs from "./FileTabs";
-import { LoadingState, ErrorState, OfflineState } from "./FeedbackStates";
-
-import ImageRenderer from "../renderers/ImageRenderer";
-import PdfRenderer from "../renderers/PdfRenderer";
-import CodeRenderer from "../renderers/CodeRenderer";
-import WebRenderer from "../renderers/WebRenderer";
-
+import PreviewContent from "./PreviewContent";
 import styles from "../styles.module.css";
 
 /**
  * The main Preview Viewer — orchestrates layout modes (floating, docked, mobile peek)
- * using react-rnd for window management and framer-motion for animations.
+ * utilizing modular hooks for sizing, interactions, and layout management.
  */
 export default function PreviewViewer() {
   const {
     isOpen,
-    isDocked,
-    isModal,
+    mode,
     sources,
     activeIndex,
+    baseSlug,
     dockWidth,
+    peekHeight,
+    modeSwitch,
     closePreview,
-    setDocked,
+    toggleMode,
     setActiveIndex,
     setDockWidth,
+    setPeekHeight,
     floatingState,
     setFloatingState,
   } = usePreview();
@@ -46,35 +45,26 @@ export default function PreviewViewer() {
   const corsProxyList = siteConfig?.customFields?.corsProxyList || [];
 
   const location = useLocation();
-  const [mounted, setMounted] = useState(false);
+  const [mounted, setMounted] = useState(typeof window !== "undefined");
   const [zoomLevel, setZoomLevel] = useState(1.0);
   const [isOnline, setIsOnline] = useState(
     typeof window !== "undefined" ? window.navigator.onLine : true,
   );
   const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200,
+    typeof window !== "undefined" ? document.documentElement.clientWidth : 1200,
   );
   const [isInteracting, setIsInteracting] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
-  const tabRefs = useRef([]);
 
-  // --- Mount and Resize Listeners ---
+  const popupBodyRef = useRef(null);
+
+  // --- 1. Mount & Basic Resize Management ---
   useEffect(() => {
     setMounted(true);
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
-
-    const handleResize = () => {
-      const newWidth = window.innerWidth;
-      // If docked, adjust dockWidth to maintain roughly the same ratio
-      if (isDocked && windowWidth > 0) {
-        const ratio = dockWidth / windowWidth;
-        const targetWidth = Math.floor(newWidth * ratio);
-        // Clamp between 380px and 80% of window
-        setDockWidth(Math.max(380, Math.min(targetWidth, newWidth * 0.8)));
-      }
-      setWindowWidth(newWidth);
-    };
+    const handleResize = () =>
+      setWindowWidth(document.documentElement.clientWidth);
 
     window.addEventListener("online", handleOnline);
     window.addEventListener("offline", handleOffline);
@@ -86,9 +76,41 @@ export default function PreviewViewer() {
       window.removeEventListener("offline", handleOffline);
       window.removeEventListener("resize", handleResize);
     };
-  }, [isDocked, dockWidth, windowWidth, setDockWidth]);
+  }, []);
 
-  // --- Auto-close on route change ---
+  // --- 2. Adaptive Sizing & Layout Math ---
+  const layout = useAdaptiveSizing({
+    mode,
+    windowWidth,
+    floatingState,
+    dockWidth,
+    peekHeight,
+    setFloatingState,
+  });
+
+  const { isDockMode, showAsPeek, isPipMode, isPopupMode, isMobile } = layout;
+
+  // --- 3. Interaction & Animation State ---
+  useTouchZoom({
+    containerRef: popupBodyRef,
+    isOpen,
+    zoomLevel,
+    setZoomLevel,
+  });
+
+  // --- 4. Sidebar & URL Sync ---
+  useDockLayout({
+    isOpen,
+    isPopupMode,
+    isSidebarDock: isDockMode,
+    isPeekDock: showAsPeek,
+    dockWidth,
+    peekHeight,
+  });
+
+  useDeepLinkHash(isOpen, sources, activeIndex, mode, baseSlug);
+
+  // --- 5. Navigation & Lifecycle ---
   const prevPathRef = useRef(location.pathname);
   useEffect(() => {
     if (prevPathRef.current !== location.pathname) {
@@ -97,89 +119,45 @@ export default function PreviewViewer() {
     }
   }, [location.pathname, isOpen, closePreview]);
 
-  // --- Derived state ---
+  useEffect(() => {
+    if (isOpen) setZoomLevel(1.0);
+  }, [mode, isOpen]);
+
+  // Escape key support
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e) => {
+      if (e.key === "Escape") closePreview();
+    };
+    window.addEventListener("keydown", handler, { capture: true });
+    return () =>
+      window.removeEventListener("keydown", handler, { capture: true });
+  }, [isOpen, closePreview]);
+
+  // --- 6. Content Fetching ---
   const currentFile = sources[activeIndex] ?? sources[0] ?? null;
   const fileType = currentFile ? classify(currentFile.path) : null;
   const ext = currentFile ? getExt(currentFile.path) : "";
   const fileUrl = currentFile ? resolveUrl(currentFile.path) : "";
 
-  // --- Hooks ---
   const {
     content: textContent,
     loading: textLoading,
-    error: fetchError,
     errors: fetchErrors,
     retry: retryFetch,
     setError,
   } = useFileFetch(currentFile?.path, fileType, isOpen);
 
-  useDockLayout(isOpen, isDocked, dockWidth, isModal);
-  useDeepLinkHash(isOpen, sources, activeIndex, tabRefs, isDocked);
-
-  // --- Escape key and Scroll Lock (Vimium support) ---
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handler = (e) => {
-      // 1. Close on Escape
-      if (e.key === "Escape") {
-        closePreview();
-        return;
-      }
-
-      // 2. Prevent background scrolling (Vimium j/k, space, arrows) if modal
-      if (isModal) {
-        const scrollKeys = [
-          "j",
-          "k",
-          "ArrowUp",
-          "ArrowDown",
-          "PageUp",
-          "PageDown",
-          "Home",
-          "End",
-          " ",
-        ];
-
-        if (scrollKeys.includes(e.key)) {
-          // Check if the focus is already inside a scrollable element in our modal
-          const isInsideModal =
-            e.target.closest && e.target.closest("#pv-viewer");
-          if (!isInsideModal) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handler, { capture: true });
-    return () =>
-      window.removeEventListener("keydown", handler, { capture: true });
-  }, [isOpen, isModal, closePreview]);
-
-  // Reset zoom when switching modes
-  useEffect(() => {
-    if (isOpen) setZoomLevel(1.0);
-  }, [isDocked, isOpen]);
-
-  // --- Download handler ---
-  // --- Download handler ---
+  // --- 7. Download Handler ---
   const handleDownload = useCallback(async () => {
     if (!fileUrl) return;
     setIsDownloading(true);
-
     try {
       const downloadName =
         currentFile.label || currentFile.path.split("/").pop();
-
       const triggerBlobDownload = async (url) => {
-        const resp = await fetch(url, {
-          mode: "cors",
-          cache: "no-cache", // Ensure we don't get a tainted cache version
-        });
+        const resp = await fetch(url, { mode: "cors", cache: "no-cache" });
         if (!resp.ok) throw new Error("Fetch failed");
-
         const blob = await resp.blob();
         const blobUrl = URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -190,47 +168,25 @@ export default function PreviewViewer() {
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
       };
-
       try {
-        // 1. Try standard CORS fetch with cache busting
         const bustUrl = fileUrl.includes("?")
           ? `${fileUrl}&cb=${Date.now()}`
           : `${fileUrl}?cb=${Date.now()}`;
         await triggerBlobDownload(bustUrl);
-        return;
       } catch (e1) {
-        console.warn("Standard download failed, trying proxies...", e1);
-
         let proxySuccess = false;
-
-        // Iterate through our fallback proxy array
         for (const proxyBaseUrl of corsProxyList) {
           try {
-            console.warn(`Trying proxy: ${proxyBaseUrl}`);
             const proxyUrl = `${proxyBaseUrl}${encodeURIComponent(fileUrl)}`;
             await triggerBlobDownload(proxyUrl);
             proxySuccess = true;
-            break; // Success! Exit the loop.
-          } catch (proxyError) {
-            console.warn(`Proxy ${proxyBaseUrl} failed:`, proxyError);
-            // Continue loop to try the next proxy
-          }
+            break;
+          } catch (pE) {}
         }
-
         if (!proxySuccess) {
-          // Absolute Fallback: direct link redirect
-          console.warn(
-            "All proxy downloads failed, falling back to direct link",
-          );
-
-          alert(
-            "This file is heavily protected by browser security (CORS) and cannot be downloaded directly. It will be opened in a new tab instead.",
-          );
-
           const link = document.createElement("a");
           link.href = fileUrl;
           link.target = "_blank";
-          link.rel = "noopener noreferrer";
           link.setAttribute("download", downloadName);
           document.body.appendChild(link);
           link.click();
@@ -240,109 +196,36 @@ export default function PreviewViewer() {
     } finally {
       setIsDownloading(false);
     }
-  }, [fileUrl, currentFile]);
+  }, [fileUrl, currentFile, corsProxyList]);
 
-  // --- Guard ---
+  // --- Render Helpers ---
   if (!mounted || !currentFile) return null;
 
-  // --- Display title ---
   const displayTitle =
     currentFile.title ||
     (fileType === "web"
       ? currentFile.path.replace(/^https?:\/\//, "").split("/")[0]
       : currentFile.label || currentFile.path.split("/").pop());
 
-  // --- Content Router ---
-  const renderContent = () => {
-    const path = currentFile?.path;
-    const isExternal = path?.startsWith("http") || path?.startsWith("//");
-
-    // Offline guard for external resources
-    if (!isOnline && isExternal) {
-      return <OfflineState onRetry={retryFetch} />;
-    }
-
-    // Error state
-    const errorMsg = fetchErrors?.[path];
-    if (errorMsg) {
-      return (
-        <ErrorState
-          path={path}
-          message={errorMsg}
-          fileType={fileType}
-          fileUrl={fileUrl}
-          onRetry={retryFetch}
-        />
-      );
-    }
-
-    // Loading state (for text files only — renderers handle their own loading)
-    if (textLoading && fileType === "text") {
-      return <LoadingState />;
-    }
-
-    switch (fileType) {
-      case "image":
-        return (
-          <ImageRenderer
-            key={fileUrl}
-            fileUrl={fileUrl}
-            label={currentFile.label}
-            zoomLevel={zoomLevel}
-            onError={(msg) => setError(path, msg)}
-          />
-        );
-      case "pdf":
-        return (
-          <PdfRenderer
-            key={fileUrl}
-            fileUrl={fileUrl}
-            zoomLevel={zoomLevel}
-            onError={(msg) => setError(path, msg)}
-          />
-        );
-      case "web":
-        return (
-          <WebRenderer
-            key={fileUrl}
-            fileUrl={fileUrl}
-            label={currentFile.label}
-            onError={(msg) => setError(path, msg)}
-          />
-        );
-      default: {
-        // Text / code
-        if (!textContent) return <LoadingState />;
-        return <CodeRenderer code={textContent} language={ext} />;
-      }
-    }
-  };
-
-  // --- Layout calculations ---
-  const isMobile = windowWidth <= 768;
-  const showAsModal = isModal;
-  const showAsDock = !isMobile && isDocked && !isModal;
-  const showAsFloating = !isMobile && !isDocked && !isModal;
-  const showAsPeek = isMobile && (isDocked || isModal);
-
-  // --- Header (shared across all modes) ---
   const header = (
-    <PreviewHeader
-      displayTitle={displayTitle}
-      fileType={fileType}
-      fileUrl={fileUrl}
-      isDocked={isDocked}
-      isModal={isModal}
-      zoomLevel={zoomLevel}
-      onZoomChange={setZoomLevel}
-      onToggleDock={() => setDocked(!isDocked)}
-      onClose={closePreview}
-      onDownload={handleDownload}
-      isDownloading={isDownloading}
-    />
+    <div className={styles.headerWrapper}>
+      {showAsPeek && <div className={styles.peekHandle} />}
+      <PreviewHeader
+        displayTitle={displayTitle}
+        fileType={fileType}
+        fileUrl={fileUrl}
+        mode={mode}
+        zoomLevel={zoomLevel}
+        onZoomChange={setZoomLevel}
+        onToggleMode={toggleMode}
+        onClose={closePreview}
+        onDownload={handleDownload}
+        isDownloading={isDownloading}
+        modeSwitch={modeSwitch}
+      />
+    </div>
   );
 
-  // --- Inner content (shared across all modes) ---
   const innerContent = (
     <div className={styles.windowContent}>
       <FileTabs
@@ -350,81 +233,110 @@ export default function PreviewViewer() {
         activeIndex={activeIndex}
         onSelect={setActiveIndex}
       />
-      <div className={styles.modalBody}>{renderContent()}</div>
+      <div
+        className={`${styles.popupBody} ${fileType === "text" ? styles.isText : styles.isGrabbable}`}
+        ref={(el) => {
+          popupBodyRef.current = el;
+          if (el && isOpen) el.focus({ preventScroll: true });
+        }}
+        tabIndex={-1}
+      >
+        <PreviewContent
+          currentFile={currentFile}
+          fileType={fileType}
+          fileUrl={fileUrl}
+          isOnline={isOnline}
+          fetchErrors={fetchErrors}
+          textLoading={textLoading}
+          textContent={textContent}
+          zoomLevel={zoomLevel}
+          ext={ext}
+          retryFetch={retryFetch}
+          setError={setError}
+        />
+      </div>
     </div>
   );
 
-  // --- Rnd-based unified window ---
-  const rndPosition = showAsDock
-    ? { x: windowWidth - dockWidth, y: 0 }
-    : {
-        x:
-          floatingState.x ??
-          Math.max(0, (windowWidth - (floatingState.width ?? 720)) / 2),
-        y:
-          floatingState.y ??
-          Math.max(0, window.innerHeight - (floatingState.height ?? 500) - 20),
-      };
-
-  const rndSize = showAsDock
-    ? { width: dockWidth, height: window.innerHeight }
-    : {
-        width: floatingState.width ?? 800,
-        height: floatingState.height ?? 600,
-      };
-
-  const rndEnableResizing = showAsDock
+  // Rnd Configuration
+  const rndEnableResizing = isDockMode
+    ? { left: true }
+    : showAsPeek
+      ? { top: true }
+      : true;
+  const rndResizeHandleStyles = showAsPeek
     ? {
-        left: true,
-        right: false,
-        top: false,
-        bottom: false,
-        topLeft: false,
-        topRight: false,
-        bottomLeft: false,
-        bottomRight: false,
+        top: {
+          height: "24px",
+          top: "-12px",
+          cursor: "row-resize",
+          zIndex: 100,
+        },
       }
-    : true; // All directions enabled for floating
+    : isDockMode
+      ? { left: { width: "20px", left: "-10px" } }
+      : isPipMode
+        ? {
+            bottom: { height: "20px", bottom: "-10px" },
+            right: { width: "20px", right: "-10px" },
+            left: { width: "20px", left: "-10px" },
+            top: { height: "20px", top: "-10px" },
+            bottomRight: {
+              width: "30px",
+              height: "30px",
+              bottom: "-15px",
+              right: "-15px",
+            },
+            bottomLeft: {
+              width: "30px",
+              height: "30px",
+              bottom: "-15px",
+              left: "-15px",
+            },
+            topRight: {
+              width: "30px",
+              height: "30px",
+              top: "-15px",
+              right: "-15px",
+            },
+            topLeft: {
+              width: "30px",
+              height: "30px",
+              top: "-15px",
+              left: "-15px",
+            },
+          }
+        : {};
+
+  const rndMinWidth = isDockMode ? 380 : showAsPeek ? windowWidth : 380;
+  const rndMinHeight = showAsPeek ? 150 : isDockMode ? undefined : 60;
+  const rndMaxWidth = isDockMode
+    ? windowWidth * 0.8
+    : showAsPeek
+      ? windowWidth
+      : undefined;
+  const rndMaxHeight = showAsPeek ? layout.vh * 0.85 : undefined;
 
   return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
           id="pv-viewer"
-          data-mode={isDocked ? "dock" : "popup"}
-          className={`
-            ${styles.previewSystem}
-            ${showAsPeek ? styles.modePeek : ""}
-            ${showAsDock ? styles.modeDock : ""}
-            ${showAsFloating ? styles.modeFloating : ""}
-            ${showAsModal ? styles.modeModal : ""}
-          `}
+          data-mode={mode}
+          className={`${styles.previewSystem} ${showAsPeek ? styles.modePeek : ""} ${isDockMode ? styles.modeDock : ""} ${isPipMode ? styles.modePip : ""} ${isPopupMode ? styles.modePopup : ""}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
+          onWheel={(e) => e.stopPropagation()}
         >
-          {showAsModal && (
+          {isPopupMode && (
             <div className={styles.previewBackdrop} onClick={closePreview} />
           )}
 
-          {showAsPeek ? (
-            /* Mobile peek: simple fixed bottom sheet */
+          {isPopupMode ? (
             <motion.div
-              className={styles.windowFrame}
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={styles.peekHandle} />
-              <div className={styles.dragHandleWrapper}>{header}</div>
-              {innerContent}
-            </motion.div>
-          ) : showAsModal ? (
-            /* Desktop Modal: centered fixed window */
-            <motion.div
+              key="desktop-popup"
               className={styles.windowFrame}
               initial={{ opacity: 0, scale: 0.9, y: "-45%", x: "-50%" }}
               animate={{ opacity: 1, scale: 1, y: "-50%", x: "-50%" }}
@@ -436,38 +348,38 @@ export default function PreviewViewer() {
               {innerContent}
             </motion.div>
           ) : (
-            /* Desktop: Rnd-powered window for both floating and docked */
             <Rnd
-              position={rndPosition}
-              size={rndSize}
-              disableDragging={showAsDock}
+              key={`${mode}-${showAsPeek}`}
+              position={layout.rndPosition}
+              size={layout.rndSize}
+              disableDragging={isDockMode || showAsPeek}
               enableResizing={rndEnableResizing}
               dragHandleClassName={styles.dragHandleWrapper}
-              minWidth={showAsDock ? 380 : 380}
-              minHeight={showAsDock ? undefined : 350}
-              maxWidth={showAsDock ? window.innerWidth * 0.8 : undefined}
-              bounds="window"
+              minWidth={rndMinWidth}
+              minHeight={rndMinHeight}
+              maxWidth={rndMaxWidth}
+              maxHeight={rndMaxHeight}
+              bounds={layout.rndBounds}
+              resizeHandleStyles={rndResizeHandleStyles}
               onDragStart={() => setIsInteracting(true)}
               onDragStop={(e, d) => {
                 setIsInteracting(false);
-                if (!showAsDock) {
+                if (!isDockMode && !showAsPeek)
                   setFloatingState({ x: d.x, y: d.y });
-                }
               }}
               onResizeStart={() => setIsInteracting(true)}
               onResizeStop={(e, direction, ref, delta, position) => {
                 setIsInteracting(false);
                 const newWidth = parseInt(ref.style.width, 10);
                 const newHeight = parseInt(ref.style.height, 10);
-                if (showAsDock) {
-                  setDockWidth(newWidth);
-                } else {
+                if (isDockMode) setDockWidth(newWidth);
+                else if (showAsPeek) setPeekHeight(newHeight);
+                else
                   setFloatingState({
                     width: newWidth,
                     height: newHeight,
                     ...position,
                   });
-                }
               }}
               className={styles.rndWrapper}
               style={{
@@ -478,9 +390,7 @@ export default function PreviewViewer() {
               }}
             >
               <div
-                className={`${styles.windowFrame} ${
-                  isInteracting ? styles.windowInteracting : ""
-                }`}
+                className={`${styles.windowFrame} ${isInteracting ? styles.windowInteracting : ""}`}
                 style={{ width: "100%", height: "100%", position: "relative" }}
                 onClick={(e) => e.stopPropagation()}
               >

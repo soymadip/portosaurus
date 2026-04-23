@@ -1,9 +1,9 @@
 :root {
   --pv-backdrop-bg: rgba(var(--ifm-color-emphasis-900-rgb), 0.1);
-  --pv-modal-shadow: 0 20px 50px rgba(var(--ifm-color-emphasis-900-rgb), 0.3);
-  --pv-modal-width: min(900px, 90vw);
-  --pv-modal-height: min(700px, 85vh);
-  --pv-modal-radius: var(--ifm-global-radius, 16px);
+  --pv-popup-shadow: 0 20px 50px rgba(var(--ifm-color-emphasis-900-rgb), 0.3);
+  --pv-popup-width: min(900px, 90vw);
+  --pv-popup-height: min(700px, 85vh);
+  --pv-popup-radius: var(--ifm-global-radius, 16px);
 }
 
 @keyframes fadeIn {
@@ -36,13 +36,19 @@
 }
 
 .loading {
-  flex: 1;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 200px;
-  gap: 16px;
+  gap: 20px;
+}
+
+.loadingIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loadingText {
@@ -51,24 +57,27 @@
 
 .loadingText p {
   margin: 0;
-  font-weight: 700;
-  font-size: 1.4rem;
+  font-weight: 600;
+  font-size: 1rem;
   color: var(--ifm-font-color-base);
 }
 
 .loadingText span {
-  font-size: 0.95rem;
-  color: var(--ifm-color-primary-lightest);
+  display: block;
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--ifm-color-primary);
   opacity: 0.8;
 }
 
 .spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid var(--ifm-color-emphasis-200);
+  width: 36px;
+  height: 36px;
+  border: 3px solid
+    color-mix(in srgb, var(--ifm-color-primary), transparent 80%);
   border-top-color: var(--ifm-color-primary);
   border-radius: 50%;
-  animation: spin 0.8s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite;
+  animation: spin 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .spinnerSmall {
@@ -100,12 +109,15 @@
   flex-direction: column;
   background: var(--ifm-background-surface-color);
   box-shadow: var(--ifm-global-shadow-lw);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    background 0.3s ease,
+    border 0.3s ease,
+    box-shadow 0.3s ease;
   z-index: 10;
   border: 1px solid var(--ifm-color-emphasis-200);
 }
 
-.modeFloating .windowFrame,
+.modePip .windowFrame,
 .modePeek .windowFrame {
   overflow: hidden;
 }
@@ -118,7 +130,7 @@
 }
 
 /* --- Modes (visual-only — react-rnd handles positioning for floating/dock) --- */
-.modeFloating .windowFrame {
+.modePip .windowFrame {
   border-radius: 12px;
 }
 
@@ -127,16 +139,37 @@
   border-radius: 0;
   border: none;
   border-left: 1px solid var(--ifm-toc-border-color);
+  border-right: none;
+  border-bottom: none;
   transition:
     border-left-color 0.2s ease,
     box-shadow 0.2s ease,
-    width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modeDock .windowFrame.windowInteracting {
   border-left: 2px solid var(--ifm-color-primary);
   box-shadow: -4px 0 12px -4px rgba(var(--ifm-color-primary-rgb), 0.3);
+}
+
+.modePip .windowFrame {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.modeFull .windowFrame {
+  position: absolute;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  border-radius: 0;
+  border: none;
+  z-index: 2000;
+}
+
+.fullFrame {
+  border-radius: 0 !important;
+  border: none !important;
 }
 
 .modePeek .windowFrame {
@@ -145,8 +178,9 @@
   left: 0;
   right: 0;
   width: 100vw;
-  height: var(--mobile-peek-height, 40vh);
-  border-radius: 16px 16px 0 0;
+  height: var(--mobile-peek-height, 50vh);
+  border-radius: 0;
+  border-top: 1px solid var(--ifm-toc-border-color);
 }
 
 .previewBackdrop {
@@ -160,17 +194,24 @@
   pointer-events: auto;
 }
 
-.modeModal .windowFrame {
+.modePopup .windowFrame {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
-  width: var(--pv-modal-width);
-  height: var(--pv-modal-height);
-  border-radius: var(--pv-modal-radius);
-  box-shadow: var(--pv-modal-shadow);
+  /* transform removed to allow framer-motion full control over centering animation */
+  width: var(--pv-popup-width);
+  height: var(--pv-popup-height);
+  border-radius: var(--pv-popup-radius);
+  box-shadow: var(--pv-popup-shadow);
   overflow: hidden;
   z-index: 10;
+}
+
+@media (max-width: 1024px) {
+  .modePopup .windowFrame {
+    width: 95vw;
+    height: 90vh;
+  }
 }
 
 /* --- Window Components: Header & Drag --- */
@@ -189,6 +230,11 @@
 
 .modeDock .dragHandleWrapper {
   padding-top: var(--ifm-navbar-height, 60px);
+  cursor: default;
+}
+
+.modeDock .dragHandleWrapper:active {
+  cursor: default;
 }
 
 .revealHeader {
@@ -205,22 +251,22 @@
   pointer-events: none;
 }
 
-.revealHeader .modalTitle {
+.revealHeader .popupTitle {
   flex: none; /* Don't expand so centering works */
   justify-content: center;
 }
 
-.modeFloating .revealHeader,
+.modePip .revealHeader,
 .modePeek .revealHeader {
   display: none;
 }
 
-.modalHeader {
-  padding: 12px 20px;
+.popupHeader {
+  padding: 8px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 52px;
+  min-height: 44px;
 }
 
 .headerLeft {
@@ -232,7 +278,7 @@
   margin-right: 20px;
 }
 
-.modalTitle {
+.popupTitle {
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
@@ -291,6 +337,12 @@
   cursor: pointer;
 }
 
+@media (max-width: 768px) {
+  .btnText {
+    display: none;
+  }
+}
+
 .headerAction:hover {
   opacity: 0.9;
   transform: translateY(-1px);
@@ -308,8 +360,11 @@
   box-shadow: none;
 }
 
+.headerActionClose {
+  background-color: var(--ifm-color-danger);
+}
+
 .headerActionClose:hover {
-  background-color: var(--ifm-color-danger) !important;
   box-shadow: 0 4px 12px rgba(var(--ifm-color-danger-rgb), 0.3);
 }
 
@@ -437,12 +492,29 @@
   min-height: 0;
 }
 
-.modalBody {
+.popupBody {
   flex: 1;
-  overflow-y: auto;
-  background: var(--ifm-background-color);
+  overflow: auto;
+  position: relative;
   display: flex;
   flex-direction: column;
+  outline: none; /* Focusable for Vimium */
+}
+
+.isGrabbable {
+  cursor: grab;
+}
+
+.isText {
+  cursor: text;
+}
+
+.isPanning:not(.isText) {
+  cursor: grabbing !important;
+}
+
+.isPanning:not(.isText) * {
+  cursor: grabbing !important;
 }
 
 /* --- Media Views --- */
@@ -480,17 +552,18 @@
 
 .pdfView {
   flex: 1;
-  overflow-y: auto;
   padding: 4px;
   background: var(--ifm-background-color);
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: safe center;
 }
 
 .pdfPage {
   margin-bottom: 4px;
+  margin-left: auto;
+  margin-right: auto;
   box-shadow: var(--ifm-global-shadow-md);
   animation: fadeIn 0.4s ease-out;
 }
@@ -499,17 +572,18 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  position: relative; /* Ensure loader stays contained */
+  position: relative;
+  min-height: 0;
+  height: 100%;
 }
 .webFrame {
   flex: 1;
   border: none;
   background: var(--ifm-background-surface-color);
+  width: 100%;
+  height: 100%;
+  display: block;
 }
-
-/* Resize handles are now managed by react-rnd */
-
-/* Note: spinner and loading classes moved to top of file for better cascade */
 
 .errorState {
   flex: 1;
@@ -533,13 +607,20 @@
 .previewTrigger {
   color: var(--ifm-link-color);
   cursor: pointer;
-  text-decoration: none;
-  font-weight: 500;
+  text-decoration: underline dashed;
+  text-decoration-color: color-mix(
+    in srgb,
+    var(--ifm-link-color),
+    transparent 40%
+  );
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
   transition: all 0.2s ease;
 }
 .previewTrigger:hover {
-  color: var(--ifm-link-hover-color);
-  text-decoration: underline;
+  text-decoration: underline solid;
+  text-decoration-color: var(--ifm-link-hover-color);
+  text-decoration-thickness: 1px;
 }
 
 .activeTrigger {
@@ -548,6 +629,10 @@
   text-decoration: underline !important;
   text-decoration-thickness: 2px !important;
   text-underline-offset: 4px !important;
+}
+
+.noUnderline {
+  text-decoration: none !important;
 }
 
 .sourceFooter {
@@ -567,9 +652,11 @@
 /* --- react-rnd wrapper --- */
 .rndWrapper {
   pointer-events: auto;
+  display: flex;
+  flex-direction: column;
 }
 
-.modeFloating .rndWrapper {
+.modePip .rndWrapper {
   border-radius: 12px;
   box-shadow: var(--ifm-global-shadow-lw);
 }
@@ -580,11 +667,22 @@
 
 /* --- Mobile Peek Handle --- */
 .peekHandle {
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--ifm-color-emphasis-300);
-  margin: 8px auto 0;
+  display: none;
+}
+
+.modePeek .windowFrame {
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--ifm-color-emphasis-400);
+  box-shadow: 0 -10px 40px rgba(var(--ifm-color-emphasis-900-rgb), 0.15);
+  transition:
+    border-top-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.modePeek .windowFrame.windowInteracting {
+  border-top: 2px solid var(--ifm-color-primary);
+  box-shadow: 0 -4px 12px -4px rgba(var(--ifm-color-primary-rgb), 0.4);
 }
 
 /* --- Iframe Loading Overlay --- */
@@ -669,4 +767,10 @@
 
 :global(body.pv-dock-active) :global(.container.docItemWrapperEnhanced_JWYK) {
   max-width: none !important;
+}
+
+/* --- Global Layout Hooks (when peeking on mobile/tablet) --- */
+:global(body.pv-peek-active) :global(.main-wrapper) {
+  padding-bottom: var(--mobile-peek-height, 50vh);
+  transition: padding-bottom 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }

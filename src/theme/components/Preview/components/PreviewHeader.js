@@ -9,20 +9,20 @@ import IconLink from "@porto/assets/img/svg/icon-link.svg";
 import IconClose from "@porto/assets/img/svg/icon-close.svg";
 
 /**
- * Preview window header with title, zoom controls, dock/popup toggle, and close button.
+ * Preview window header with title, zoom controls, mode toggle, and close button.
  */
 export default function PreviewHeader({
   displayTitle,
   fileType,
   fileUrl,
-  isDocked,
-  isModal,
+  mode,
   zoomLevel,
   onZoomChange,
-  onToggleDock,
+  onToggleMode,
   onClose,
   onDownload,
   isDownloading,
+  modeSwitch = true,
   showDockLabel = true,
 }) {
   const [showZoomMenu, setShowZoomMenu] = useState(false);
@@ -32,21 +32,32 @@ export default function PreviewHeader({
   const isMobileSize =
     typeof window !== "undefined" && window.innerWidth <= 768;
 
+  // The Multitasking Toggle logic (Labels and Tooltips)
+  // The Multitasking Toggle logic (Labels and Tooltips)
+  const toggleLabel =
+    mode === "popup" ? "Dock" : mode === "dock" ? "PiP" : "Dock";
+  const toggleTooltip =
+    mode === "popup"
+      ? "Dock to side"
+      : mode === "dock"
+        ? "Open as PiP"
+        : "Dock to side";
+
   return (
     <>
       {/* Dock-mode "PREVIEW" label pinned behind navbar */}
-      {isDocked && !isMobileSize && (
+      {mode === "dock" && !isMobileSize && (
         <div className={styles.revealHeader}>
-          <h1 className={styles.modalTitle}>
+          <h1 className={styles.popupTitle}>
             <span className={styles.primaryText}>Preview </span>
           </h1>
         </div>
       )}
 
-      <div className={styles.modalHeader}>
+      <div className={styles.popupHeader}>
         {/* Left: file title */}
         <div className={styles.headerLeft}>
-          <h4 className={styles.modalTitle}>
+          <h4 className={styles.popupTitle}>
             <span className={styles.baseTitleText}>{displayTitle}</span>
           </h4>
         </div>
@@ -54,7 +65,7 @@ export default function PreviewHeader({
         {/* Right: controls */}
         <div className={styles.headerControls}>
           {/* Zoom dropdown (desktop only) */}
-          {!isMobileSize && (
+          {!isMobileSize && fileType !== "web" && (
             <div
               className={styles.zoomDropdown}
               ref={zoomMenuRef}
@@ -136,28 +147,22 @@ export default function PreviewHeader({
             </Tooltip>
           )}
 
-          {/* Dock / Popup toggle (hidden in modal mode) */}
-          {!isModal && (
-            <Tooltip
-              msg={isDocked ? "Open as popup" : "Dock to side"}
-              position="bottom"
-              underline={false}
-            >
+          {/* Dock / PiP / Popup toggle */}
+          {modeSwitch && (
+            <Tooltip msg={toggleTooltip} position="bottom" underline={false}>
               <button
-                onClick={onToggleDock}
+                onClick={onToggleMode}
                 className={`${styles.headerAction} ${styles.dockToggle}`}
               >
-                {isDocked ? (
+                {mode === "popup" || mode === "pip" ? (
+                  <IconDock className={styles.headerIcon} />
+                ) : (
                   <IconPopup
                     className={`${styles.headerIcon} ${styles.iconPopupTweak}`}
                   />
-                ) : (
-                  <IconDock className={styles.headerIcon} />
                 )}
                 {showDockLabel && (
-                  <span className={styles.btnText}>
-                    {isDocked ? "Popup" : "Dock"}
-                  </span>
+                  <span className={styles.btnText}>{toggleLabel}</span>
                 )}
               </button>
             </Tooltip>

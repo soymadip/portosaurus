@@ -42,9 +42,9 @@ export default function AboutSection({ id, className }) {
               )}
               {aboutMe.resume && (
                 <div className={styles.resumeContainer}>
-                  <Pv href={aboutMe.resume} title="My Resume" modal>
+                  <Pv href={aboutMe.resume} title="My Resume">
                     <span className={styles.resumeButton}>
-                      <FaDownload /> Preview Resume
+                      <FaDownload /> View Resume
                     </span>
                   </Pv>
                 </div>

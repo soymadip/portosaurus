@@ -26,6 +26,8 @@ const TEXT_EXTS = [
   "html",
   "xml",
   "sql",
+  "diff",
+  "patch",
 ];
 
 const IMAGE_EXTS = ["png", "jpg", "jpeg", "gif", "webp", "svg"];
@@ -64,11 +66,10 @@ export function resolveUrl(path) {
 }
 
 /**
- * Standardizes label/path into a clean URL slug.
+ * Standardizes a string into a clean URL slug.
  */
-export function generatePvSlug(label, path) {
-  const sourceLabel = label || (path || "").split("/").pop() || "source";
-  return sourceLabel
+export function generatePvSlug(text) {
+  return (text || "preview")
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
@@ -76,10 +77,11 @@ export function generatePvSlug(label, path) {
 
 /**
  * Generates the unified PV hash with mode suffix.
+ * Format: #slug:pv-mode
  */
-export function generatePvHash(slug, isDocked) {
+export function generatePvHash(slug, mode) {
   if (!slug) return "";
-  return `${slug}-pv:${isDocked ? "dock" : "window"}`;
+  return `${slug}:pv-${mode || "popup"}`;
 }
 
 /**
@@ -88,9 +90,8 @@ export function generatePvHash(slug, isDocked) {
 export function parsePvHash(hash) {
   if (!hash) return null;
   const cleanHash = hash.replace("#", "");
-  if (!cleanHash.includes("-pv:")) return null;
+  if (!cleanHash.includes(":pv-")) return null;
 
-  const [slugPart, mode] = cleanHash.split(":");
-  const slug = slugPart.replace("-pv", "");
-  return { slug, mode, isDocked: mode === "dock" };
+  const [slug, mode] = cleanHash.split(":pv-");
+  return { slug, mode };
 }
