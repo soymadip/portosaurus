@@ -12,7 +12,7 @@ import { iconMap } from "../../config/iconMappings";
 const DEFAULT_ICON = FaQuestionCircle;
 const DEFAULT_COLOR = "var(--ifm-color-primary)";
 
-export default function SocialIcons({ showAll = false }) {
+export default function SocialIcons({ showAll = false, links = null }) {
   const { siteConfig } = useDocusaurusContext();
   const { customFields } = siteConfig;
   const isBrowser = useIsBrowser();
@@ -21,10 +21,11 @@ export default function SocialIcons({ showAll = false }) {
 
   const allSocialLinks = customFields.socialLinks.links || [];
 
-  // FIX: `to prevent unnecessary recalculations`
+  // If specific links are provided, use them. Otherwise, fallback to global logic.
   const socialLinks = useMemo(() => {
+    if (links) return links;
     return showAll ? allSocialLinks : allSocialLinks.filter((link) => link.pin);
-  }, [allSocialLinks, showAll]);
+  }, [allSocialLinks, showAll, links]);
 
   // Calculate delays based on screen size
   const calculateDelays = useCallback(() => {
@@ -91,7 +92,7 @@ export default function SocialIcons({ showAll = false }) {
     <div className={styles.socialIcons}>
       {socialLinks.map((social, index) => {
         const { icon: IconComponent, color: iconColor } = getIconDetails(
-          social.icon,
+          social.icon || social.name,
         );
         const href = social.url || "#";
         const displayColor = social.color || iconColor;
@@ -99,7 +100,7 @@ export default function SocialIcons({ showAll = false }) {
         return (
           <Tooltip
             key={index}
-            msg={social.desc || social.icon || "Link"}
+            msg={social.desc || social.name || social.icon || "Link"}
             position="top"
             bg={displayColor}
             underline={false}
@@ -114,7 +115,7 @@ export default function SocialIcons({ showAll = false }) {
                 "--hover-color": displayColor,
                 animationDelay: animationDelays[index] || "0s",
               }}
-              aria-label={social.icon || "social link"}
+              aria-label={social.name || social.icon || "social link"}
             >
               <IconComponent size={24} />
             </a>

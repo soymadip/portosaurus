@@ -45,7 +45,7 @@ export default function HeroSection({ id, className }) {
                 {learnMoreButtonText}
               </a>
             </div>
-            <SocialLinks />
+            <SocialLinks links={customFields.heroSection.social} />
           </div>
         </div>
         <div className={styles.rightSection}>

@@ -62,7 +62,8 @@ export default function ContactSection({ id, className }) {
             aria-label="Social media and contact links"
           >
             {socialLinks.map((social, index) => {
-              const iconData = iconMap[social.icon] || {};
+              const iconKey = (social.icon || social.name || "").toLowerCase();
+              const iconData = iconMap[iconKey] || {};
 
               const name = social.name;
               const Icon = iconData.icon || FaQuestionCircle;
