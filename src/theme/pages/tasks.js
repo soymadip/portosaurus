@@ -256,8 +256,8 @@ export default function TasksPage() {
   const { customFields } = siteConfig || {};
 
   const tasksPage = customFields?.tasksPage;
-  const title = tasksPage.title;
-  const desc = tasksPage.desc;
+  const heading = tasksPage.heading || "Tasks";
+  const subheading = tasksPage.subheading || "Roadmap & Goals";
   const taskList =
     tasksPage.enable && tasksPage.taskList ? tasksPage.taskList : [];
 
@@ -276,7 +276,7 @@ export default function TasksPage() {
               </div>
               <h2 className="disabled-title">Tasks are currently disabled</h2>
               <p className="disabled-help">
-                To enable tasks, set <code>tasks_page.enable</code> to{" "}
+                To enable tasks, set <code>tasks.enable</code> to{" "}
                 <code>true</code>
               </p>
             </div>
@@ -287,17 +287,18 @@ export default function TasksPage() {
   }
 
   return (
-    <Layout title={title} description={desc}>
+    <Layout title={heading} description={subheading}>
       <Head>
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={desc} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={desc} />
+        <meta property="og:title" content={heading} />
+        <meta property="og:description" content={subheading} />
+        <meta name="twitter:title" content={heading} />
+        <meta name="twitter:description" content={subheading} />
       </Head>
 
       <div className="tasks-container">
         <div className="tasks-header">
-          <h1 className="tasks-heading">{title}</h1>
+          <h1 className="tasks-heading">{heading}</h1>
+          {subheading && <p className="tasks-subheading">{subheading}</p>}
         </div>
 
         <div className="tasks-content">

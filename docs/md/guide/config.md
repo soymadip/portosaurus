@@ -27,7 +27,7 @@ The `site` block contains global settings for your site identity and SEO. This i
 | `path`               | `str`  | `"auto"`         | Base path for sub-directory deployments.                         |
 | `on_broken_links`    | `str`  | `"throw"`        | Behavior when a link is broken (`throw`, `warn`, `ignore`).      |
 | `on_missing_anchors` | `str`  | `"throw"`        | Behavior when a link anchor (#) is missing.                      |
-| `robots_txt`         | `bool` | `true`           | Automatically generate a `robots.txt` file.                      |
+| `robots_txt`         | `dict` | `{enable: true}` | Configuration for `robots.txt` generation.                       |
 | `rss`                | `bool` | `true`           | Enable RSS and Atom feeds for the blog.                          |
 | `head_tags`          | `list` | `[]`             | Custom HTML tags to inject into `<head>` (see Advanced section). |
 | `cors_proxy`         | `list` | `[]`             | Custom CORS proxies for image loading (see Advanced section).    |
@@ -40,10 +40,11 @@ The `theme` block controls the visual appearance and navigation behavior of your
 
 Settings related to the visual theme and mode switching.
 
-| Key              | Type   | Default | Description                       |
-| :--------------- | :----- | :------ | :-------------------------------- |
-| `dark_mode`      | `bool` | `true`  | Enable the dark theme by default. |
-| `disable_switch` | `bool` | `false` | Hide the dark/light mode toggle.  |
+| Key                | Type   | Default | Description                                       |
+| :----------------- | :----- | :------ | :------------------------------------------------ |
+| `dark_mode`        | `bool` | `true`  | Enable the dark theme by default.                 |
+| `disable_switch`   | `bool` | `false` | Hide the dark/light mode toggle.                  |
+| `disable_branding` | `bool` | `false` | Hide the "Portosaurus vX.X.X" link in the navbar. |
 
 ### `navigation`
 
@@ -151,7 +152,7 @@ Manage your social media presence and contact links. These are usually displayed
 | :----------- | :----- | :--------------- | :-------------------------------------------------- |
 | `enable`     | `bool` | `true`           | Toggle social media links.                          |
 | `heading`    | `str`  | `"Get In Touch"` | Heading for the contact section.                    |
-| `subheading` | `str`  | `[...]`          | Subheading for the contact section.                 |
+| `subheading` | `str`  | `(dynamic)`      | Subheading with invitation to connect.              |
 | `links`      | `list` | `[]`             | List of social platform objects (see schema below). |
 
 **Social Link Schema:**
@@ -160,18 +161,18 @@ Manage your social media presence and contact links. These are usually displayed
 | :----- | :---- | :------ | :--------------------------------------------------- |
 | `name` | `str` | `null`  | Name of the platform (e.g., "GitHub").               |
 | `icon` | `str` | `null`  | Icon identifier (supports FontAwesome/Lucide names). |
-| `link` | `str` | `null`  | URL to your profile.                                 |
+| `url`  | `str` | `null`  | URL to your profile.                                 |
 
 ## `tasks`
 
 The `tasks` block powers a public roadmap and goal tracking system. It allows you to share what you're working on and your progress with your audience.
 
-| Key      | Type   | Default         | Description                              |
-| :------- | :----- | :-------------- | :--------------------------------------- |
-| `enable` | `bool` | `true`          | Toggle the public tasks page.            |
-| `title`  | `str`  | `"Tasks"`       | Heading for the tasks page.              |
-| `desc`   | `str`  | `(placeholder)` | Sub-heading for the page.                |
-| `list`   | `list` | `[]`            | List of task objects (see schema below). |
+| Key          | Type   | Default         | Description                              |
+| :----------- | :----- | :-------------- | :--------------------------------------- |
+| `enable`     | `bool` | `true`          | Toggle the public tasks page.            |
+| `heading`    | `str`  | `"Tasks"`       | Heading for the tasks page.              |
+| `subheading` | `str`  | `(placeholder)` | Sub-heading for the page.                |
+| `list`       | `list` | `[]`            | List of task objects (see schema below). |
 
 **Task `list` Object Schema:**
 
