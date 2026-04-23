@@ -49,18 +49,18 @@ describe("CLI: init", () => {
 
     // 2. Check essential files
     expect(fs.existsSync(path.join(projectPath, "package.json"))).toBe(true);
-    expect(fs.existsSync(path.join(projectPath, "config.js"))).toBe(true);
+    expect(fs.existsSync(path.join(projectPath, "config.yml"))).toBe(true);
     expect(fs.existsSync(path.join(projectPath, ".gitignore"))).toBe(true);
-
+ 
     // 3. Verify package.json customization
     const pkg = JSON.parse(
       fs.readFileSync(path.join(projectPath, "package.json"), "utf8"),
     );
     expect(pkg.name).toBe(projectName);
     expect(pkg.dependencies.portosaurus).toBeDefined();
-
-    // 4. Verify config.js existence
-    expect(fs.existsSync(path.join(projectPath, "config.js"))).toBe(true);
+ 
+    // 4. Verify config.yml existence
+    expect(fs.existsSync(path.join(projectPath, "config.yml"))).toBe(true);
   });
 
   test("should fail if directory already exists", async () => {
