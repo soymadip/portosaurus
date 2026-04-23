@@ -1,5 +1,7 @@
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useScrollReveal from "../../hooks/useScrollReveal";
+import { FaDownload } from "react-icons/fa";
+import { Pv } from "../Preview/index.js";
 import styles from "./styles.module.css";
 
 export default function AboutSection({ id, className }) {
@@ -19,20 +21,30 @@ export default function AboutSection({ id, className }) {
     >
       <div className={styles.aboutContainer}>
         <div className={styles.aboutHeader}>
-          <h2 className={styles.aboutHeading}>{"About Me"}</h2>
+          <h2 className={styles.aboutHeading}>
+            {aboutMe.heading || "About Me"}
+          </h2>
         </div>
 
         <div className={styles.aboutContent}>
-          <div className={styles.aboutBio}>
+          <div className={styles.aboutCard}>
             <div className={styles.bioImageContainer}>
               {aboutMe.image && (
                 <div className={styles.imageWrapper}>
                   <img
                     src={aboutMe.image}
-                    alt="About Me"
+                    alt={aboutMe.name || "About Me"}
                     className={styles.aboutImage}
-                    loading="lazy"
                   />
+                </div>
+              )}
+              {aboutMe.resume && (
+                <div className={styles.resumeContainer}>
+                  <Pv href={aboutMe.resume} title="My Resume" modal>
+                    <span className={styles.resumeButton}>
+                      <FaDownload /> Preview Resume
+                    </span>
+                  </Pv>
                 </div>
               )}
             </div>
@@ -52,19 +64,18 @@ export default function AboutSection({ id, className }) {
 
               {aboutMe.skills && aboutMe.skills.length > 0 && (
                 <div className={styles.skillsContainer}>
-                  <h3 className={styles.skillsTitle} id="skills-heading">
-                    My Skills
+                  <h3 className={styles.skillsTitle}>
+                    {aboutMe.skillsHeading || "My Skills"}
                   </h3>
-                  <div className={styles.skillsGrid} role="list">
+                  <div className={styles.skillsGrid}>
                     {aboutMe.skills.map((skill, index) => (
-                      <div
+                      <span
                         key={index}
-                        className={styles.skillBadge}
-                        role="listitem"
+                        className={styles.skillTag}
                         style={{ animationDelay: `${index * 0.05}s` }}
                       >
                         {skill}
-                      </div>
+                      </span>
                     ))}
                   </div>
                 </div>
