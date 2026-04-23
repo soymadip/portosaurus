@@ -7,6 +7,7 @@ export default function Tooltip({
   msg,
   position = "top",
   color,
+  bg,
   underline = true,
   gap = 5,
   shadow,
@@ -17,10 +18,11 @@ export default function Tooltip({
   const containerRef = useRef(null);
 
   const tooltipStyle = {
-    ...(color && {
-      "--tooltip-color": color,
-      "--tooltip-text-color": "var(--ifm-font-color-base-inverse)",
-    }),
+    ...(bg && { "--tooltip-color": bg }),
+    ...(color && { "--tooltip-text-color": color }),
+    // Auto-contrast: if bg is set but color is not, use inverse text
+    ...(!color &&
+      bg && { "--tooltip-text-color": "var(--ifm-font-color-base-inverse)" }),
     ...(shadow && { "--tooltip-shadow": shadow }),
   };
 

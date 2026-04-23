@@ -46,7 +46,10 @@
   width: max-content;
   z-index: 9999;
   opacity: 0;
-  filter: var(--tooltip-shadow, drop-shadow(0 8px 24px rgba(0, 0, 0, 0.5)));
+  filter: var(
+    --tooltip-shadow,
+    drop-shadow(0 8px 24px rgba(var(--ifm-color-emphasis-900-rgb), 0.3))
+  );
   border: 1px solid var(--ifm-color-emphasis-300);
   pointer-events: none;
 }
