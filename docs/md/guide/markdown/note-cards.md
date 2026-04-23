@@ -6,7 +6,7 @@ These components are designed for high-level organization, typically used on you
 
 Generates a responsive grid of cards for your notes. It automatically pulls data from your project's note structure.
 
-```mdx
+```jsx
 <NoteCards />
 ```
 
@@ -14,9 +14,15 @@ Generates a responsive grid of cards for your notes. It automatically pulls data
 
 Generates a list of topics or categories, ideal for organizing a large knowledge base into scannable sections.
 
-```mdx
-<TopicList />
+```jsx
+<TopicList description="Custom introductory text here..." />
 ```
 
+### Props
+
+| Prop          | Type     | Default                         | Description                                 |
+| :------------ | :------- | :------------------------------ | :------------------------------------------ |
+| `description` | `string` | `"Click on the links below..."` | Introductory text displayed above the list. |
+
 > [!TIP]
-> These components are best used on "Index" pages (e.g., `notes.md` or `guide.md`) to provide a bird's-eye view of your content.
+> These components are best used on "Index" pages (e.g., `notes/index.md` or `notes/guide/index.md`) to provide a bird's-eye view of your content.

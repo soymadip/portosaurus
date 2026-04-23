@@ -4,17 +4,13 @@ Use the `<Tabs />` and `<TabItem />` components to create tabbed content blocks.
 
 ## Basic Usage
 
-```mdx
+```jsx
 <Tabs>
   <TabItem value="js" label="JavaScript">
-    ```javascript
-    console.log("Hello World");
-    ```
+    ```javascript console.log("Hello World"); ```
   </TabItem>
   <TabItem value="py" label="Python">
-    ```python
-    print("Hello World")
-    ```
+    ```python print("Hello World") ```
   </TabItem>
 </Tabs>
 ```
@@ -22,14 +18,16 @@ Use the `<Tabs />` and `<TabItem />` components to create tabbed content blocks.
 ## Props
 
 ### `<Tabs />`
-| Prop | Type | Description |
-| :--- | :--- | :--- |
-| `defaultValue` | `string` | The value of the tab to show by default. |
-| `groupId` | `string` | Sync selection across multiple tab blocks with the same ID. |
+
+| Prop           | Type     | Description                                                 |
+| :------------- | :------- | :---------------------------------------------------------- |
+| `defaultValue` | `string` | The value of the tab to show by default.                    |
+| `groupId`      | `string` | Sync selection across multiple tab blocks with the same ID. |
 
 ### `<TabItem />`
-| Prop | Type | Description |
-| :--- | :--- | :--- |
-| `value` | `string` | **(Required)** Unique identifier for the tab. |
-| `label` | `string` | The text displayed on the tab button. |
-| `default` | `boolean` | Set to `true` to make this the default tab. |
+
+| Prop      | Type      | Description                                   |
+| :-------- | :-------- | :-------------------------------------------- |
+| `value`   | `string`  | **(Required)** Unique identifier for the tab. |
+| `label`   | `string`  | The text displayed on the tab button.         |
+| `default` | `boolean` | Set to `true` to make this the default tab.   |

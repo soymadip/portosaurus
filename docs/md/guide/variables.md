@@ -11,7 +11,7 @@ Use double curly braces to reference a variable: `{{variable_name}}`.
 ### System Variables
 
 - `{{portoVersion}}`: Current {{meta.project.title}} version.
-- `{{portoRoot}}`: Absolute path to the Portosaurus installation root. Crucial for referencing internal assets (e.g., `{{portoRoot}}/src/assets/img/icon.png`).
+- `{{portoRoot}}`: Absolute path to the Portosaurus installation root. Crucial for referencing internal assets.
 - `{{compileYear}}`: Year at build time.
 - `{{compileDate}}`: Date at build time.
 

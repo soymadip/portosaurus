@@ -4,16 +4,16 @@ The `<Details />` component provides a styled disclosure widget (accordion) for 
 
 ## Usage
 
-```mdx
+```jsx
 <Details title="Click to reveal more info">
-  This is the hidden content that appears when you click the header.
-  You can include **Markdown** or even other components inside here.
+  This is the hidden content that appears when you click the header. You can
+  include **Markdown** or even other components inside here.
 </Details>
 ```
 
 ## Props
 
-| Prop | Type | Description |
-| :--- | :--- | :--- |
-| `title` | `string` | The text displayed in the header button. |
-| `open` | `boolean` | If `true`, the accordion will be open by default. |
+| Prop    | Type      | Description                                       |
+| :------ | :-------- | :------------------------------------------------ |
+| `title` | `string`  | The text displayed in the header button.          |
+| `open`  | `boolean` | If `true`, the accordion will be open by default. |

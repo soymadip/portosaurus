@@ -14,7 +14,7 @@ cd yourUsername.github.io
 This will create your dir with following things:
 
 ```txt
-soymadip.gitub.io
+yourUsername.github.io
 ├── .github           # Github CI workflow for automated deployment
 ├── blog              # Blog files
 │   ├── authors.yml

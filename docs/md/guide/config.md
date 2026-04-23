@@ -88,11 +88,13 @@ The about section allows you to provide a more detailed biography and list your 
 
 | Key      | Type      | Default | Description                                     |
 | :------- | :-------- | :------ | :---------------------------------------------- |
-| `enable` | `boolean` | `true`  | Toggle the About section.                       |
-| `image`  | `string`  | `null`  | Optional bio image (falls back to profile pic). |
-| `bio`    | `array`   | `[...]` | List of strings, each rendered as a paragraph.  |
-| `skills` | `array`   | `[]`    | List of skills to display as badges.            |
-| `resume` | `string`  | `null`  | Link to your resume/CV file.                    |
+| `enable`         | `boolean` | `true`        | Toggle the About section.                       |
+| `heading`        | `string`  | `"About Me"`  | Heading for the about section.                  |
+| `image`          | `string`  | `null`        | Optional bio image (falls back to profile pic). |
+| `bio`            | `array`   | `[...]`       | List of strings, each rendered as a paragraph.  |
+| `skills_heading` | `string`  | `"My Skills"` | Heading for the technical skills section.        |
+| `skills`         | `array`   | `[]`          | List of skills to display as badges.            |
+| `resume`         | `string`  | `null`        | Link to your resume/CV file.                    |
 
 ### `project_shelf`
 

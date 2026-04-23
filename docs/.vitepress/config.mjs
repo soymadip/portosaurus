@@ -13,7 +13,7 @@ const metadata = {
     title: pkg.name.charAt(0).toUpperCase() + pkg.name.slice(1),
     desc: "for your digital personality",
     tagLine: pkg.description,
-    repo: pkg.repository.url ? pkg.homepage.replace(/\/$/, "") : "",
+    repo: pkg.repository.url,
   },
 
   // Versions & Requirements
@@ -35,10 +35,12 @@ const metadata = {
   },
 };
 
+const base = process.env.GITHUB_REPOSITORY
+  ? `/${process.env.GITHUB_REPOSITORY.split("/")[1]}/`
+  : "/";
+
 export default withMermaid({
-  base: process.env.GITHUB_REPOSITORY
-    ? `/${process.env.GITHUB_REPOSITORY.split("/")[1]}/`
-    : "/",
+  base: base,
 
   vite: {
     publicDir: "../public",
@@ -59,7 +61,14 @@ export default withMermaid({
   cleanUrls: true,
 
   head: [
-    ["link", { rel: "icon", type: "image/svg+xml", href: "/img/svg/icon.svg" }],
+    [
+      "link",
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: `${base}img/svg/icon.svg`,
+      },
+    ],
   ],
 
   title: metadata.project.title,

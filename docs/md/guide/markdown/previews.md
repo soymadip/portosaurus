@@ -10,8 +10,8 @@ The `<Pv />` component is available globally in all your Markdown and MDX files.
 
 The simplest way to use it is by wrapping a link or text:
 
-```mdx
-Check out my [Resume](pv:resume.pdf) or click here: <Pv href="/resume.pdf">View PDF</Pv>
+```jsx
+Check out my resume: <Pv href="/resume.pdf">View PDF</Pv>
 ```
 
 ### Advanced Parameters
@@ -23,6 +23,7 @@ You can customize the preview behavior using various props:
 | `href`      | `string`  | The path or URL of the file to preview.                         |
 | `title`     | `string`  | Custom title for the window header. Overrides filename/label.   |
 | `modal`     | `boolean` | If `true`, opens as a centered pop-up with a themed backdrop.   |
+| `docked`    | `boolean` | If `true`, pins the window to the side upon opening.            |
 | `desc`      | `string`  | Optional description that appears as a tooltip on hover.        |
 | `id`        | `string`  | Custom slug for deep-linking (e.g., `#my-custom-id-pv:window`). |
 | `activeIdx` | `number`  | The index of the file to show first (if using `sources`).       |
@@ -33,17 +34,27 @@ You can customize the preview behavior using various props:
 
 Perfect for resumes or critical documents where you want to focus the user's attention.
 
-```mdx
+```jsx
 <Pv href="/resume.pdf" title="Professional Resume" modal>
   Preview My Resume
 </Pv>
 ```
 
-#### 2. Deep Linking
+#### 2. Pinned Sidebar (Docked Mode)
+
+Ideal for source code or documentation where you want to keep the main content visible alongside the preview.
+
+```jsx
+<Pv href="/main.js" docked>
+  View Source Code
+</Pv>
+```
+
+#### 3. Deep Linking
 
 By default, Portosaurus generates a slug from your link text. You can override this:
 
-```mdx
+```jsx
 <Pv href="/design-spec.pdf" id="specs">
   Design Specifications
 </Pv>
@@ -51,11 +62,11 @@ By default, Portosaurus generates a slug from your link text. You can override t
 
 This link can be shared as `https://yoursite.com/#specs-pv:window`.
 
-#### 3. Multiple Files (Tabbed View)
+#### 4. Multiple Files (Tabbed View)
 
 You can pass an array of sources to create a tabbed preview experience:
 
-```mdx
+```jsx
 <Pv
   title="Project Source"
   sources={[
@@ -71,7 +82,7 @@ You can pass an array of sources to create a tabbed preview experience:
 
 The `<SrcPv />` component is a specialized version of the preview trigger, often used in footers to list source files.
 
-```mdx
+```jsx
 <SrcPv
   prefixText="Resources: "
   sources={[
