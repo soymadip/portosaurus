@@ -13,6 +13,12 @@ export default function Tooltip({
   shadow,
   className = "",
 }) {
+  if (!msg) {
+    throw new Error(
+      "Tooltip: 'msg' prop is required to display tooltip content.",
+    );
+  }
+
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
   const containerRef = useRef(null);
