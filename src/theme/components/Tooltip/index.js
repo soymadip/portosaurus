@@ -8,8 +8,9 @@ export default function Tooltip({
   position = "top",
   color,
   underline = true,
-  gap = 4,
+  gap = 5,
   shadow,
+  className = "",
 }) {
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0 });
@@ -24,8 +25,8 @@ export default function Tooltip({
   };
 
   const show = useCallback(() => {
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
+    if (!containerRef.current || !containerRef.current.children[0]) return;
+    const rect = containerRef.current.children[0].getBoundingClientRect();
     const tooltipGap = gap;
 
     let top, left;
@@ -51,7 +52,7 @@ export default function Tooltip({
 
     setCoords({ top, left });
     setIsVisible(true);
-  }, [position]);
+  }, [position, gap]);
 
   const hide = useCallback(() => setIsVisible(false), []);
 
@@ -71,18 +72,17 @@ export default function Tooltip({
       : null;
 
   return (
-    <span
+    <div
       ref={containerRef}
-      className={`${styles.tooltipContainer} ${underline ? styles.hasUnderline : ""}`}
+      className={`${styles.tooltipContainer} ${underline ? styles.hasUnderline : ""} ${className}`}
       onMouseEnter={show}
       onMouseLeave={hide}
       onFocus={show}
       onBlur={hide}
+      style={{ display: "contents" }}
     >
-      {React.Children.map(children, (child) =>
-        typeof child === "string" ? child.trim() : child,
-      )}
+      {children}
       {tooltip}
-    </span>
+    </div>
   );
 }
