@@ -1,53 +1,82 @@
-import { createConsola } from "consola";
+import dLogger from "@docusaurus/logger";
+import { consola } from "consola";
 import chalk from "chalk";
+import * as p from "@clack/prompts";
 
 /**
- * Logger
- * Mimics the official Docusaurus CLI style for a familiar DX.
+ * Portosaurus Logger Utility
+ * Wraps @docusaurus/logger and @clack/prompts for a perfectly authentic experience.
  */
-
-const consola = createConsola({
-  level: process.env.DEBUG || process.env.VERBOSE ? 4 : 3,
-});
-
-const format = (badge, color, ...args) => {
-  const prefix = color.bold(badge.padEnd(9));
-  const message = args
-    .map((arg) => (typeof arg === "string" ? arg : JSON.stringify(arg)))
-    .join(" ");
-
-  message.split("\n").forEach((line) => {
-    console.log(`${prefix} ${line}`);
-  });
-};
-
 export const logger = {
-  log: (...args) => console.log(...args),
-  info: (...args) => format("[INFO]", chalk.cyan, ...args),
-  success: (...args) => format("[SUCCESS]", chalk.green, ...args),
-  warn: (...args) => format("[WARNING]", chalk.yellow, ...args),
-  error: (...args) => format("[ERROR]", chalk.red, ...args),
-  tip: (...args) => format("[TIP]", chalk.magenta, ...args),
+  ...consola,
 
-  debug: (...args) => {
-    if (process.env.DEBUG || process.env.VERBOSE) {
-      format("[DEBUG]", chalk.gray, ...args);
-    }
-  },
+  // Use official Docusaurus logger for standard levels
+  info: (msg) => dLogger.info(msg),
+  success: (msg) => dLogger.success(msg),
+  warn: (msg) => dLogger.warn(msg),
+  error: (msg) => dLogger.error(msg),
 
-  box: (msg, title = "Portosaurus") => {
+  // Custom levels / helpers
+  start: (msg) => dLogger.info(msg),
+  tip: (msg) => consola.log(`${chalk.magenta.bold("[TIP]")} ${msg}`),
+
+  box: (msg, badge) => {
     consola.box({
       message: msg,
-      title: chalk.magenta.bold(title),
+      title: badge,
       style: {
-        borderColor: "magenta",
+        borderColor: "cyan",
         borderStyle: "rounded",
+        padding: 1,
       },
     });
   },
 
-  start: (msg) => consola.start(msg),
-  ready: (msg) => consola.ready(msg),
+  /**
+   * Interactive Prompt Helper
+   * Uses @clack/prompts for robust validation and hinting.
+   */
+  prompt: async (msg, opts = {}) => {
+    const type = opts.type || "text";
+    let res;
+
+    const clackOpts = {
+      message: msg,
+      initialValue: opts.initial,
+      placeholder: opts.placeholder,
+      hint: opts.hint,
+      options: opts.options,
+      validate: opts.validate,
+    };
+
+    if (type === "select") {
+      res = await p.select(clackOpts);
+    } else if (type === "multiselect") {
+      res = await p.multiselect(clackOpts);
+    } else {
+      // For types that clack doesn't natively hint (text, confirm), we append to message
+      if (opts.hint) {
+        clackOpts.message += ` ${chalk.gray(`(${opts.hint})`)}`;
+      }
+      if (type === "confirm") {
+        res = await p.confirm(clackOpts);
+      } else {
+        res = await p.text(clackOpts);
+      }
+    }
+
+    if (p.isCancel(res)) {
+      logger.warn("Operation cancelled by user.");
+      process.exit(130);
+    }
+
+    return res;
+  },
+
+  /**
+   * Clear Console
+   */
+  clear: () => console.clear(),
 };
 
 export default logger;

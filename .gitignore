@@ -21,7 +21,7 @@ build/
 dist/
 *tmp*
 *temp*
-!template
+!template*
 *favicon/
 TestimonialsSection/
 
