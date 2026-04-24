@@ -10,6 +10,8 @@ import { PortoRoot } from "../core/constants.mjs";
  */
 export function writePortoConfigShim(UserRoot) {
   const dotDir = path.join(UserRoot, ".docusaurus", "portosaurus");
+
+  // Ensure config directory exists
   fs.mkdirSync(dotDir, { recursive: true });
 
   const configYaml = ["config.yaml", "config.yml"].find((f) =>
@@ -70,15 +72,6 @@ export function validateProject(UserRoot) {
 export function ensureContentDirs(UserRoot) {
   for (const dir of ["notes", "blog", "static"]) {
     fs.mkdirSync(path.join(UserRoot, dir), { recursive: true });
-  }
-
-  const notesIndex = path.join(UserRoot, "notes", "index.mdx");
-  if (!fs.existsSync(notesIndex)) {
-    fs.writeFileSync(
-      notesIndex,
-      `---\nhide_table_of_contents: true\n---\n\nimport NoteCards from "portosaurus/src/theme/components/NoteIndex/index.js";\n\n# Notes\n\n<NoteCards />\n`,
-    );
-    logger.debug("Created default notes/index.mdx");
   }
 }
 
