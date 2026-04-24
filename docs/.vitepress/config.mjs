@@ -81,6 +81,12 @@ export default withMermaid({
   themeConfig: {
     logo: "/img/svg/icon.svg",
     outline: [2, 3],
+    metadata: metadata,
+
+    banner: {
+      enabled: true,
+      text: "🚧 This documentation is Work In Progress!",
+    },
 
     search: {
       provider: "local",
@@ -94,13 +100,6 @@ export default withMermaid({
       { text: "CLI", link: "/reference/cli" },
       { text: "Roadmap", link: "/roadmap" },
     ],
-
-    banner: {
-      enabled: true,
-      text: "🚧 This documentation is a Work In Progress!",
-    },
-
-    metadata: metadata,
 
     sidebar: [
       {

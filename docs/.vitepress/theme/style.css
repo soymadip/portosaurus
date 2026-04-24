@@ -277,6 +277,12 @@
 .has-banner .VPLocalNav,
 .has-banner .VPSidebar {
   top: calc(var(--vp-nav-height) + var(--wip-banner-height)) !important;
+  transition: top 0.25s ease;
+}
+
+.has-banner.nav-hidden .VPLocalNav,
+.has-banner.nav-hidden .VPSidebar {
+  top: var(--wip-banner-height) !important;
 }
 
 .has-banner #VPContent {
