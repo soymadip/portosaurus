@@ -21,7 +21,7 @@ bunx {{meta.pkg}} init
 npx {{meta.pkg}} init
 ```
 
-### Not Interactive Mode
+### Non Interactive Mode
 
 This is useful for using with scripts.
 
