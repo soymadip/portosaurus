@@ -15,7 +15,7 @@ export const PortoRoot = path.resolve(__dirname, "../../");
 export const PortoPkg = loadPkg(PortoRoot);
 
 /**
- * Common paths inside the framework
+ * Common paths inside the package
  */
 export const Paths = {
   template: path.join(PortoRoot, "src/template"),

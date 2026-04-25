@@ -85,7 +85,7 @@ export default withMermaid({
 
     banner: {
       enabled: true,
-      text: "🚧 This documentation is Work In Progress!",
+      text: "⚠️ This documentation is Work In Progress!",
     },
 
     search: {
@@ -96,8 +96,8 @@ export default withMermaid({
     },
 
     nav: [
-      { text: "Guide", link: "/guide/getting-started" },
-      { text: "CLI", link: "/reference/cli" },
+      { text: "User Guide", link: "/user/getting-started" },
+      { text: "Configuration", link: "/user/config/overview" },
       { text: "Roadmap", link: "/roadmap" },
     ],
 
@@ -105,40 +105,60 @@ export default withMermaid({
       {
         text: "User Guide",
         items: [
-          { text: "Getting Started", link: "/guide/getting-started" },
-          { text: "Dynamic Variables", link: "/guide/variables" },
-          { text: "Configuration", link: "/guide/config" },
+          { text: "Getting Started", link: "/user/getting-started" },
+          {
+            text: "Configuration",
+            link: "/user/config/overview",
+            collapsed: true,
+            items: [
+              { text: "Variables", link: "/user/config/variables" },
+              { text: "Reference", link: "/user/config/reference" },
+            ],
+          },
           {
             text: "Markdown Features",
-            link: "/guide/markdown",
+            link: "/user/markdown/overview",
             collapsed: true,
             items: [
               {
                 text: "Interactive Previews",
-                link: "/guide/markdown/previews",
+                link: "/user/markdown/previews",
               },
-              { text: "Tabs", link: "/guide/markdown/tabs" },
-              { text: "Details", link: "/guide/markdown/details" },
-              { text: "Tooltips", link: "/guide/markdown/tooltips" },
+              { text: "Tabs", link: "/user/markdown/tabs" },
+              { text: "Details", link: "/user/markdown/details" },
+              { text: "Tooltips", link: "/user/markdown/tooltips" },
               {
                 text: "Note Cards",
-                link: "/guide/markdown/note-cards",
+                link: "/user/markdown/note-cards",
+              },
+            ],
+          },
+          {
+            text: "Deployment",
+            link: "/user/deploy/overview",
+            collapsed: true,
+            items: [
+              { text: "GitHub Pages", link: "/user/deploy/github-pages" },
+              { text: "GitLab Pages", link: "/user/deploy/gitlab-pages" },
+              { text: "Codeberg Pages", link: "/user/deploy/codeberg-pages" },
+              { text: "Surge", link: "/user/deploy/surge" },
+              {
+                text: "Other Providers",
+                link: "/user/deploy/others",
               },
             ],
           },
         ],
       },
       {
-        text: "CLI Reference",
-        items: [
-          { text: "Overview", link: "/reference/cli" },
-          { text: "init", link: "/reference/cli#init" },
-          { text: "dev", link: "/reference/cli#dev" },
-          { text: "build", link: "/reference/cli#build" },
-        ],
+        text: "Developer Guide",
+        link: "/dev/overview",
+        collapsed: false,
+        items: [{ text: "Custom Templates", link: "/dev/templates" }],
       },
       {
         text: "More",
+        collapsed: true,
         items: [{ text: "Roadmap", link: "/roadmap" }],
       },
     ],

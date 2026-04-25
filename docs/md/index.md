@@ -12,11 +12,11 @@ hero:
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/getting-started
+      link: /user/getting-started
 
     - theme: alt
-      text: CLI Reference
-      link: /reference/cli
+      text: Dev Guide
+      link: /dev
 
 features:
   - icon: "👨‍💻"

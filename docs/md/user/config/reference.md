@@ -1,36 +1,25 @@
-# Configuration Guide
+# Config Reference
 
-You can customize the behavior and data of your portfolio using `config.yml`. This file serves as the master source of truth for your site, controlling everything from SEO metadata to the content of individual sections.
-
-## Top-Level Structure
-
-The configuration is divided into several main blocks that map directly to the root keys in your `config.yml`:
-
-- **`site`**: Metadata, SEO, and global site settings.
-- **`theme`**: Visual appearance and navigation behavior.
-- **`home_page`**: Content for the primary sections of your site.
-- **`tasks`**: Public roadmap and goal tracking.
-- **`tools`**: Functional utilities like link shorteners.
-- **`custom`**: User-defined variables for re-use.
+<center>This page list all possible Configuration Options</center>
 
 ## `site`
 
 The `site` block contains global settings for your site identity and SEO. This information is used to generate meta tags, site titles, and social sharing previews.
 
-| Key                  | Type   | Default          | Description                                                      |
-| :------------------- | :----- | :--------------- | :--------------------------------------------------------------- |
-| `title`              | `str`  | `"Your Name"`    | The name displayed in the browser tab and site headers.          |
-| `tagline`            | `str`  | `"Short bio..."` | A brief desc used for SEO meta tags.                             |
-| `favicon`            | `str`  | `(default icon)` | Path to your site's favicon.                                     |
-| `social_card`        | `str`  | `(default img)`  | Preview image used when sharing your site on social media.       |
-| `url`                | `str`  | `"auto"`         | Canonical URL. Use `auto` for automatic CI/CD detection.         |
-| `path`               | `str`  | `"auto"`         | Base path for sub-directory deployments.                         |
-| `on_broken_links`    | `str`  | `"throw"`        | Behavior when a link is broken (`throw`, `warn`, `ignore`).      |
-| `on_missing_anchors` | `str`  | `"throw"`        | Behavior when a link anchor (#) is missing.                      |
-| `robots_txt`         | `dict` | `{enable: true}` | Configuration for `robots.txt` generation.                       |
-| `rss`                | `bool` | `true`           | Enable RSS and Atom feeds for the blog.                          |
-| `head_tags`          | `list` | `[]`             | Custom HTML tags to inject into `<head>` (see Advanced section). |
-| `cors_proxy`         | `list` | `[]`             | Custom CORS proxies for image loading (see Advanced section).    |
+| Key                 | Type   | Default          | Description                                                      |
+| :------------------ | :----- | :--------------- | :--------------------------------------------------------------- |
+| `title`             | `str`  | `"Your Name"`    | The name displayed in the browser tab and site headers.          |
+| `tagline`           | `str`  | `"Short bio..."` | A brief desc used for SEO meta tags.                             |
+| `favicon`           | `str`  | `(default icon)` | Path to your site's favicon.                                     |
+| `social_card`       | `str`  | `(default img)`  | Preview image used when sharing your site on social media.       |
+| `url`               | `str`  | `"auto"`         | Canonical URL. Use `auto` for automatic CI/CD detection.         |
+| `path`              | `str`  | `"auto"`         | Base path for sub-directory deployments.                         |
+| `on_broken_links`   | `str`  | `"throw"`        | Behavior when a link is broken (`throw`, `warn`, `ignore`).      |
+| `on_broken_anchors` | `str`  | `"throw"`        | Behavior when a link anchor (#) is missing.                      |
+| `robots_txt`        | `dict` | `{enable: true}` | Configuration for `robots.txt` generation.                       |
+| `rss`               | `bool` | `true`           | Enable RSS and Atom feeds for the blog.                          |
+| `head_tags`         | `list` | `[]`             | Custom HTML tags to inject into `<head>` (see Advanced section). |
+| `cors_proxy`        | `list` | `[]`             | Custom CORS proxies for image loading (see Advanced section).    |
 
 ## `theme`
 
@@ -167,12 +156,12 @@ Manage your social media presence and contact links. These are usually displayed
 
 The `tasks` block powers a public roadmap and goal tracking system. It allows you to share what you're working on and your progress with your audience.
 
-| Key          | Type   | Default         | Description                              |
-| :----------- | :----- | :-------------- | :--------------------------------------- |
-| `enable`     | `bool` | `true`          | Toggle the public tasks page.            |
-| `heading`    | `str`  | `"Tasks"`       | Heading for the tasks page.              |
-| `subheading` | `str`  | `(placeholder)` | Sub-heading for the page.                |
-| `list`       | `list` | `[]`            | List of task objects (see schema below). |
+| Key        | Type   | Default         | Description                              |
+| :--------- | :----- | :-------------- | :--------------------------------------- |
+| `enable`   | `bool` | `false`         | Toggle the public tasks page.            |
+| `title`    | `str`  | `"Tasks"`       | Heading for the tasks page.              |
+| `subtitle` | `str`  | `(placeholder)` | Sub-heading for the page.                |
+| `list`     | `list` | `[]`            | List of task objects (see schema below). |
 
 **Task `list` Object Schema:**
 
