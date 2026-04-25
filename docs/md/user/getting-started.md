@@ -25,7 +25,7 @@ npx {{meta.pkg}} init
 
 This is useful for using with scripts.
 
-Note that If any flag is provided, {{meta.projecct.title}} enters **non-interactive mode**. Missing flags will use defaults (like `none` for VCS/Hosting) instead of prompting.
+Note that If any flag is provided, {{meta.project.title}} enters **non-interactive mode**. Missing flags will use defaults (like `none` for VCS/Hosting) instead of prompting.
 
 | Flag                   | Description                                                                     | Default              |
 | ---------------------- | ------------------------------------------------------------------------------- | -------------------- |
