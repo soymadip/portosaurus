@@ -70,4 +70,5 @@ jobs:
       - name: Smoke Test - Build Project
         run: |
           cd smoke-test-site
+          bun install --no-workspaces
           bun run build
