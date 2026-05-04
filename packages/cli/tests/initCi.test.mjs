@@ -56,26 +56,28 @@ mock.module("../src/utils/index.mjs", () => {
         gitlab: "gitlab.com",
         codeberg: "codeberg.org",
       };
-      
+
       for (const key of keysByProvider[provider] || []) {
         if (gitConfig[key]) return gitConfig[key];
       }
-      
+
       const host = hostByProvider[provider];
       if (!host) return "";
-      
+
       for (const [key, value] of Object.entries(gitConfig)) {
         if (!key.startsWith("remote.") || !key.endsWith(".url")) continue;
         if (typeof value !== "string" || !value.includes(host)) continue;
-        
+
         const escapedHost = host.replace(/\./g, "\\.");
         const match = value.match(
-          new RegExp(`(?:https?://|ssh://git@|git@)${escapedHost}[:/]([^/]+)(?:/|$)`),
+          new RegExp(
+            `(?:https?://|ssh://git@|git@)${escapedHost}[:/]([^/]+)(?:/|$)`,
+          ),
         );
-        
+
         if (match?.[1]) return match[1];
       }
-      
+
       return "";
     },
     validateProject: () => true,

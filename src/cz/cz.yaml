@@ -95,11 +95,10 @@ commitizen:
     - bun test
     - src/cz/bumper.sh
     - bun install
-    - npm install
     - bun run --cwd docs docs:version
     - bun format
   tag_format: v$version
   template: src/cz/changelog.j2
   update_changelog_on_bump: false
-  version: 4.0.1
+  version: 0.1.0
   version_scheme: semver
