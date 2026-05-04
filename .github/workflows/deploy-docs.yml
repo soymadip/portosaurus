@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/deploy-docs.yml"
-      - "packages/docs/**"
+      - "docs/**"
       - "packages/cli/src/commands/schema.*"
       - "packages/core/src/index.mjs"
       - "package.json"
@@ -19,8 +19,8 @@ permissions:
   id-token: write
 
 env:
-  DOCS_DIR: packages/docs
-  DOCS_OUT_DIR: ${{ env.DOCS_DIR }}/.vitepress/dist
+  DOCS_DIR: docs
+  DOCS_OUT_DIR: docs/.vitepress/dist
   CLI_DIR: packages/cli
 
 jobs:
