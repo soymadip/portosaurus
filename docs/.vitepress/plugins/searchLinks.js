@@ -17,7 +17,7 @@ function getSearchUrl(term, engine, engines) {
   const actualEngine = engine || DEFAULT_ENGINE;
   const engineUrl = allEngines[actualEngine] || allEngines[DEFAULT_ENGINE];
   // Use + for spaces (simpler URL encoding that markdown-it accepts)
-  const encodedTerm = term.trim().split(' ').join('+');
+  const encodedTerm = term.trim().split(" ").join("+");
   return engineUrl + encodedTerm;
 }
 
@@ -34,15 +34,15 @@ export function searchLinks(md, options = {}) {
     const src = state.src;
 
     // Must start with [ to be a potential link
-    if (src[pos] !== '[') return false;
+    if (src[pos] !== "[") return false;
 
     // Find the closing ]
     let labelStart = pos + 1;
     let labelEnd = -1;
     let level = 1;
     for (let i = labelStart; i < max; i++) {
-      if (src[i] === '[') level++;
-      if (src[i] === ']') {
+      if (src[i] === "[") level++;
+      if (src[i] === "]") {
         level--;
         if (level === 0) {
           labelEnd = i;
@@ -55,14 +55,15 @@ export function searchLinks(md, options = {}) {
     if (labelEnd < 0) return false;
 
     // Must be followed by (search:
-    if (labelEnd + 1 >= max || src[labelEnd + 1] !== '(') return false;
-    if (!src.slice(labelEnd + 2).startsWith('search:')) return false;
+    if (labelEnd + 1 >= max || src[labelEnd + 1] !== "(") return false;
+    if (!src.slice(labelEnd + 2).startsWith("search:")) return false;
 
     // Find the closing )
     let linkStart = labelEnd + 2;
     let linkEnd = -1;
-    for (let i = linkStart + 7; i < max; i++) { // start after 'search:'
-      if (src[i] === ')') {
+    for (let i = linkStart + 7; i < max; i++) {
+      // start after 'search:'
+      if (src[i] === ")") {
         linkEnd = i;
         break;
       }
@@ -85,16 +86,16 @@ export function searchLinks(md, options = {}) {
 
     if (!silent) {
       // Create link token
-      const token = state.push('link_open', 'a', 1);
-      token.attrs = [['href', searchUrl]];
-      token.attrSet('target', '_blank');
-      token.attrSet('rel', 'noreferrer');
+      const token = state.push("link_open", "a", 1);
+      token.attrs = [["href", searchUrl]];
+      token.attrSet("target", "_blank");
+      token.attrSet("rel", "noreferrer");
 
       // Create text token
-      state.push('text', '', 0).content = linkText;
+      state.push("text", "", 0).content = linkText;
 
       // Create link close token
-      state.push('link_close', 'a', -1);
+      state.push("link_close", "a", -1);
     }
 
     // Move cursor to after the closing paren

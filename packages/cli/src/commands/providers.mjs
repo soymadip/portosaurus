@@ -116,9 +116,7 @@ function displayVcsProviders(vcsProviders) {
     config.default_hosting || "N/A",
   ]);
 
-  console.log(
-    createTable(rows, ["ID", "Name", "Domain", "Default Hosting"]),
-  );
+  console.log(createTable(rows, ["ID", "Name", "Domain", "Default Hosting"]));
 }
 
 /**

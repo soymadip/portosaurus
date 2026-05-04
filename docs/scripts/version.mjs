@@ -13,7 +13,9 @@ const [major, minor, patch] = portoPkg.version.split(".");
 const snapshotName = `v${major}.${minor}`;
 
 if (patch !== "0") {
-  console.log(`ℹ️ Version ${portoPkg.version} is a bugfix update. Skipping documentation snapshot.`);
+  console.log(
+    `ℹ️ Version ${portoPkg.version} is a bugfix update. Skipping documentation snapshot.`,
+  );
   process.exit(0);
 }
 
@@ -42,10 +44,10 @@ function copyDir(src, dest) {
   for (const entry of entries) {
     // Skip internal VitePress directory and archive directory
     if (entry.name === ".vitepress" || entry.name === "archive") continue;
-    
+
     const srcPath = path.join(src, entry.name);
     const destPath = path.join(dest, entry.name);
-    
+
     if (entry.isDirectory()) {
       fs.mkdirSync(destPath, { recursive: true });
       copyDir(srcPath, destPath);

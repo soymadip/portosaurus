@@ -42,7 +42,9 @@ export function resolveVars(context, metadata) {
           const parts = path.split(".");
           const value = parts.reduce((obj, key) => obj?.[key], metadata);
           if (value === undefined) {
-            console.error(`\n\x1b[31m[ERROR] Invalid or missing variable: {{meta.${path}}}\x1b[0m\n`);
+            console.error(
+              `\n\x1b[31m[ERROR] Invalid or missing variable: {{meta.${path}}}\x1b[0m\n`,
+            );
             process.exit(1);
           }
           return value || "N/A";

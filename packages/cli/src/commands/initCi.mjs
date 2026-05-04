@@ -161,9 +161,7 @@ export async function initCiCommand(options = {}) {
 
   // Gather variables for template replacement
   const isTestProject = looksLikeTestProject(path.basename(projectDir));
-  const portoVer = isTestProject
-    ? "link:portosaur"
-    : porto.version || "0.0.0";
+  const portoVer = isTestProject ? "link:portosaur" : porto.version || "0.0.0";
 
   const userName = getPlatformUserGuess(vcsProviderId, gitConfig) || "user";
   const fullName = gitConfig["user.name"] || "User";

@@ -5,7 +5,11 @@ import { resolve } from "path";
 import { resolveVars } from "./plugins/resolveVars.js";
 import { autoRedirects } from "./plugins/autoRedirects.js";
 import { searchLinks } from "./plugins/searchLinks.js";
-import { getVersions, generateVersionedNav, generateSidebar } from "./plugins/versioning.mjs";
+import {
+  getVersions,
+  generateVersionedNav,
+  generateSidebar,
+} from "./plugins/versioning.mjs";
 import { nav, baseSidebar } from "./navigation.mjs";
 import yaml from "js-yaml";
 
@@ -23,7 +27,8 @@ const registry = yaml.load(readFileSync(registryPath, "utf-8"));
 
 const metadata = {
   project: {
-    title: portoPkgJson.name.charAt(0).toUpperCase() + portoPkgJson.name.slice(1),
+    title:
+      portoPkgJson.name.charAt(0).toUpperCase() + portoPkgJson.name.slice(1),
     desc: "for your digital personality",
     tagLine: portoPkgJson.description,
     repo: (portoPkgJson.repository?.url || "#").replace(/\.git$/, ""),
@@ -63,7 +68,7 @@ const versions = getVersions(process.cwd());
 const versionNav = generateVersionedNav(versions);
 const dynamicNav = [...nav];
 
-if (versionNav) { 
+if (versionNav) {
   dynamicNav.push(versionNav);
 }
 

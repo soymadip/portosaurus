@@ -36,7 +36,6 @@ export function autoRedirects({ srcDir, base = "/" }) {
           const localDir = join(absoluteSrcDir, urlPath);
 
           if (existsSync(localDir) && statSync(localDir).isDirectory()) {
-
             // Check for common entry points
             const entries = ["overview", "getting-started", "index"];
 

@@ -20,16 +20,16 @@ export function generateVersionedNav(versions) {
   return {
     text: "Versions",
     items: [
-      { 
-        text: "Latest", 
+      {
+        text: "Latest",
         link: "/user/getting-started",
         // Only active if URL doesn't start with a version like /v1.0/
-        activeMatch: "^/(?!v\\d+\\.\\d+/).+" 
+        activeMatch: "^/(?!v\\d+\\.\\d+/).+",
       },
-      ...versions.map((v) => ({ 
-        text: v, 
+      ...versions.map((v) => ({
+        text: v,
         link: `/${v}/user/getting-started`,
-        activeMatch: `^/${v}/`
+        activeMatch: `^/${v}/`,
       })),
     ],
   };
@@ -42,11 +42,11 @@ export function generateSidebar(versions, baseSidebar) {
   const sidebarConfig = {
     "/": cloneSidebar(baseSidebar, "latest"),
   };
-  
+
   versions.forEach((v) => {
     sidebarConfig[`/${v}/`] = cloneSidebar(baseSidebar, v);
   });
-  
+
   return sidebarConfig;
 }
 

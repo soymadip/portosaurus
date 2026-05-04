@@ -6,12 +6,7 @@ import yaml from "js-yaml";
 
 import { runWizard, cancel } from "@portosaur/wizard";
 import { logger, colors } from "@portosaur/logger";
-import {
-  mirrorSync,
-  openInBrowser,
-  hasCommand,
-  porto,
-} from "@portosaur/core";
+import { mirrorSync, openInBrowser, hasCommand, porto } from "@portosaur/core";
 
 import {
   Paths,
@@ -389,9 +384,7 @@ export async function initCommand(options = {}) {
   // to the CLI package to avoid loose dev-mode predictions.
   const isTestProject = looksLikeTestProject(state.projectName);
 
-  const portoVer = isTestProject
-    ? "link:portosaur"
-    : porto.version || "0.0.0";
+  const portoVer = isTestProject ? "link:portosaur" : porto.version || "0.0.0";
 
   const templateVars = {
     projectName: state.projectName,
