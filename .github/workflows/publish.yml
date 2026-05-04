@@ -11,6 +11,11 @@ jobs:
     name: Build and Publish
     runs-on: ubuntu-latest
     environment: npm
+    env:
+      GIT_AUTHOR_NAME: "Soumadip Das"
+      GIT_COMMITTER_NAME: "Soumadip Das"
+      GIT_AUTHOR_EMAIL: "CI@portosaur.org"
+      GIT_COMMITTER_EMAIL: "CI@portosaur.org"
 
     permissions:
       contents: read
