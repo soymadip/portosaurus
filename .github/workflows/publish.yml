@@ -47,6 +47,9 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
+      - name: Configure npm authentication
+        run: npm config set //registry.npmjs.org/:_authToken="${NODE_AUTH_TOKEN}"
+
       - name: Publish all workspaces
         run: |-
           # publish loop for scoped packages
