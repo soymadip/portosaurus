@@ -1,7 +1,7 @@
 {
   "name": "@portosaur/wizard",
   "version": "0.1.0",
-  "description": "Wizard: Interactive CLI prompt library with back-navigation.",
+  "description": "Wizard - Interactive CLI prompt library with back-navigation.",
   "license": "GPL-3.0-only",
   "author": "soymadip",
   "homepage": "https://soymadip.github.io/portosaur",

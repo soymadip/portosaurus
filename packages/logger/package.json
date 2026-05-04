@@ -1,7 +1,7 @@
 {
   "name": "@portosaur/logger",
   "version": "0.1.0",
-  "description": "Portosaur Logger: CLI output utilities and level normalization.",
+  "description": "A lightweight, Docusaurus-compatible logging library similar to Docusaurus, with some extras.",
   "author": "soymadip",
   "license": "GPL-3.0-only",
   "homepage": "https://soymadip.github.io/portosaur",

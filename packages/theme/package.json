@@ -1,7 +1,7 @@
 {
   "name": "@portosaur/theme",
   "version": "0.1.0",
-  "description": "Portosaur Theme: React components and static assets.",
+  "description": "Theme components for Portosaur - React components, static assets etc.",
   "license": "GPL-3.0-only",
   "author": "soymadip",
   "homepage": "https://soymadip.github.io/portosaur",
