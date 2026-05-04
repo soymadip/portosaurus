@@ -56,7 +56,7 @@ jobs:
           path: |
             ~/.bun/install/cache
             ${{ env.DOCS_DIR }}/.vitepress/cache
-          key: ${{ runner.os }}-cache-${{ hashFiles('**/bun.lockb', 'packages/docs/**') }}
+          key: ${{ runner.os }}-cache-${{ github.run_number }}
           restore-keys: |
             ${{ runner.os }}-cache-
 
