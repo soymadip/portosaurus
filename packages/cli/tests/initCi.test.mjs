@@ -36,17 +36,58 @@ mock.module("../src/utils/index.mjs", () => {
     getGitConfig: () => ({ "user.name": "Test User" }),
     resolvePlatformKey: (platforms, key) => {
       if (!key) return null;
-      if (platforms[key]) return key;
+      const trimmed = key.trim();
+      const lower = trimmed.toLowerCase();
+      if (platforms[trimmed]) return trimmed;
       const found = Object.keys(platforms).find(
-        (k) => k.toLowerCase() === key.toLowerCase(),
+        (k) => k.toLowerCase() === lower,
       );
       return found || null;
     },
-    getPlatformUserGuess: () => "testuser",
-    validateProject: () => true, // Assume project is valid
+    getPlatformUserGuess: (vcsProvider, gitConfig = {}) => {
+      const provider = vcsProvider?.toLowerCase();
+      const keysByProvider = {
+        github: ["github.user"],
+        gitlab: ["gitlab.user"],
+        codeberg: ["codeberg.user", "forgejo.user"],
+      };
+      const hostByProvider = {
+        github: "github.com",
+        gitlab: "gitlab.com",
+        codeberg: "codeberg.org",
+      };
+      
+      for (const key of keysByProvider[provider] || []) {
+        if (gitConfig[key]) return gitConfig[key];
+      }
+      
+      const host = hostByProvider[provider];
+      if (!host) return "";
+      
+      for (const [key, value] of Object.entries(gitConfig)) {
+        if (!key.startsWith("remote.") || !key.endsWith(".url")) continue;
+        if (typeof value !== "string" || !value.includes(host)) continue;
+        
+        const escapedHost = host.replace(/\./g, "\\.");
+        const match = value.match(
+          new RegExp(`(?:https?://|ssh://git@|git@)${escapedHost}[:/]([^/]+)(?:/|$)`),
+        );
+        
+        if (match?.[1]) return match[1];
+      }
+      
+      return "";
+    },
+    validateProject: () => true,
     printWorkflowTips: () => {},
     warnIfRepoNameMismatch: () => {},
-    isInteractive: (options) => !options.hosting,
+    isInteractive: (options = {}) => {
+      const hasConfigOptions = Object.keys(options).some((key) => {
+        if (key === "install") return false;
+        return options[key] !== undefined && options[key] !== null;
+      });
+      return !hasConfigOptions;
+    },
     Paths: {
       root: cliPkgDir,
       templates: path.join(cliSrcDir, "templates"),

@@ -20,18 +20,12 @@ export function resolvePlatformKey(platforms, platform) {
     return null;
   }
 
-  // Resolve by direct key match
+  const requestedLower = requested.toLowerCase();
+
+  // Resolve by direct key match (case-sensitive first)
   if (Object.prototype.hasOwnProperty.call(platforms, requested)) {
     return requested;
   }
-
-  const requestedLower = requested.toLowerCase();
-
-  // Resolve by display name
-  const nameMatch = Object.keys(platforms).find(
-    (key) => platforms[key].name?.toLowerCase() === requestedLower,
-  );
-  if (nameMatch) return nameMatch;
 
   // Resolve by case-insensitive ID
   const idMatch = Object.keys(platforms).find(
@@ -40,6 +34,12 @@ export function resolvePlatformKey(platforms, platform) {
   if (idMatch) {
     return idMatch;
   }
+
+  // Resolve by display name
+  const nameMatch = Object.keys(platforms).find(
+    (key) => platforms[key].name?.toLowerCase() === requestedLower,
+  );
+  if (nameMatch) return nameMatch;
 
   return null;
 }
@@ -75,7 +75,7 @@ export function getPlatformUserGuess(vcsProviderId, gitConfig = {}) {
   const host = hostByProvider[vcsProvider];
 
   if (!host) {
-    return process.env.USER || process.env.USERNAME || "user";
+    return "";
   }
 
   for (const [key, value] of Object.entries(gitConfig)) {
