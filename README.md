@@ -20,12 +20,12 @@ Get your portfolio up and running in seconds:
 
 ```bash
 # Initialize a new project (interactive)
-bunx portosaur init
+bunx @portosaur/cli init
 
 # Or with project name (not recommended)
-bunx portosaur@latest init -P my-portfolio
+bunx @portosaur/cli@latest init -P my-portfolio
 
-# Or: npx portosaur init
+# Or: npx @portosaur/cli init
 
 
 # Start development
@@ -43,7 +43,7 @@ For user guides and CLI reference, visit the **[Documentation Site](https://soym
 
 This repository is a monorepo structured for performance and extensibility:
 
-- **[`portosaur`](./packages/cli)** — The CLI for project lifecycle & builds (published as unscoped package).
+- **[`@portosaur/cli`](./packages/cli)** — The CLI for project lifecycle & builds.
 - **[`@portosaur/core`](./packages/core)** — The logic engine for configuration & variable resolution.
 - **[`@portosaur/theme`](./packages/theme)** — The UI core containing components, assets, & plugins.
 - **[`@portosaur/wizard`](./packages/wizard)** — The interaction engine for CLI prompt workflows.

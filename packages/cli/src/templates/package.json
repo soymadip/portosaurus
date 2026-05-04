@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "$npm_execpath install && portosaur dev",
-    "start": "$npm_execpath install && portosaur start",
-    "build": "$npm_execpath install && portosaur build",
-    "serve": "portosaur serve"
+    "dev": "$npm_execpath install && porto dev",
+    "start": "$npm_execpath install && porto start",
+    "build": "$npm_execpath install && porto build",
+    "serve": "porto serve"
   },
   "dependencies": {
-    "portosaur": "^{{portoVer}}"
+    "@portosaur/cli": "^{{portoVer}}"
   }
 }

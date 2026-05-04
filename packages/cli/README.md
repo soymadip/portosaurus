@@ -6,10 +6,10 @@ The primary command-line interface for Portosaur.
 
 ```bash
 # Global installation
-bun install -g portosaur  # or npm install -g portosaur
+bun install -g @portosaur/cli  # or npm install -g @portosaur/cli
 
 # Or use directly with bunx/npx
-bunx portosaur@latest # or npx portosaur@latest
+bunx @portosaur/cli@latest # or npx @portosaur/cli@latest
 ```
 
 ## Commands
