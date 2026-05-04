@@ -2,17 +2,17 @@
 
 A general-purpose interactive CLI prompt library designed for managing complex, multi-step workflows. Built on top of `@clack/prompts`. It adds many additional features like back-navigation, history persistence, and dynamic branching.
 
-## 🧩 Features
+## Features
 
 - **🔙 Back-Navigation** — Return to previous steps using the **Escape** key without terminal artifacts.
 - **🔄 History Replay** — Maintains session context by redrawing previous responses at the top of the terminal.
 - **🛡️ Signal Handling** — Robust handling for `Ctrl+C` with clean terminal termination.
 - **🔀 Dynamic Branching** — Skip or modify steps based on previous answers.
 
-## 🚀 Installation
+## Installation
 
 ```bash
-npm install @portosaur/wizard
+Bun install @portosaur/wizard
 ```
 
 ## 📖 Usage

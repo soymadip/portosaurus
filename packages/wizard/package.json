@@ -4,7 +4,7 @@
   "description": "Wizard - Interactive CLI prompt library with back-navigation.",
   "license": "GPL-3.0-only",
   "author": "soymadip",
-  "homepage": "https://soymadip.github.io/portosaur",
+  "homepage": "https://soymadip.github.io/portosaur/dev/wizard",
   "repository": {
     "type": "git",
     "url": "https://github.com/soymadip/portosaur"

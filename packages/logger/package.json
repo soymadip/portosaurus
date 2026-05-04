@@ -4,7 +4,7 @@
   "description": "A lightweight, Docusaurus-compatible logging library similar to Docusaurus, with some extras.",
   "author": "soymadip",
   "license": "GPL-3.0-only",
-  "homepage": "https://soymadip.github.io/portosaur",
+  "homepage": "https://soymadip.github.io/portosaur/dev/logger",
   "repository": {
     "type": "git",
     "url": "https://github.com/soymadip/portosaur"

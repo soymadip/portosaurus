@@ -1,6 +1,6 @@
 # @portosaur/logger
 
-> **The missing Docusaurus-style logger.** A lightweight, Docusaurus-compatible logging library enhanced with semantic levels, flexible alignment, and elegant box rendering.
+A lightweight, Docusaurus-compatible logging library enhanced with semantic levels, flexible alignment.
 
 Designed to provide the familiar Docusaurus terminal experience to any CLI project, while adding essential utilities like `consola`-powered boxes and custom `tip`/`note` levels.
 

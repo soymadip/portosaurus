@@ -1,12 +1,12 @@
 # @portosaur/theme
 
-Centralized visual core for Portosaur sites.
+Visual core for Portosaur sites.
 
-## 🧩 Structure
+## Structure
 
-- **🎨 theme/** — Custom Docusaurus components.
-- **🔌 plugins/** — Specialized logic for Portosaur workflows.
-- **📦 assets/** — Default images, icons, and CSS.
+- **theme/** — Custom Docusaurus components.
+- **plugins/** — Specialized logic for Portosaur workflows.
+- **assets/** — Default images, icons, and CSS.
 
 ---
 
