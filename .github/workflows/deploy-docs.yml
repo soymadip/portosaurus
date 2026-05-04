@@ -47,6 +47,11 @@ jobs:
         with:
           bun-version: latest
 
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: latest
+
       - name: Setup Pages
         uses: actions/configure-pages@v6
 
