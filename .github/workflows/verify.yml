@@ -50,7 +50,7 @@ jobs:
         run: bun run test:all
 
       - name: Smoke Test - Initialize Project
-        run: bun run packages/cli/bin/porto.mjs init smoke-test-site
+        run: bun run packages/cli/bin/porto.mjs init --project-name smoke-test-site
         continue-on-error: false
 
       - name: Verify Project Structure
