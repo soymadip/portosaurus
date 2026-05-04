@@ -1,4 +1,4 @@
-name: Publish to NPM
+name: Publish Packages to NPM
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   publish:
+    name: Build and Publish
     runs-on: ubuntu-latest
     environment: npm
 
@@ -26,7 +27,8 @@ jobs:
       - name: Cache Bun dependencies
         uses: actions/cache@v5
         with:
-          path: ~/.bun/install/cache
+          path: |-
+            ~/.bun/install/cache
           key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
           restore-keys: |
             ${{ runner.os }}-bun-
@@ -40,5 +42,20 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Publish to NPM
-        run: npm publish --access public --provenance
+      - name: Build all packages
+        run: bun run build
+
+      - name: Run final verification
+        run: bun test
+
+      - name: Publish all workspaces
+        run: |-
+          # publish loop for scoped packages
+          for dir in packages/*; do
+            if [ -d "$dir" ] && [ -f "$dir/package.json" ]; then
+              echo "Publishing $(basename $dir)..."
+              cd $dir
+              npm publish --access public --provenance || echo "Already published $(basename $dir)"
+              cd ../..
+            fi
+          done

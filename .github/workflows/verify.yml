@@ -1,4 +1,4 @@
-name: Code Quality Check
+name: Code Quality and Smoke Test
 
 on:
   push:
@@ -6,9 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
+env:
+  BAKE_CACHE_DIR: ~/.bun/install/cache
+  DOCS_CACHE_DIR: packages/docs/.vitepress/cache
+
 jobs:
   verify:
-    name: Verify Framework Integrity
+    name: Lint, Test, Build, and Smoke Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -18,32 +25,46 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Cache Bun dependencies
+      - name: Cache dependencies
         uses: actions/cache@v5
         with:
-          path: ~/.bun/install/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+          path: |
+            ${{ env.BAKE_CACHE_DIR }}
+            ${{ env.DOCS_CACHE_DIR }}
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
 
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Lint check (Prettier)
+      - name: Lint check
         run: bun run lint
 
-      - name: Run unit tests
-        run: bun test
+      - name: Run tests
+        run: bun run test:all
 
-      - name: Smoke Test
+      - name: Build all packages
+        run: bun run build:all
+
+      - name: Configure Git
         run: |
-          # Configure Git identity for the CI runner
-          git config --global user.email "ci@portosaurus.framework"
-          git config --global user.name "Portosaurus CI"
+          git config --global user.email "ci@portosaur.org"
+          git config --global user.name "Portosaur CI"
 
-          # Initialize a test project using the local binary
-          bun bin/portosaurus.mjs init smoke-test-site --no-install
+      - name: Smoke Test - Initialize Project
+        run: bun run packages/cli/bin/porto.mjs init smoke-test-site
+        continue-on-error: false
 
-          # Run build on the generated site using local framework code
+      - name: Verify Project Structure
+        run: |
+          if [ ! -d "smoke-test-site" ]; then
+            echo "❌ Error: Project directory was not created"
+            exit 1
+          fi
+          echo "✅ Project directory created successfully"
+
+      - name: Smoke Test - Build Project
+        run: |
           cd smoke-test-site
-          bun ../bin/portosaurus.mjs build
+          bun run build

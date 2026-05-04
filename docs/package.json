@@ -1,14 +1,28 @@
 {
+  "name": "@portosaur/docs",
+  "description": "Portosaur Docs: Documentation for Portosaur.",
+  "private": true,
+  "version": "0.1.0",
+  "license": "GPL-3.0-only",
+  "author": "soymadip",
+  "homepage": "https://soymadip.github.io/portosaur",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soymadip/portosaur"
+  },
   "scripts": {
     "dev": "vitepress dev --host",
+    "preview": "vitepress preview --host",
     "build": "vitepress build",
-    "preview": "vitepress preview --host"
+    "docs:version": "node scripts/version.mjs"
   },
   "devDependencies": {
+    "debug": "^4.4.3",
+    "js-yaml": "^4.1.1",
     "markdown-it-task-lists": "^2.1.1",
     "mermaid": "^11.14.0",
     "vitepress": "^2.0.0-alpha.17",
     "vitepress-plugin-mermaid": "^2.0.17",
-    "vue": "^3.5.32"
+    "vue": "^3.5.33"
   }
 }

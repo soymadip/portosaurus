@@ -1,46 +1,47 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
-# Template files
-src/template/node_modules
-src/template/notes/*
-!src/template/notes/welcome.mdx
-
-src/template/blog/*
-!src/template/blog/authors.yml
-!src/template/blog/welcome.md
-
-# Scratch files
-static/example*
-TEST
-test-site
-scratch
-
-# Production
+# Build and Output
+*.bkp
+*favicon/
+dist/
 build/
 dist/
-*tmp*
-*temp*
-!template*
-*favicon/
+cache/
+.docusaurus/
+.portosaur/
+.turbo/
+configSchema.json
+scratch
+scratch.*
 TestimonialsSection/
 
-# Generated files
-.docusaurus
-.portosaurus/
-.cache-loader
-.wrangler/
-cache
-configSchema.json
-
-# Misc
+# Env
+.env
+.env.*
+!.env.example
+# OS
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
-.codex
+Thumbs.db
 
+# Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+bun-debug.log*
+
+# Test / Temporary
+my-portfolio/
+*test-site/
+*test/
+TEST/
+
+ss.*
+*tmp*
+*.tmp
+*.temp
+temp/
+!templates/**

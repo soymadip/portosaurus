@@ -1,0 +1,14 @@
+{
+  "name": "{{projectName}}",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "$npm_execpath install && portosaur dev",
+    "start": "$npm_execpath install && portosaur start",
+    "build": "$npm_execpath install && portosaur build",
+    "serve": "portosaur serve"
+  },
+  "dependencies": {
+    "portosaur": "^{{portoVer}}"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "name": "@portosaur/core",
+  "version": "0.1.0",
+  "description": "Portosaur Core: The engine that translates YAML configuration into Docusaurus structures.",
+  "license": "GPL-3.0-only",
+  "author": "soymadip",
+  "homepage": "https://soymadip.github.io/portosaur",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/soymadip/portosaur"
+  },
+  "files": [
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.mjs",
+      "default": "./src/index.mjs"
+    },
+    "./constants": {
+      "types": "./src/constants.d.ts",
+      "import": "./src/constants.mjs",
+      "default": "./src/constants.mjs"
+    }
+  },
+  "types": "./src/index.d.ts",
+  "dependencies": {
+    "@portosaur/logger": "workspace:*",
+    "favicons": "^7.2.0",
+    "js-yaml": "^4.1.1",
+    "sharp": "^0.34.5"
+  }
+}

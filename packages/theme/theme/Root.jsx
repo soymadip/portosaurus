@@ -1,0 +1,11 @@
+import BrowserOnly from "@docusaurus/BrowserOnly";
+import { PreviewProvider, ViewerWindow } from "./components/Preview/index.js";
+
+export default function Root({ children }) {
+  return (
+    <PreviewProvider>
+      {children}
+      <BrowserOnly>{() => <ViewerWindow />}</BrowserOnly>
+    </PreviewProvider>
+  );
+}

@@ -3,27 +3,50 @@ import taskLists from "markdown-it-task-lists";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 import { resolveVars } from "./plugins/resolveVars.js";
+import { autoRedirects } from "./plugins/autoRedirects.js";
+import { searchLinks } from "./plugins/searchLinks.js";
+import { getVersions, generateVersionedNav, generateSidebar } from "./plugins/versioning.mjs";
+import { nav, baseSidebar } from "./navigation.mjs";
+import yaml from "js-yaml";
 
-// Read package.json metadata (Node-only environment)
-const pkgPath = resolve(process.cwd(), "..", "package.json");
-const pkg = JSON.parse(readFileSync(pkgPath, "utf-8"));
+// Read package.json metadata
+const portoPkgPath = resolve(process.cwd(), "..", "package.json");
+const portoPkgJson = JSON.parse(readFileSync(portoPkgPath, "utf-8"));
+
+// Read Registry to get dynamic defaults
+const registryPath = resolve(
+  process.cwd(),
+  "..",
+  "packages/cli/src/templates/registry.yml",
+);
+const registry = yaml.load(readFileSync(registryPath, "utf-8"));
 
 const metadata = {
   project: {
-    title: pkg.name.charAt(0).toUpperCase() + pkg.name.slice(1),
+    title: portoPkgJson.name.charAt(0).toUpperCase() + portoPkgJson.name.slice(1),
     desc: "for your digital personality",
-    tagLine: pkg.description,
-    repo: pkg.repository.url,
+    tagLine: portoPkgJson.description,
+    repo: (portoPkgJson.repository?.url || "#").replace(/\.git$/, ""),
+  },
+
+  // Package Information
+  pkg: {
+    name: portoPkgJson.name,
+    bin: "porto",
   },
 
   // Versions & Requirements
   versions: {
-    porto: pkg.version || "0.0.0",
-    node_min: pkg.engines?.node || "20.0+",
+    porto: portoPkgJson.version || "0.0.0",
+    node_min: (portoPkgJson.engines?.node || "24.0+").replace(/>=?\s*/, ""),
   },
 
-  // Package Information
-  pkg: pkg.name,
+  // Dynamic Defaults & Lists
+  defaults: {
+    vcs: Object.keys(registry.vcs_providers)[0],
+    vcsList: Object.keys(registry.vcs_providers).join(", "),
+    hostingList: Object.keys(registry.hosting_platforms).join(", "),
+  },
 
   // Tools & Ecosystem
   tools: {
@@ -32,8 +55,17 @@ const metadata = {
     vitepress: "https://vitepress.dev/",
     yaml: "https://yaml.org/",
     staticShort: "https://github.com/soymadip/staticshort",
+    git: "https://git-scm.com/",
   },
 };
+
+const versions = getVersions(process.cwd());
+const versionNav = generateVersionedNav(versions);
+const dynamicNav = [...nav];
+
+if (versionNav) { 
+  dynamicNav.push(versionNav);
+}
 
 const base = process.env.GITHUB_REPOSITORY
   ? `/${process.env.GITHUB_REPOSITORY.split("/")[1]}/`
@@ -42,17 +74,29 @@ const base = process.env.GITHUB_REPOSITORY
 export default withMermaid({
   base: base,
 
+  rewrites: {
+    "archive/:version/:rest*": ":version/:rest*",
+  },
+
   vite: {
-    publicDir: "../public",
+    publicDir: resolve(process.cwd(), "../packages/theme/assets"),
+    plugins: [autoRedirects({ srcDir: "md", base: base })],
 
     build: {
       chunkSizeWarningLimit: 1000,
+      rollupOptions: {
+        onwarn(warning, warn) {
+          if (warning.message.includes("Rollup cannot interpret")) return;
+          warn(warning);
+        },
+      },
     },
   },
 
   markdown: {
     config: (md) => {
       md.use((mdInstance) => resolveVars(mdInstance, metadata));
+      md.use((mdInstance) => searchLinks(mdInstance));
       md.use(taskLists);
     },
   },
@@ -63,11 +107,7 @@ export default withMermaid({
   head: [
     [
       "link",
-      {
-        rel: "icon",
-        type: "image/svg+xml",
-        href: `${base}img/svg/icon.svg`,
-      },
+      { rel: "icon", type: "image/svg+xml", href: `${base}img/svg/icon.svg` },
     ],
   ],
 
@@ -79,89 +119,25 @@ export default withMermaid({
   },
 
   themeConfig: {
-    logo: "/img/svg/icon.svg",
+    logo: `${base}img/svg/icon.svg`,
     outline: [2, 3],
     metadata: metadata,
 
     banner: {
       enabled: true,
-      text: "⚠️ This documentation is Work In Progress!",
+      text: "⚠️ Portosaur & This docs is Work In Progress!",
     },
 
     search: {
       provider: "local",
       options: {
+        detailedView: true,
         miniSearch: {},
       },
     },
 
-    nav: [
-      { text: "User Guide", link: "/user/getting-started" },
-      { text: "Configuration", link: "/user/config/overview" },
-      { text: "Roadmap", link: "/roadmap" },
-    ],
-
-    sidebar: [
-      {
-        text: "User Guide",
-        items: [
-          { text: "Getting Started", link: "/user/getting-started" },
-          {
-            text: "Configuration",
-            link: "/user/config/overview",
-            collapsed: true,
-            items: [
-              { text: "Variables", link: "/user/config/variables" },
-              { text: "Reference", link: "/user/config/reference" },
-            ],
-          },
-          {
-            text: "Markdown Features",
-            link: "/user/markdown/overview",
-            collapsed: true,
-            items: [
-              {
-                text: "Interactive Previews",
-                link: "/user/markdown/previews",
-              },
-              { text: "Tabs", link: "/user/markdown/tabs" },
-              { text: "Details", link: "/user/markdown/details" },
-              { text: "Tooltips", link: "/user/markdown/tooltips" },
-              {
-                text: "Note Cards",
-                link: "/user/markdown/note-cards",
-              },
-            ],
-          },
-          {
-            text: "Deployment",
-            link: "/user/deploy/overview",
-            collapsed: true,
-            items: [
-              { text: "GitHub Pages", link: "/user/deploy/github-pages" },
-              { text: "GitLab Pages", link: "/user/deploy/gitlab-pages" },
-              { text: "Codeberg Pages", link: "/user/deploy/codeberg-pages" },
-              { text: "Surge", link: "/user/deploy/surge" },
-              {
-                text: "Other Providers",
-                link: "/user/deploy/others",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        text: "Developer Guide",
-        link: "/dev/overview",
-        collapsed: false,
-        items: [{ text: "Custom Templates", link: "/dev/templates" }],
-      },
-      {
-        text: "More",
-        collapsed: true,
-        items: [{ text: "Roadmap", link: "/roadmap" }],
-      },
-    ],
+    nav: dynamicNav,
+    sidebar: generateSidebar(versions, baseSidebar),
 
     socialLinks: [{ icon: "github", link: metadata.project.repo }],
   },

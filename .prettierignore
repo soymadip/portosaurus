@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build and Cache
+dist/
+build/
+cache/
+.docusaurus/
+.portosaur/
+
+# Lock files
+bun.lock
+bun.lockb
+package-lock.json
+yarn.lock
+
+# System
+.DS_Store

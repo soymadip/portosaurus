@@ -1,11 +1,13 @@
 /**
- * The Portosaurus Variable Resolver.
+ * The Portosaur Variable Resolver.
  * One function that handles both Markdown content and PageData (frontmatter).
  */
 export function resolveVars(context, metadata) {
-  // 1. Core String Resolver Utility
+  // Core String Resolver Utility
   const resolve = (str) => {
-    if (typeof str !== "string") return str;
+    if (typeof str !== "string") {
+      return str;
+    }
 
     // Handle URL-encoded placeholders (e.g., %7B%7Bvar%7D%7D)
     // Markdown-it often encodes attributes before we get them
@@ -38,10 +40,15 @@ export function resolveVars(context, metadata) {
       (match, type, path) => {
         if (type === "meta") {
           const parts = path.split(".");
-          return parts.reduce((obj, key) => obj?.[key], metadata) || "N/A";
+          const value = parts.reduce((obj, key) => obj?.[key], metadata);
+          if (value === undefined) {
+            console.error(`\n\x1b[31m[ERROR] Invalid or missing variable: {{meta.${path}}}\x1b[0m\n`);
+            process.exit(1);
+          }
+          return value || "N/A";
         }
         // For custom and env, we just escape them for documentation purposes
-        // as they are handled by the Portosaurus core, not the docs site.
+        // as they are handled by the Portosaur core, not the docs site.
         return `{\u200B{${type}${type === "env" ? ":" : "."}${path}}\u200B}`;
       },
     );
@@ -51,9 +58,11 @@ export function resolveVars(context, metadata) {
     return str.replace(/{{/g, "{\u200B{").replace(/}}/g, "}\u200B}");
   };
 
-  // 2. Recursive Object Resolver
+  // Recursive Object Resolver
   const resolveDeep = (obj) => {
-    if (!obj || typeof obj !== "object") return;
+    if (!obj || typeof obj !== "object") {
+      return;
+    }
 
     for (const key in obj) {
       const val = obj[key];
@@ -73,7 +82,7 @@ export function resolveVars(context, metadata) {
     }
   };
 
-  // 3. Detection Logic: Is this a Markdown-It instance or PageData?
+  // Detection Logic: Is this a Markdown-It instance or PageData?
 
   // Case A: Markdown-It Plugin
   if (context && context.core && context.core.ruler) {

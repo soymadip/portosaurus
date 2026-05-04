@@ -18,8 +18,13 @@ declare -A VERSION_FILES
 NEW_VERSION="${1:-$CZ_PRE_NEW_VERSION}"
 
 VERSION_FILES=(
-    # ["PKGBUILD"]='^ *pkgver=.* > pkgver={{new_version}} ; ^ *pkgrel=.* > pkgrel=1'
     ["package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["docs/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["packages/cli/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["packages/core/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["packages/logger/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["packages/theme/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
+    ["packages/wizard/package.json"]='^  "version": "[^"]+" >   "version": "{{new_version}}"'
 )
 
 #==================== Helpers ======================
@@ -88,7 +93,7 @@ for file in "${!VERSION_FILES[@]}"; do
     IFS=';' read -ra RULES <<< "${VERSION_FILES[$file]}"
 
     log.info "Bumping file: $file"
-    
+
     for rule in "${RULES[@]}"; do
         # Split by > for Search > Replace
         search="${rule%%>*}"
@@ -97,7 +102,7 @@ for file in "${!VERSION_FILES[@]}"; do
         # Trim optional one surrounding space
         search="${search% }"
         replace="${replace# }"
-        
+
         # Substitute version placeholder
         replace="${replace//'{{new_version}}'/$NEW_VERSION}"
 

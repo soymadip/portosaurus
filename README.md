@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="./src/assets/img/svg/icon.svg" width=110>
-    <h1>Portosaurus</h1>
-    <p>Complete portfolio cum personal website solution for your digital personality.</p>
+    <img src="./packages/theme/assets/img/icon.png" width=110>
+    <h1>Portosaur</h1>
+    <p>Complete portfolio and personal website solution for your digital personality.</p>
     <br />
 </div>
 
@@ -19,17 +19,34 @@
 Get your portfolio up and running in seconds:
 
 ```bash
-# Initialize a new project
-bunx portosaurus@latest init my-site   # or: npx portosaurus@latest init my-site
+# Initialize a new project (interactive)
+bunx portosaur init
+
+# Or with project name (not recommended)
+bunx portosaur@latest init -P my-portfolio
+
+# Or: npx portosaur init
+
 
 # Start development
-cd my-site
+cd <your-project-dir>
 bun run dev   # or: npm run dev
 ```
 
-## Configuration
+## 📍 Documentation
 
-For full installation, configuration guide, CLI reference, visit the **[Documentation](https://soymadip.github.io/portosaurus/)**.
+For user guides and CLI reference, visit the **[Documentation Site](https://soymadip.github.io/portosaur)**.
+
+<br>
+
+## 🏗️ Architecture
+
+This repository is a monorepo structured for performance and extensibility:
+
+- **[`portosaur`](./packages/cli)** — The CLI for project lifecycle & builds (published as unscoped package).
+- **[`@portosaur/core`](./packages/core)** — The logic engine for configuration & variable resolution.
+- **[`@portosaur/theme`](./packages/theme)** — The UI core containing components, assets, & plugins.
+- **[`@portosaur/wizard`](./packages/wizard)** — The interaction engine for CLI prompt workflows.
 
 ## Credits
 
