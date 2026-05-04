@@ -384,7 +384,7 @@ export async function initCommand(options = {}) {
   // to the CLI package to avoid loose dev-mode predictions.
   const isTestProject = looksLikeTestProject(state.projectName);
 
-  const portoVer = isTestProject ? "link:portosaur" : porto.version || "0.0.0";
+  const portoVer = isTestProject ? "link:@portosaur/cli" : porto.version || "0.0.0";
 
   const templateVars = {
     projectName: state.projectName,
