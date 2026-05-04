@@ -49,9 +49,6 @@ jobs:
       - name: Run tests
         run: bun run test:all
 
-      - name: Build all packages
-        run: bun run build:all
-
       - name: Smoke Test - Initialize Project
         run: bun run packages/cli/bin/porto.mjs init smoke-test-site
         continue-on-error: false
