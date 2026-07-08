@@ -492,7 +492,7 @@ export async function initCommand(options = {}) {
   // Prepare Template Variables
   const cleanVersion = porto.version?.split("-")[0] || "0.0.0";
   const portoVersion = `^${cleanVersion}`;
-  const cloneUrl = state.gitRemoteUrl || "<your-repository-url>";
+  const cloneUrl = state.gitRemoteUrl || "";
 
   const templateVars = {
     project_name: state.projectName || state.repoName,
