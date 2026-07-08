@@ -6,8 +6,6 @@
 
 - [ ] Set up a GitHub Action using `capacitor` to automatically build an Android APK from the PWA and publish it to GitHub Releases.
 - [ ] Add Url Shortener, checkout https://docusaurus.io/docs/api/plugins/@docusaurus/plugin-client-redirects
-- [ ] Thoroughly check vars docs and separate config vars with runtime vars. Add a component and syntax to replace `{meta.var_name}` with actual `var_value` (a remark plugin maybe?). Also, make the `config.yml`'s `vars` referable in notes and blog?
-- [ ] Allow adding tooltip when hovering.
 - [ ] Write custom component docs and add mdx syntax through plugins.
 - [ ] **Way to extend MDXComponents by user.** Maybe also allow to pass custom components? Maybe through `config.yml`? Or `MDXComponents.js` manually?
 - [ ] Allow to password protect certain notes? (Maybe a hash to match against)
@@ -38,5 +36,6 @@
 - [x] `<details>` tag not showing summary text, instead just showing details. And the summary is rendered inside details text, revealed when opened details section.
 - [x] Customize the callouts, details CSS to make them less ugly. (or maybe swizzle?)
 - [x] Use pure css for project corosaul
-
 - [x] Decrease the padding of tooltip popup, also possibly increase the size of the popup. Also, when we hover over the popup keep it open even if we moved past the text.
+- [x] Add a component and syntax to replace `{meta.var_name}` with actual `var_value` (a remark plugin maybe?). Also, make the `config.yml`'s `vars` referable in notes and blog?
+- [x] Allow adding tooltip when hovering.
