@@ -147,6 +147,15 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
     ),
   );
 
+  // Instantiate the vars plugin with the user's vars from config.yml
+  const userVars = rawGet("vars", {});
+  const remarkVarsPlugin = require(
+    path.resolve(
+      portoPaths.themeRoot ?? context.portoRoot ?? "",
+      "src/plugins/remarkVars.cjs",
+    ),
+  )(userVars);
+
   // ------- Configuration Setup -------
 
   return {
@@ -629,10 +638,10 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
               portoPaths.theme ?? context.portoRoot ?? "",
               "config/sidebar.jsx",
             ),
-            ...(get("site.edit_url", "") // Base URL for Edit this page links.
+            ...(get("site.edit_url", "") // Base URL for Edit this page link.
               ? { editUrl: get("site.edit_url", "") }
               : {}),
-            beforeDefaultRemarkPlugins: [remarkIconsPlugin],
+            beforeDefaultRemarkPlugins: [remarkVarsPlugin, remarkIconsPlugin],
             remarkPlugins: [remarkMath],
             rehypePlugins: [rehypeKatex],
             sidebarItemsGenerator: createSidebarItemsGenerator(),
@@ -644,7 +653,7 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
             ...(get("site.edit_url", "")
               ? { editUrl: get("site.edit_url", "") }
               : {}),
-            beforeDefaultRemarkPlugins: [remarkIconsPlugin],
+            beforeDefaultRemarkPlugins: [remarkVarsPlugin, remarkIconsPlugin],
             remarkPlugins: [remarkMath],
             rehypePlugins: [rehypeKatex],
             feedOptions: {
