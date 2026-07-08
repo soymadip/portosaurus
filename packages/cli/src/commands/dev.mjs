@@ -96,11 +96,21 @@ export async function devCommand(siteDir, options = {}) {
         process.exit();
       });
     }
-
-    // [Playground] Watch portosaur packages for backend changes if running inside the monorepo
+    // [Playground] Watch portosaur packages for backend changes if running inside
+    // the portosaur monorepo itself. We fingerprint-check packages/cli/package.json
     const packagesDir = path.resolve(Paths.root, "../../packages");
+    const cliPkgJson = path.join(packagesDir, "cli/package.json");
 
-    if (fs.existsSync(packagesDir)) {
+    const isPortosaurMonorepo = (() => {
+      try {
+        const pkg = JSON.parse(fs.readFileSync(cliPkgJson, "utf8"));
+        return pkg.name === "@portosaur/cli";
+      } catch {
+        return false;
+      }
+    })();
+
+    if (isPortosaurMonorepo) {
       logger.info(
         "Playground dev mode: watching @portosaur/* for backend logic changes...",
       );
