@@ -1,4 +1,4 @@
-import { readFileSync, existsSync, renameSync } from "fs";
+import { readFileSync, existsSync, renameSync, readdirSync } from "fs";
 import path from "path";
 import os from "os";
 import { execSync, execFileSync } from "child_process";
@@ -512,21 +512,37 @@ export async function initCommand(options = {}) {
       mirrorIgnores.push("gitignore");
     }
 
-    if (state.siteType === "docs") {
-      mirrorIgnores.push("notes", "config-portfolio.yml");
-    } else {
-      mirrorIgnores.push("docs", "config-docs.yml");
+    // Auto-detect scoped templates by suffix:
+    //   <name>-docs      → only copied for docs sites
+    //   <name>-portfolio → only copied for portfolio sites
+    //   no suffix        → copied for both
+    const otherSuffix = state.siteType === "docs" ? "-portfolio" : "-docs";
+
+    for (const entry of readdirSync(Paths.templates)) {
+      const base = entry.replace(/\.[^.]+$/, ""); // strip extension
+      if (base.endsWith(otherSuffix)) {
+        mirrorIgnores.push(entry);
+      }
     }
 
     mirrorSync(Paths.templates, newProjDir, templateVars, mirrorIgnores);
 
-    // Rename the appropriate config file
-    const configSource =
-      state.siteType === "docs" ? "config-docs.yml" : "config-portfolio.yml";
-    renameSync(
-      path.join(newProjDir, configSource),
-      path.join(newProjDir, "config.yml"),
-    );
+    // Strip the site-type suffix from any copied entry so it lands with its canonical name.
+    // e.g. config-docs.yml → config.yml, README-docs.md → README.md, docs-docs/ → docs/
+    const matchSuffix = `-${state.siteType}`;
+
+    for (const entry of readdirSync(newProjDir)) {
+      const ext = path.extname(entry);
+      const base = path.basename(entry, ext);
+
+      if (base.endsWith(matchSuffix)) {
+        const newName = base.slice(0, -matchSuffix.length) + ext;
+        renameSync(
+          path.join(newProjDir, entry),
+          path.join(newProjDir, newName),
+        );
+      }
+    }
   } catch (e) {
     logger.error(`Failed to create project files: ${e.message}`);
     process.exitCode = 1;
