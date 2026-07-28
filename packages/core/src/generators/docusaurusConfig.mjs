@@ -147,14 +147,14 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
     ),
   );
 
-  // Instantiate the vars plugin with the user's vars from config.yml
+  // Pass the userVars object as a plugin option so Docusaurus hashes it for Webpack cache.
   const userVars = rawGet("vars", {});
   const remarkVarsPlugin = require(
     path.resolve(
       portoPaths.themeRoot ?? context.portoRoot ?? "",
       "src/plugins/remarkVars.cjs",
     ),
-  )(userVars);
+  );
 
   // ------- Configuration Setup -------
 
@@ -641,7 +641,10 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
             ...(get("site.edit_url", "") // Base URL for Edit this page link.
               ? { editUrl: get("site.edit_url", "") }
               : {}),
-            beforeDefaultRemarkPlugins: [remarkVarsPlugin, remarkIconsPlugin],
+            beforeDefaultRemarkPlugins: [
+              [remarkVarsPlugin, userVars],
+              remarkIconsPlugin,
+            ],
             remarkPlugins: [remarkMath],
             rehypePlugins: [rehypeKatex],
             sidebarItemsGenerator: createSidebarItemsGenerator(),
@@ -653,7 +656,10 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
             ...(get("site.edit_url", "")
               ? { editUrl: get("site.edit_url", "") }
               : {}),
-            beforeDefaultRemarkPlugins: [remarkVarsPlugin, remarkIconsPlugin],
+            beforeDefaultRemarkPlugins: [
+              [remarkVarsPlugin, userVars],
+              remarkIconsPlugin,
+            ],
             remarkPlugins: [remarkMath],
             rehypePlugins: [rehypeKatex],
             feedOptions: {
@@ -787,6 +793,12 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
             portoPaths.theme ?? context.portoRoot ?? "",
             "pages",
           ),
+        },
+      ],
+      [
+        "docusaurus-plugin-copy-page-button",
+        {
+          placement: "auto",
         },
       ],
     ],

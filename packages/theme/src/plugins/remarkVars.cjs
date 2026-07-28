@@ -1,19 +1,23 @@
 /**
  * remarkVarsPlugin.cjs
  *
- * Replaces {vars.key} references from config.yml's `vars` section inside MDX/MD content.
- * Throws a build-time error (crashes the MDX compiler for that file) if an unknown key is used,
- * so Docusaurus surfaces the bad key and the source file in the crash page.
+ * Replaces {vars.key} and {vars.nested.key} references from config.yml's `vars` section.
+ *
+ * Works in both .md and .mdx files:
+ *   - .md:  visits text nodes (plain markdown, {vars.key} is just text)
+ *   - .mdx: visits mdxTextExpression / mdxFlowExpression nodes ({vars.key} is a JSX expression)
  *
  * Supported locations:
- *   - Text nodes:       "Visit {vars.github} for more."
- *   - Inline code:      `{vars.twitter}`
- *   - Code blocks:      ```\ngit clone {vars.repo}\n```
- *   - Link URLs:        [GitHub]({vars.github})  or  [GitHub]({vars.github}/page)
- *   - Image URLs:       ![logo]({vars.logo})
+ *   - Text nodes:         "Visit {vars.github} for more."
+ *   - Inline code:        `{vars.twitter}`
+ *   - Code blocks:        ```\ngit clone {vars.repo}\n```
+ *   - Link URLs:          [GitHub]({vars.github})  or  [GitHub]({vars.github}/page)
+ *   - Image URLs:         ![logo]({vars.logo})
+ *   - MDX expressions:    {vars.project.title}  or  {vars.tools.bun}
  *
  * Escape (render the literal token without replacement):
- *   - Use double braces: {{vars.key}} → {vars.key}
+ *   - In .md:   use double braces: {{vars.key}} → {vars.key}
+ *   - In .mdx:  not applicable (JSX parses {{ as object literal — use a text file instead)
  */
 
 /** Minimal recursive AST walker (no external dep, matches remarkIcons pattern). */
@@ -32,29 +36,57 @@ function visit(tree, type, visitor) {
 }
 
 /**
- * @param {Record<string, string>} vars - The resolved vars map from config.yml.
+ * Resolve a dot-notation path inside the vars object.
+ * e.g. resolveVarPath("project.title", { project: { title: "Portosaur" } }) → "Portosaur"
+ * @param {string} path - Dot-separated key path.
+ * @param {Record<string, unknown>} vars - The vars object from config.yml.
+ * @returns {string | undefined} The resolved value, or undefined if not found.
+ */
+function resolveVarPath(path, vars) {
+  const keys = path.split(".");
+  let current = vars;
+
+  for (const key of keys) {
+    if (
+      current !== null &&
+      typeof current === "object" &&
+      Object.prototype.hasOwnProperty.call(current, key)
+    ) {
+      current = current[key];
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof current === "string" || typeof current === "number"
+    ? String(current)
+    : undefined;
+}
+
+/**
+ * @param {Record<string, unknown>} vars - The resolved vars map from config.yml.
  * @returns {import('unified').Plugin}
  */
 module.exports = function remarkVarsPlugin(vars = {}) {
   if (!vars || Object.keys(vars).length === 0) {
-    // No vars defined — return a no-op plugin
     return () => (tree) => tree;
   }
 
-  // Matches {vars.key} — the only supported syntax
-  const bracePattern = /\{vars\.([a-zA-Z_][a-zA-Z0-9_]*)\}/g;
+  // Matches {vars.key} or {vars.nested.key} in plain text / URLs
+  const bracePattern = /\{vars\.([a-zA-Z_][a-zA-Z0-9_.]*)\}/g;
 
-  // Matches {{vars.key}} — escape form that renders as a literal {vars.key}
-  const escapePattern = /\{\{vars\.([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g;
+  // Matches {{vars.key}} — escape form (only meaningful in .md, not .mdx)
+  const escapePattern = /\{\{vars\.([a-zA-Z_][a-zA-Z0-9_.]*)\}\}/g;
 
   /**
    * Throw a descriptive build error so Docusaurus crashes the page for this file.
-   * The `filePath` comes from the vfile passed to the transformer.
+   * @param {string} path - The full path that was not found, e.g. "project.title".
+   * @param {string} filePath - Source file path for error context.
    */
-  function unknownKeyError(key, filePath) {
+  function unknownKeyError(path, filePath) {
     return new Error(
-      `[Portosaur] Unknown vars key "{vars.${key}}" in "${filePath || "unknown file"}".\n` +
-        `  Make sure "${key}" is defined under 'vars:' in your config.yml.`,
+      `[Portosaur] Unknown vars key "{vars.${path}}" in "${filePath || "unknown file"}".\n` +
+        `  Make sure "${path}" is defined under 'vars:' in your config.yml.`,
     );
   }
 
@@ -65,37 +97,39 @@ module.exports = function remarkVarsPlugin(vars = {}) {
    * @param {string} filePath - Source file path for error context.
    */
   function replaceBraces(str, filePath) {
-    // Step 1: protect escaped {{vars.key}} by converting to a placeholder,
+    // Step 1: protect escaped {{vars.key}} with a null-byte placeholder
     //         so the single-brace replacer never sees them.
     const ESCAPE_PLACEHOLDER = "\x00VARS_LITERAL\x00";
     const escaped = str.replace(
       escapePattern,
-      (_, key) => `${ESCAPE_PLACEHOLDER}${key}${ESCAPE_PLACEHOLDER}`,
+      (_, path) => `${ESCAPE_PLACEHOLDER}${path}${ESCAPE_PLACEHOLDER}`,
     );
 
     // Step 2: replace {vars.key} — any remaining single-brace form is a real reference.
-    const replaced = escaped.replace(bracePattern, (_, key) => {
-      if (!Object.prototype.hasOwnProperty.call(vars, key)) {
-        throw unknownKeyError(key, filePath);
+    const replaced = escaped.replace(bracePattern, (_, path) => {
+      const resolved = resolveVarPath(path, vars);
+      if (resolved === undefined) {
+        throw unknownKeyError(path, filePath);
       }
-      return vars[key];
+      return resolved;
     });
 
     // Step 3: restore escaped tokens as literal {vars.key}
     return replaced.replace(
       new RegExp(
-        `${ESCAPE_PLACEHOLDER}([a-zA-Z_][a-zA-Z0-9_]*)${ESCAPE_PLACEHOLDER}`,
+        `${ESCAPE_PLACEHOLDER}([a-zA-Z_][a-zA-Z0-9_.]*)${ESCAPE_PLACEHOLDER}`,
         "g",
       ),
-      (_, key) => `{vars.${key}}`,
+      (_, path) => `{vars.${path}}`,
     );
   }
 
   // The transformer receives (tree, file) — `file.path` is the source file path
-  return () => (tree, file) => {
+  return (tree, file) => {
     const filePath = file?.path || file?.history?.[0] || "";
 
-    // Text nodes: replace {vars.key} in plain text
+    // --- .md text nodes: replace {vars.key} in plain text ---
+
     visit(tree, "text", (node) => {
       node.value = replaceBraces(node.value, filePath);
     });
@@ -119,5 +153,32 @@ module.exports = function remarkVarsPlugin(vars = {}) {
     visit(tree, "image", (node) => {
       node.url = replaceBraces(node.url, filePath);
     });
+
+    // --- .mdx expression nodes: {vars.key} is parsed as a JSX expression ---
+    // We intercept these and replace them with plain text nodes so the MDX
+    // runtime never tries to evaluate `vars` as a JavaScript variable.
+
+    function handleMdxExpression(node, index, parent) {
+      const path = node.value?.trim();
+      if (!path || !path.startsWith("vars.")) return;
+
+      const varPath = path.replace(/^vars\./, "");
+      const resolved = resolveVarPath(varPath, vars);
+
+      if (resolved === undefined) {
+        throw unknownKeyError(varPath, filePath);
+      }
+
+      // Replace the expression node with a plain text node in its parent
+      if (parent && index !== null) {
+        parent.children.splice(index, 1, { type: "text", value: resolved });
+      }
+    }
+
+    // Inline: {vars.key} inside a paragraph / list item / table cell
+    visit(tree, "mdxTextExpression", handleMdxExpression);
+
+    // Block-level: {vars.key} on its own line
+    visit(tree, "mdxFlowExpression", handleMdxExpression);
   };
 };
