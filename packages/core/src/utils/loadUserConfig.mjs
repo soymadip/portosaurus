@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import { validateUserConfig } from "./validate.mjs";
 import { resolveVars } from "./config.mjs";
 import pkg from "../../package.json";
@@ -22,7 +22,7 @@ export function loadUserConfig(projectDir, systemVars = {}) {
     throw new Error(`No config.yml found at ${configPath}`);
   }
 
-  const rawConfig = yaml.load(fs.readFileSync(configPath, "utf8")) || {};
+  const rawConfig = load(fs.readFileSync(configPath, "utf8")) || {};
 
   // Validate for unknown keys and error early with a clear message.
   const violations = validateUserConfig(rawConfig);

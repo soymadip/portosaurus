@@ -2,7 +2,7 @@ import { readFileSync, existsSync, renameSync, readdirSync } from "fs";
 import path from "path";
 import os from "os";
 import { execSync, execFileSync } from "child_process";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 
 import { runWizard, cancel } from "@portosaur/wizard";
 import { logger, colors } from "@portosaur/logger";
@@ -27,7 +27,7 @@ export async function initCommand(options = {}) {
    * ====================== Constants ======================
    */
 
-  const registry = yaml.load(readFileSync(Paths.registry, "utf8"));
+  const registry = load(readFileSync(Paths.registry, "utf8"));
 
   const gitConfig = getGitConfig();
   const osUser = os.userInfo().username;

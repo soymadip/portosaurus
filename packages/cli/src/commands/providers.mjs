@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 import { colors } from "@portosaur/logger";
 import { Paths } from "../utils/index.mjs";
 
@@ -7,7 +7,7 @@ import { Paths } from "../utils/index.mjs";
  * Displays available VCS providers and hosting platforms.
  */
 export async function providersCommand(subcommand = null) {
-  const registry = yaml.load(readFileSync(Paths.registry, "utf8"));
+  const registry = load(readFileSync(Paths.registry, "utf8"));
 
   const vcsProviders = registry.vcs_providers || {};
   const hostingPlatforms = registry.hosting_platforms || {};

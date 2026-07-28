@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 
 /**
  * Resolves site URL based on config or environment
@@ -137,7 +137,7 @@ function parseFileFrontmatter(filePath) {
     const content = fs.readFileSync(filePath, "utf8");
     const match = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     if (match) {
-      const parsed = yaml.load(match[1]) || {};
+      const parsed = load(match[1]) || {};
       frontmatterCache.set(filePath, parsed);
       return parsed;
     }

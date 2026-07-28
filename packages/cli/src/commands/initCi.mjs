@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import yaml from "js-yaml";
+import { load } from "js-yaml";
 
 import { runWizard, cancel } from "@portosaur/wizard";
 
@@ -28,7 +28,7 @@ export async function initCiCommand(options = {}) {
 
   const projectDir = process.cwd();
 
-  const registry = yaml.load(fs.readFileSync(Paths.registry, "utf8"));
+  const registry = load(fs.readFileSync(Paths.registry, "utf8"));
 
   const gitConfig = getGitConfig();
   const vcsProviderId = detectVcsProvider(registry);
