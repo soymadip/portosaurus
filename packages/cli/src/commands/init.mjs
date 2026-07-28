@@ -45,13 +45,13 @@ export async function initCommand(options = {}) {
           .replace("{{user}}", state.vcsUsername)
           .replace("{{domain}}", vcsConfig.domain);
       }
-      return state.customRepoName;
+      return state.customRepoName || state.repoName;
     }
     return state.repoName;
   };
 
   let state = {
-    siteType: null,
+    siteType: options.siteType || "portfolio",
     vcsProvider: null,
     hostingPlatform: null,
     vcsUsername: null,

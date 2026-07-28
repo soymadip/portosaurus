@@ -1,5 +1,14 @@
 {
-  "name": "@portosaur/docs",
+  "name": "docs",
+  "version": "0.22.0",
   "private": true,
-  "version": "0.21.2"
+  "scripts": {
+    "dev": "$npm_execpath install && porto dev",
+    "build": "$npm_execpath install && porto build",
+    "serve": "porto serve"
+  },
+  "dependencies": {
+    "@portosaur/cli": "^0.21.2",
+    "@portosaur/theme": "^0.21.2"
+  }
 }
