@@ -795,7 +795,6 @@ export function buildDocuConfig(rawUserConfig, projectDir, context = {}) {
           ),
         },
       ],
-      ["docusaurus-plugin-copy-page-button", {}],
     ],
   };
 }

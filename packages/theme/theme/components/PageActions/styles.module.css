@@ -1,0 +1,88 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35em;
+  position: relative;
+  z-index: 100;
+}
+
+@media (min-width: 997px) {
+  .container {
+    margin-left: 1rem;
+    margin-bottom: 0;
+  }
+  .mobileOnly {
+    display: none !important;
+  }
+  .desktopOnly {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 996px) {
+  .container {
+    justify-content: flex-end;
+  }
+  .mobileOnly {
+    display: flex !important;
+  }
+  .desktopOnly {
+    display: none !important;
+  }
+
+  .sourceBtn {
+    margin-right: auto;
+  }
+}
+
+.rightAlignMenu {
+  left: auto !important;
+  right: 0 !important;
+  transform: translateY(4px) !important;
+}
+
+.rightAlignMenu::before {
+  left: auto !important;
+  right: 14px !important; /* aligns with the icon trigger */
+}
+
+/* Ensure arrow stays in place when opened */
+:global(.dropdownShow) .rightAlignMenu {
+  transform: translateY(-1px) !important;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ifm-color-emphasis-700);
+  background-color: var(--ifm-color-emphasis-200);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  transition: all var(--ifm-transition-fast) ease;
+  border-radius: var(--ifm-global-radius);
+  border: 1px solid var(--ifm-color-emphasis-300);
+}
+
+.actionBtn:hover {
+  background-color: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-primary);
+  text-decoration: none;
+  border-color: var(--ifm-color-primary);
+}
+
+.icon {
+  margin-right: 6px;
+  width: 14px;
+  height: 14px;
+}
+
+.iconOnly {
+  width: 16px;
+  height: 16px;
+}

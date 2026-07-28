@@ -21,6 +21,8 @@ export default function Dropdown({
   outline = false,
 
   size = "md",
+  menuClassName = "",
+  noArrow = false,
 
   ...buttonProps
 }) {
@@ -63,7 +65,7 @@ export default function Dropdown({
 
     // Walk up DOM to find the nearest scrolling/clipping container
     // This ensures correctness inside popups that are narrower than the window.
-    let rightBound = window.innerWidth - padding;
+    let rightBound = document.documentElement.clientWidth - padding;
     let leftBound = padding;
     let el = containerRef.current.parentElement;
 
@@ -137,7 +139,7 @@ export default function Dropdown({
         children: (
           <>
             {triggerElement.props.children}
-            <span className={arrowClassName} />
+            {!noArrow && <span className={arrowClassName} />}
           </>
         ),
       })
@@ -155,7 +157,7 @@ export default function Dropdown({
 
       <div
         ref={menuRef}
-        className={styles.dropdownMenu}
+        className={`${styles.dropdownMenu} ${menuClassName}`.trim()}
         data-direction={direction}
         style={{
           "--menu-offset": `${menuOffset}px`,
@@ -175,6 +177,7 @@ export default function Dropdown({
             onClick,
             href,
             sameTab,
+            desc,
           } = item;
 
           const Component = href ? Link : "button";
@@ -200,6 +203,7 @@ export default function Dropdown({
               className={`${styles.dropdownMenuItem} ${
                 active ? styles.dropdownMenuItemActive : ""
               }`}
+              title={desc}
               {...linkProps}
             >
               {Icon &&

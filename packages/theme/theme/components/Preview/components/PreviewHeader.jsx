@@ -215,7 +215,7 @@ export default function PreviewHeader({
                 {
                   id: "popup",
                   label: "Popup",
-                  icon: () => <Icon id="md:dock-window" />,
+                  icon: () => <Icon id="mdi:window-restore" />,
                 },
                 { id: "dock", label: "Dock", icon: MobileAwareDockIcon },
                 {

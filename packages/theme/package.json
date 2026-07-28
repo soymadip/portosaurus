@@ -51,7 +51,6 @@
     "@portosaur/core": "workspace:*",
     "chalk": "^6.0.0",
     "clsx": "^2.1.1",
-    "docusaurus-plugin-copy-page-button": "^0.8.4",
     "katex": "^0.18.1",
     "prism-react-renderer": "^2.4.1",
     "react-rnd": "^10.5.3"
