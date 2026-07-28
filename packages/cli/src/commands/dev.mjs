@@ -141,7 +141,9 @@ export async function devCommand(siteDir, options = {}) {
 
     await runDocusaurus("start", UserRoot, configPath, extraArgs);
   } catch (error) {
-    logger.error(`Failed to start dev server: ${error.message}`);
+    logger.error(
+      `Failed to start dev server:\n${error.stack || error.message}`,
+    );
     process.exit(1);
   }
 }

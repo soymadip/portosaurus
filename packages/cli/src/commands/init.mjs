@@ -660,7 +660,7 @@ export async function initCommand(options = {}) {
   logger.newLine();
   logger.info(
     `Next Steps:\n    ${colors.command(
-      `cd ${state.repoName} & Edit ${colors.path("config.yml")} & ${pm.name} run dev`,
+      `cd ${state.repoName} & Edit ${colors.cyan("config.yml")} & ${pm.name} run dev`,
     )}`,
   );
 
